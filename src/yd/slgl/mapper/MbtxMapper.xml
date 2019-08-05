@@ -1,0 +1,661 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="yd.slgl.mapper.MbtxMapper">
+
+ <select id="targetlist" resultType="yd.slgl.entity.Target">
+    SELECT tar.id,tar.parent_id,tar.creator_id,tar.manager_id,tar.participant,
+	tar.target_name,tar.target_category,tar.target_info,
+	tar.target_stand,tar.target_stand_contion,tar.target_stand_info,tar.start_time,
+	tar.end_time,tar.check_type,tar.brother,tar.target_dj,tar.target_category,tar.target_extends,
+	tar.check_time,tar.check_status,tar.result_type,ur2.name upManager,tar2.manager_id upManager_id,
+	tar.complate_time,tar.complate_value,tar.set_year,tar.target_index,tar.progress,
+	tar.follow,tar.funds,tar.actual_funds,tar.importancedj,ur.name manager_name FROM tr_target tar LEFT JOIN tr_user ur ON tar.manager_id=ur.user_id LEFT JOIN tr_target tar2 ON tar.parent_id=tar2.id
+	LEFT JOIN tr_user ur2 ON tar2.manager_id=ur2.user_id WHERE 1=1 
+    <if test="user_id!=null">
+	   AND (tar.manager_id=#{user_id}
+	   OR tar.id IN(SELECT target_id FROM tr_participant WHERE user_id=#{user_id})
+	   OR tar.creator_id=#{user_id} 
+	   )
+	  </if>
+	   AND tar.target_category=#{target_category}
+	  order by tar.id
+ </select>
+ <select id="targetlist1" resultType="yd.slgl.entity.Target">
+    SELECT tar.id,tar.parent_id,tar.creator_id,tar.manager_id,tar.participant,
+	tar.target_name,tar.target_category,tar.target_info,
+	tar.target_stand,tar.target_stand_contion,tar.target_stand_info,tar.start_time,
+	tar.end_time,tar.check_type,tar.brother,tar.target_dj,tar.target_category,tar.target_extends,
+	tar.check_time,tar.check_status,tar.result_type,ur2.name upManager,tar2.manager_id upManager_id,
+	tar.complate_time,tar.complate_value,tar.set_year,tar.target_index,tar.progress,
+	tar.follow,tar.funds,tar.actual_funds,tar.importancedj,ur.name manager_name FROM tr_target tar LEFT JOIN tr_user ur ON tar.manager_id=ur.user_id LEFT JOIN tr_target tar2 ON tar.parent_id=tar2.id
+	LEFT JOIN tr_user ur2 ON tar2.manager_id=ur2.user_id WHERE 1=1 
+    <if test="user_id!=null">
+	   AND tar.manager_id=#{user_id}
+	  </if>
+	   AND tar.target_category=#{target_category}
+	  order by tar.id
+ </select>
+ <select id="targetlist12" resultType="yd.slgl.entity.Target">
+    SELECT tar.id,tar.parent_id,tar.creator_id,tar.manager_id,tar.participant,
+	tar.target_name,tar.target_category,tar.target_info,
+	tar.target_stand,tar.target_stand_contion,tar.target_stand_info,tar.start_time,
+	tar.end_time,tar.check_type,tar.brother,tar.target_dj,tar.target_category,tar.target_extends,
+	tar.check_time,tar.check_status,tar.result_type,ur2.name upManager,tar2.manager_id upManager_id,
+	tar.complate_time,tar.complate_value,tar.set_year,tar.target_index,tar.progress,
+	tar.follow,tar.funds,tar.actual_funds,tar.importancedj,ur.name manager_name FROM tr_target tar LEFT JOIN tr_user ur ON tar.manager_id=ur.user_id LEFT JOIN tr_target tar2 ON tar.parent_id=tar2.id
+	LEFT JOIN tr_user ur2 ON tar2.manager_id=ur2.user_id WHERE 1=1 
+    <if test="user_id!=null">
+	   AND  tar.id IN(SELECT target_id FROM tr_participant WHERE user_id=#{user_id})
+	  </if>
+	   AND tar.target_category=#{target_category}
+	  order by tar.id
+ </select>
+ <select id="targetlist13" resultType="yd.slgl.entity.Target">
+    SELECT tar.id,tar.parent_id,tar.creator_id,tar.manager_id,tar.participant,
+	tar.target_name,tar.target_category,tar.target_info,
+	tar.target_stand,tar.target_stand_contion,tar.target_stand_info,tar.start_time,
+	tar.end_time,tar.check_type,tar.brother,tar.target_dj,tar.target_category,tar.target_extends,
+	tar.check_time,tar.check_status,tar.result_type,ur2.name upManager,tar2.manager_id upManager_id,
+	tar.complate_time,tar.complate_value,tar.set_year,tar.target_index,tar.progress,
+	tar.follow,tar.funds,tar.actual_funds,tar.importancedj,ur.name manager_name FROM tr_target tar LEFT JOIN tr_user ur ON tar.manager_id=ur.user_id LEFT JOIN tr_target tar2 ON tar.parent_id=tar2.id
+	LEFT JOIN tr_user ur2 ON tar2.manager_id=ur2.user_id WHERE 1=1 
+    <if test="user_id!=null">
+	   AND  tar.creator_id=#{user_id} AND tar.manager_id !=#{user_id}
+	  </if>
+	   AND tar.target_category=#{target_category}
+	  order by tar.id
+ </select>
+ <select id="getparticipant" resultType="yd.slgl.entity.UsersEntity">
+  (SELECT user_id,name FROM tr_user WHERE user_id in  (SELECT manager_id FROM tr_target tar WHERE 1=1 
+  <if test="targetid!=null">
+   AND parent_id=#{targetid}
+  </if>) )
+	union all (SELECT user_id,name FROM tr_user WHERE user_id in (SELECT user_id FROM tr_participant WHERE 1=1
+  <if test="targetid!=null">
+   AND target_id=#{targetid}
+  </if>) )
+ </select>
+ <select id="targetlist2" resultType="yd.slgl.entity.Target">
+    SELECT tar.id,tar.parent_id,tar.creator_id,tar.manager_id,tar.participant,
+	tar.target_name,tar.target_category,tar.target_info,
+	tar.target_stand,tar.target_stand_contion,tar.target_stand_info,tar.start_time,
+	tar.end_time,tar.check_type,tar.brother,tar.target_dj,tar.target_category,tar.target_extends,
+	tar.check_time,tar.check_status,tar.result_type,ur2.name upManager,tar2.manager_id upManager_id,
+	tar.complate_time,tar.complate_value,tar.set_year,tar.is_qy,tar.target_index,tar.progress,
+	tar.follow,tar.funds,tar.actual_funds,tar.importancedj,ur.name manager_name FROM tr_target tar LEFT JOIN tr_user ur ON tar.manager_id=ur.user_id LEFT JOIN tr_target tar2 ON tar.parent_id=tar2.id
+	LEFT JOIN tr_user ur2 ON tar2.manager_id=ur2.user_id WHERE 1=1 
+    <if test="user_id!=null">
+	   AND (tar.manager_id=#{user_id}
+	   OR tar.id IN(SELECT target_id FROM tr_participant WHERE user_id=#{user_id}))
+	  </if>
+	   AND tar.target_category=1
+	  order by tar.id
+ </select>
+ <select id="targetlist3" resultType="yd.slgl.entity.Target">
+    SELECT tar.id,tar.parent_id,tar.creator_id,tar.manager_id,tar.participant,
+	tar.target_name,tar.target_category,tar.target_info,
+	tar.target_stand,tar.target_stand_contion,tar.target_stand_info,tar.start_time,
+	tar.end_time,tar.check_type,tar.brother,tar.target_dj,tar.target_category,tar.target_extends,
+	tar.check_time,tar.check_status,tar.result_type,ur2.name upManager,tar2.manager_id upManager_id,
+	tar.complate_time,tar.complate_value,tar.set_year,tar.target_index,tar.progress,
+	tar.follow,tar.funds,tar.actual_funds,tar.importancedj,ur.name manager_name FROM tr_target tar LEFT JOIN tr_user ur ON tar.manager_id=ur.user_id LEFT JOIN tr_target tar2 ON tar.parent_id=tar2.id
+	LEFT JOIN tr_user ur2 ON tar2.manager_id=ur2.user_id WHERE 1=1 
+    <if test="user_id!=null">
+	   AND (tar.manager_id=#{user_id}
+	   OR tar.id IN(SELECT target_id FROM tr_participant WHERE user_id=#{user_id}))
+	  </if>
+	   AND tar.target_category=2
+	  order by tar.id
+ </select>
+ <select id="targetlist4" resultType="yd.slgl.entity.Target">
+    SELECT tar.id,tar.parent_id,tar.creator_id,tar.manager_id,tar.participant,
+	tar.target_name,tar.target_category,tar.target_info,
+	tar.target_stand,tar.target_stand_contion,tar.target_stand_info,tar.start_time,
+	tar.end_time,tar.check_type,tar.brother,tar.target_dj,
+	tar.check_time,tar.check_status,tar.result_type,ur2.name upManager,tar2.manager_id upManager_id,
+	tar.complate_time,tar.complate_value,tar.set_year,tar.is_qy,tar.target_index,tar.progress,
+	tar.follow,tar.funds,tar.actual_funds,tar.importancedj,ur.name manager_name FROM tr_target tar LEFT JOIN tr_user ur ON tar.manager_id=ur.user_id LEFT JOIN tr_target tar2 ON tar.parent_id=tar2.id
+	LEFT JOIN tr_user ur2 ON tar2.manager_id=ur2.user_id WHERE 1=1 
+    <if test="user_id!=null">
+	   AND (tar.manager_id=#{user_id}
+	    OR tar.id IN(SELECT target_id FROM tr_participant WHERE user_id=#{user_id}))
+	  </if>
+	   AND tar.target_dj=4
+	  order by tar.id
+ </select>
+ <select id="getkhzb" resultType="yd.slgl.entity.Khzb">
+  SELECT id,index_name zbmc,unit,index_desc zbms FROM tr_index
+ </select>
+ <select id="userlist" resultType="yd.slgl.entity.UsersEntity">
+  SELECT user_id,name FROM tr_user LIMIT 20
+ </select>
+ <insert id="addtarget">
+	INSERT INTO tr_target (creator_id,manager_id,participant,target_name,funds,target_dj,target_category,target_info,target_stand,
+	target_stand_contion,target_stand_info,start_time,end_time,check_type,check_time,complate_time,complate_value,
+	set_year,is_qy,target_index,follow,actual_funds,importancedj,brother,target_extends)
+	VALUES(#{target.creator_id},#{target.manager_id},#{target.participant},#{target.target_name},
+	#{target.funds},1,#{target.target_category},#{target.target_info},#{target.target_stand},
+	#{target.target_stand_contion},#{target.target_stand_info},#{target.start_time},#{target.end_time},#{target.check_type},
+	#{target.check_time},#{target.complate_time},#{target.complate_value},
+	#{target.set_year},#{target.is_qy},#{target.target_index},#{target.follow},#{target.actual_funds},#{target.importancedj},'1',#{target.target_extends})
+ </insert>
+ <insert id="addcyr">
+   INSERT INTO tr_participant(user_id,target_id) VALUES(#{user_id},#{target_id})
+ </insert>
+ <insert id="addxjcyr">
+ INSERT INTO tr_participant(user_id,target_id) VALUES(#{user_id},(SELECT MAX(id) FROM tr_target))
+ </insert>
+ <select id="targetDetails" resultType="yd.slgl.entity.Target">
+    SELECT tar.id,tar.parent_id,tar.creator_id,tar.manager_id,tar.participant,
+	tar.target_name,tar.target_category,tar.target_info,tar.weight,tar.target_category,tar.target_extends,
+	tar.target_stand,tar.target_stand_contion,tar.target_stand_info,tar.start_time,
+	tar.end_time,tar.check_type,tar.target_dj,tar.brother,tar.target_dj level,tar.target_name title,ur.name name,
+	tar.check_time,tar.check_status,tar.result_type,tar.parent_name,ind.index_name target_stand_name,
+	tar.complate_time,tar.complate_value,tar.set_year,tar.is_qy,tar.target_index,tar.progress,ind.index_name target_stand_name,
+	tar.follow,tar.funds,tar.actual_funds,tar.importancedj,ur.name manager_name,ur2.name upManager,ur2.user_id upManager_id FROM tr_target tar LEFT JOIN tr_user ur
+    ON tar.manager_id=ur.user_id LEFT JOIN tr_user ur2 ON tar.creator_id=ur2.user_id LEFT JOIN tr_index ind ON tar.target_stand=ind.id WHERE tar.id=#{target_id} 
+ </select>
+ <select id="subprojects" resultType="yd.slgl.entity.Target">
+    SELECT tar.id,tar.parent_id,tar.creator_id,tar.manager_id,tar.participant,
+	tar.target_name,tar.target_category,tar.target_info,tar.progress,
+	tar.target_stand,tar.target_stand_contion,tar.target_stand_info,
+	tar.check_time,tar.check_status,tar.result_type,tar.target_dj,
+	tar.follow,tar.funds,tar.actual_funds,tar.importancedj,ur.name manager_name FROM tr_target tar LEFT JOIN tr_user ur
+    ON tar.manager_id=ur.user_id WHERE tar.parent_id=#{target_id}
+ </select>
+ <select id="getAttachment" resultType="yd.slgl.entity.Attachment">
+  SELECT name,url FROM tr_attachment WHERE work_id=#{id}
+ </select>
+ <insert id="addReport">
+  INSERT INTO tr_report(report_name,importancedj,actual_funds,report_desc,target_id,manager_id,report_time,progress)
+  VALUES(#{report.report_name},#{report.importancedj},#{report.actual_funds},#{report.report_desc},#{report.target_id},#{report.manager_id},now(),#{report.progress})
+ </insert>
+<!--  申报记录 -->
+ <select id="declareList" resultType="yd.slgl.entity.DeclareEntity">
+  SELECT de.id,de.name,de.result,de.comment,de.manager_id,de.declare_time,usr.name manager_name,tar.actual_funds actual_funds,tar.funds funds,de.importancedj,de.report_desc FROM tr_declare de LEFT JOIN tr_target tar
+  ON de.target_id=tar.id LEFT JOIN tr_user usr ON de.manager_id=usr.user_id WHERE 1=1
+     <if test="targetid!=null">
+	   AND de.target_id=#{targetid}
+	  </if>
+	  <!-- <if test="user_id!=null">
+	   AND de.manager_id=#{user_id}
+	  </if> --> order by de.declare_time
+ </select>
+ <!--  进度记录 -->
+  <select id="getreportlist" resultType="yd.slgl.entity.ReportEntity">
+    SELECT re.id,re.report_name,re.importancedj,tar.progress progress,re.actual_funds,re.report_desc,re.report_time FROM tr_report re LEFT JOIN tr_target tar ON re.target_id=tar.id  WHERE 1=1
+    AND re.target_id=#{target_id} order by re.report_time desc
+  </select>
+  <update id="updateDeclare">
+   UPDATE tr_declare SET result='1',comment=#{declare.comment} WHERE id=#{declare.id}
+  </update>
+  <update id="updateTargetCheck">
+   UPDATE tr_target SET check_status='2',check_time=now() WHERE id=#{target_id}
+  </update> 
+  <update id="Declarefalse">
+    UPDATE tr_declare SET result='0',comment=#{declare.comment} WHERE id=#{declare.id}
+  </update>
+ <!-- 审核失败 修改指标审核状态-->
+  <update id="TargetCheckfalse">
+   UPDATE tr_target SET check_status='-2',check_time=now(),progress=#{progress} WHERE id=#{target_id}
+  </update>
+  <!-- 关注 -->
+  <update id="targetFollow">
+   UPDATE tr_target SET follow=#{follow} WHERE id=#{target_id}
+  </update>
+  <insert id="insertfollow">
+  INSERT INTO tr_follow(follow_id,target_id) VALUES(#{follow_id},#{target_id})
+  </insert>
+  <delete id="deletfollow">
+  DELETE FROM tr_follow WHERE follow_id=#{follow_id} AND target_id=#{target_id}
+  </delete>
+  <insert id="addDeclare">
+   INSERT INTO tr_declare(target_id,name,result,comment,manager_id,declare_time,importancedj,report_desc)
+   VALUES(#{target.id},#{target.target_name},-1,null,#{target.manager_id},now(),#{target.importancedj},#{report_desc})
+  </insert>
+  <select id="targetResult" resultType="yd.slgl.entity.Target">
+   SELECT id,target_name,manager_id,brother,progress FROM tr_target WHERE parent_id=#{target_id}
+  </select>
+  <select id="declareComment" resultType="string">
+   SELECT comment FROM tr_declare WHERE id=#{declareid}
+  </select>
+  <update id="updateTargetcheck1">
+   UPDATE tr_target SET check_status='-1',progress=#{progress} WHERE id=#{id}
+  </update>
+  <insert id="insertcheckRegression">
+   INSERT INTO tr_declare(target_id,result,name,comment,manager_id,declare_time)
+   VALUES(#{declare.target_id},'-1',#{declare.name},#{declare.comment},#{declare.manager_id},now()) 
+  </insert>
+  <select id="targetTwo" resultType="yd.slgl.entity.Target">
+   SELECT tar.id,tar.parent_id,tar.creator_id,tar.manager_id,
+	tar.target_name,tar.target_name title,ur.name name,
+	tar.target_dj,tar.brother,tar.target_dj level,
+    ur.name manager_name FROM tr_target tar LEFT JOIN tr_user ur
+    ON tar.manager_id=ur.user_id WHERE tar.parent_id=#{target_id} 
+  </select>
+  <select id="targetTwo1" resultType="yd.slgl.entity.Target">
+   SELECT tar.id,tar.parent_id,tar.creator_id,tar.manager_id,
+	tar.target_name,tar.target_name title,ur.name name,
+	tar.target_dj,tar.brother,tar.target_dj level,
+    ur.name manager_name FROM tr_target tar LEFT JOIN tr_user ur
+    ON tar.manager_id=ur.user_id WHERE 1=1
+    <if test='target_dj=="2"'>
+    and tar.id=#{target_id}
+    </if>
+    <if test='target_dj=="3"'>
+    and tar.id=(SELECT parent_id FROM tr_target WHERE id=#{target_id})
+    </if>
+    <if test='target_dj=="4"'>
+    and tar.id=(SELECT parent_id FROM tr_target WHERE id=(SELECT parent_id FROM tr_target WHERE id=#{target_id}))
+    </if>
+  </select>
+  <select id="targetTwo2" resultType="yd.slgl.entity.Target">
+   SELECT tar.id,tar.parent_id,tar.creator_id,tar.manager_id,
+	tar.target_name,tar.target_name title,ur.name name,
+	tar.target_dj,tar.brother,tar.target_dj level,
+    ur.name manager_name FROM tr_target tar LEFT JOIN tr_user ur
+    ON tar.manager_id=ur.user_id WHERE 1=1
+    <if test='target_dj=="3"'>
+    and tar.id=#{target_id}
+    </if>
+    <if test='target_dj=="4"'>
+    and tar.id=(SELECT parent_id FROM tr_target WHERE id=#{target_id})
+    </if>
+  </select>
+  <select id="targetTwo3" resultType="yd.slgl.entity.Target">
+   SELECT tar.id,tar.parent_id,tar.creator_id,tar.manager_id,
+	tar.target_name,tar.target_name title,ur.name name,
+	tar.target_dj,tar.brother,tar.target_dj level,
+    ur.name manager_name FROM tr_target tar LEFT JOIN tr_user ur
+    ON tar.manager_id=ur.user_id WHERE 1=1
+    <if test='target_dj=="4"'>
+    and tar.id=#{target_id}
+    </if>
+  </select>
+  <select id="targetThree" resultType="yd.slgl.entity.Target">
+   SELECT tar.id,tar.parent_id,tar.creator_id,tar.manager_id,
+	tar.target_name,tar.target_name title,ur.name name,
+	tar.target_dj,tar.brother,tar.target_dj level,
+    ur.name manager_name FROM tr_target tar LEFT JOIN tr_user ur
+    ON tar.manager_id=ur.user_id WHERE tar.id=#{target_id} 
+  </select>
+  <select id="targetparentid1" resultType="yd.slgl.entity.Target">
+   SELECT tar.id,tar.parent_id,tar.creator_id,tar.manager_id,tar.participant,
+	tar.target_name,tar.target_category,tar.target_info,
+	tar.target_stand,tar.target_stand_contion,tar.target_stand_info,tar.start_time,
+	tar.end_time,tar.check_type,tar.target_dj,tar.brother,tar.target_dj level,
+	tar.check_time,tar.check_status,tar.result_type,
+	tar.complate_time,tar.complate_value,tar.set_year,tar.is_qy,tar.target_index,tar.progress,
+	tar.follow,tar.funds,tar.actual_funds,tar.importancedj,ur.name manager_name FROM tr_target tar LEFT JOIN tr_user ur
+    ON tar.manager_id=ur.user_id WHERE 1=1
+   <if test='target_dj=="2"'>
+    AND tar.id=#{parent_id}
+   </if>
+   <if test='target_dj=="3"'>
+    AND tar.id=(SELECT parent_id FROM tr_target WHERE id=#{parent_id})
+   </if>
+   <if test='target_dj=="4"'>
+    AND tar.id=(SELECT parent_id FROM tr_target WHERE id=(SELECT parent_id FROM tr_target WHERE id=#{parent_id}))
+   </if>
+  </select>
+  <update id="editTarget">
+    UPDATE tr_target SET funds=#{target.funds},importancedj=#{target.importancedj},
+    weight=#{target.weight},start_time=#{target.start_time},end_time=#{target.end_time},
+    target_stand=#{target.target_stand},target_stand_contion=#{target.target_stand_contion},
+    target_stand_info=#{target.target_stand_info},target_info=#{target.target_info},target_name=#{target.target_name},manager_id=#{target.manager_id}
+    WHERE id=#{target.id}
+  </update>
+  <update id="upparname">
+    UPDATE tr_target SET parent_name=#{parent_name}
+    WHERE parent_id=#{parent_id}
+  </update>
+  <delete id="deleteParticipant">
+   DELETE FROM tr_participant WHERE target_id=#{target_id}
+  </delete>
+  <insert id="addParticipant">
+   INSERT tr_participant SET user_id=#{user_id},target_id=#{target_id}
+  </insert>
+  <select id="brotherCount" resultType="java.lang.Integer">
+   SELECT IFNULL(MAX(brother),0) FROM tr_target WHERE parent_id=#{parent_id}
+  </select>
+  <insert id="decomposeTarget">
+   INSERT INTO tr_target(parent_id,parent_name,creator_id,target_name,manager_id,funds,importancedj,target_dj,
+   weight,start_time,end_time, target_stand,target_stand_contion,target_stand_info,target_info,target_category,target_extends)
+   VALUES(#{target.parent_id},#{target.parent_name},#{target.creator_id},#{target.target_name},
+   #{target.manager_id},#{target.funds},#{target.importancedj},#{target.target_dj},#{target.weight},#{target.start_time},
+   #{target.end_time},#{target.target_stand},#{target.target_stand_contion},#{target.target_stand_info},
+   #{target.target_info},#{target.target_category},#{target.target_extends})
+  </insert>
+  <delete id="deletecyr">
+   DELETE FROM tr_participant WHERE target_id=#{target_id}
+  </delete>
+  <delete id="deleteTarget">
+   DELETE FROM tr_target WHERE id=#{target_id}
+  </delete>
+  <delete id="deleteChildrenCyr">
+   DELETE FROM tr_participant WHERE target_id in (SELECT id FROM tr_target WHERE parent_id=#{target_id})
+  </delete>
+  <delete id="deleteChildren">
+   DELETE FROM tr_target WHERE parent_id=#{target_id}
+  </delete>
+  <delete id="deleteChildrenCyr2">
+   DELETE FROM tr_participant WHERE target_id in 
+   (SELECT id FROM tr_target2 WHERE parent_id in (SELECT id FROM tr_target WHERE parent_id=#{target_id}))
+  </delete>
+  <delete id="deleteChildren2">
+   DELETE FROM tr_target2 WHERE parent_id in (SELECT id FROM tr_target WHERE parent_id=#{target_id})
+  </delete>
+  <delete id="deleteChildrenCyr3">
+   DELETE FROM tr_participant WHERE target_id in 
+   (SELECT id FROM tr_target WHERE parent_id in 
+   (SELECT id FROM tr_target WHERE parent_id in (SELECT id FROM tr_target WHERE parent_id=#{target_id})))
+  </delete>
+  <delete id="deleteChildren3">
+   DELETE FROM tr_target WHERE parent_id in 
+   (SELECT id FROM tr_target WHERE parent_id in 
+   (SELECT id FROM tr_target WHERE parent_id=#{target_id}))
+  </delete>
+  <select id="targetDetails1" resultType="yd.slgl.entity.Target">
+   SELECT id,parent_id,importancedj,target_dj FROM tr_target WHERE id=#{target_id}
+  </select>
+  <select id="getids" resultType="string">
+   SELECT id FROM tr_target WHERE parent_id in 
+   (SELECT id FROM tr_target WHERE parent_id=#{target_id})
+  </select>
+  <select id="standardlist" resultType="yd.slgl.entity.StandardType">
+   SELECT id,name,parent_id,level FROM tr_standardtype WHERE parent_id='0' order by id
+  </select>
+  <select id="getChildrenStandard" resultType="yd.slgl.entity.StandardType">
+   SELECT id,name,parent_id,level FROM tr_standardtype WHERE parent_id=#{standard_id} order by id
+  </select>
+  <insert id="addStandardType">
+   INSERT INTO tr_standardtype(name,parent_id,level) 
+   VALUES(#{standardtype.name},#{standardtype.parent_id},#{standardtype.level})
+  </insert>
+  <select id="typename" resultType="java.lang.Integer">
+  SELECT count(1) from tr_standardtype WHERE name=#{name} and parent_id=#{parent_id}
+  </select>
+  <update id="editStandardType">
+   UPDATE tr_standardtype SET name=#{name} WHERE id=#{id}
+  </update>
+  <delete id="deleteStand">
+   DELETE FROM tr_standard WHERE type=#{id}
+  </delete>
+  <delete id="deleteStandType">
+   DELETE FROM tr_standardtype WHERE id=#{id}
+  </delete>
+  <select id="minstandid" resultType="java.lang.Integer">
+   SELECT min(id) FROM tr_standardtype WHERE level='1'
+  </select>
+  <select id="StandCount" resultType="java.lang.Integer">
+  SELECT COUNT(1) FROM tr_standard
+  </select>
+  <select id="seluptime" resultType="yd.slgl.entity.Standard">
+  SELECT  update_time  FROM information_schema.tables  WHERE table_name ='tr_standard' ;
+  </select>
+  <select id="standlist" resultType="yd.slgl.entity.Standard">
+   SELECT ts.id id,ts.type type,ts.name name,ts.creator_id creator_id,ts.creator_name creator_name,ts.dept_id dept_id,ts.filename filename,ts.fileurl fileurl,tst.name parent_name FROM tr_standard ts, tr_standardtype tst WHERE ts.type=tst.id
+    <if test='id!=null and id!=""'>
+    AND ts.type=#{id}
+   </if>
+   <if test='name!=null and name!=""'>
+    AND ts.name LIKE CONCAT('%',#{name},'%')
+   </if>
+  </select>
+  <delete id="deleteStandard">
+   DELETE FROM tr_standard WHERE id=#{id}
+  </delete>
+  <update id="editStand">
+   UPDATE tr_standard SET name=#{stand.name},filename=#{stand.filename},fileurl=#{stand.fileurl},update_time=now() WHERE id=#{stand.id}
+  </update>
+  <insert id="addStand">
+   INSERT INTO tr_standard(fileurl,type,name,creator_id,creator_name,creater_time,update_time,filename)
+   VALUES(#{stand.fileurl},#{stand.type},#{stand.name},#{stand.creator_id},#{stand.creator_name},now(),now(),#{stand.filename})
+  </insert>
+  <select id="goeditStand" resultType="yd.slgl.entity.Standard">
+    SELECT id,type,name,creator_id,creator_name,update_time,dept_id,filename,fileurl FROM tr_standard WHERE type=#{id}
+  </select>
+  <update id="updateTar">
+   UPDATE tr_target SET progress=progress+#{report.progress},actual_funds=actual_funds+#{report.actual_funds} WHERE id=#{report.target_id}
+  </update>
+  
+  <select id="getparentid" resultType="string">
+   SELECT parent_id FROM tr_target WHERE id=#{target_id}
+  </select>
+  <select id="parentProgress" resultType="java.lang.Integer">
+   SELECT sum(progress*weight)/sum(weight) FROM tr_target WHERE parent_id=#{parent_id}
+  </select>
+  <update id="updateProgress">
+   UPDATE tr_target SET progress=#{progress} 
+   <if test='progress=="100"'>
+   ,check_status='0'
+   </if> WHERE id=#{target_id}
+  </update>
+  <update id="updateProgress1">
+   UPDATE tr_target SET progress=#{progress} 
+   <if test='progress=="100"'>
+   ,check_status='0'
+   </if> WHERE id=#{target_id}
+  </update>
+  <select id="getparentid2" resultType="string">
+   SELECT parent_id FROM tr_target WHERE id=(SELECT parent_id FROM tr_target WHERE id=#{target_id})
+  </select>
+  <select id="getparentid3" resultType="string">
+   SELECT parent_id FROM tr_target WHERE id=(SELECT parent_id FROM tr_target WHERE id=(SELECT parent_id FROM tr_target WHERE id=#{target_id}))
+  </select>
+  <select id="getprogress" resultType="string">
+   SELECT progress FROM tr_target WHERE id=#{target_id}
+  </select>
+  <update id="updateCheck">
+   UPDATE tr_target SET check_status='0' WHERE id=#{target_id}
+  </update>
+  <select id="childrenCount" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM tr_target WHERE parent_id=#{parent_id}
+  </select>
+  <select id="childrenCountSuccess" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM tr_target WHERE parent_id=#{parent_id} AND check_status='2'
+  </select>
+  <select id="getmaxdeclareid" resultType="string">
+   SELECT MAX(id) FROM tr_declare WHERE target_id=#{target_id}
+  </select>
+  <update id="updateTargetCh">
+   UPDATE tr_target SET check_status='1' WHERE id=#{target_id}
+  </update>
+   <update id="updateTargetcheck2">
+   UPDATE tr_target SET check_status='-1' WHERE id=#{target_id}
+  </update>
+   <!-- 绩效模块 -->
+  
+  <!-- 我的绩效分数 -->
+  <select id="getMyscore" resultType="yd.slgl.entity.Target">
+  SELECT tu.user_id id,tt.manager_id manager_id,CAST(SUM(tt.progress*tt.weight)/SUM(tt.weight) AS DECIMAL(18,2)) progress,tu.name manager_name FROM tr_target tt,tr_user tu  WHERE tt.manager_id=tu.user_id
+  <if test=' manager_id != null and manager_id !="" ' >AND tt.manager_id=#{manager_id}</if>
+  </select>
+  <!-- 具体项目绩效 -->
+  <select id="getjtjx" resultType="yd.slgl.entity.Target">
+  SELECT target_name target_name,progress progress,id id,weight weight,target_dj target_dj FROM tr_target WHERE 1=1
+  <if test=' id != null and id !="" ' >AND manager_id=#{id}</if>
+  </select>
+  <select id="getzxjtjx" resultType="yd.slgl.entity.Target">
+  SELECT target_name target_name,progress progress,id id,weight weight FROM tr_target WHERE 1=1
+  <if test=' parent_id != null and parent_id !="" ' >AND parent_id=#{parent_id}</if>
+  </select>
+  <!-- 我的项目 -->
+  <select id="getfuzexm" resultType="yd.slgl.entity.Target">
+  SELECT id,target_name,progress,weight FROM tr_target WHERE manager_id=#{manager_id}
+  </select>
+  <!--下属绩效分数排行  -->
+  <select id="getxsjxf" resultType="yd.slgl.entity.UsersEntity">
+  SELECT tu.user_id user_id,tu.name name,tu.dept_name dept_name,tu.zw zw,CAST(SUM(tt.progress*tt.weight)/SUM(tt.weight) AS DECIMAL(18,0)) fenshu,tu.mobile moblile FROM tr_user tu LEFT JOIN tr_target tt ON tu.user_id=tt.manager_id WHERE tu.sjldid=#{user_id} GROUP BY tu.user_id ORDER BY progress DESC 
+  </select>
+  <!--部门绩效分数排行  -->
+  <select id="getbmjxf" resultType="yd.slgl.entity.UsersEntity">
+  SELECT tu.user_id user_id,tu.name name,tu.dept_name dept_name,tu.zw zw,tu.mobile moblile,CAST(SUM(tt.progress*tt.weight)/SUM(tt.weight) AS DECIMAL(18,0)) fenshu FROM tr_user tu LEFT JOIN tr_target tt ON tu.user_id=tt.manager_id WHERE tu.dept_id=(SELECT dept_id FROM tr_user WHERE user_id=#{user_id}) GROUP BY tu.user_id ORDER BY progress DESC 
+  </select>
+  <!--全校绩效分数排行  -->
+  <select id="getqxjxf" resultType="yd.slgl.entity.UsersEntity">
+  SELECT tu.user_id user_id,tu.name name,tu.dept_name dept_name,tu.zw zw,tu.mobile moblile,CAST(SUM(tt.progress*tt.weight)/SUM(tt.weight) AS DECIMAL(18,0)) fenshu FROM tr_user tu LEFT JOIN tr_target tt ON tu.user_id=tt.manager_id  GROUP BY tu.user_id ORDER BY progress DESC limit 10 
+  </select>
+  <!-- 部门本月绩效提升 -->
+  <select id="getbmbyts" resultType="yd.slgl.entity.UsersEntity">
+  SELECT tu.user_id user_id,tu.name NAME,tu.dept_name dept_name,tu.zw zw,tu.mobile moblile,CAST(SUM(tt.progress*tt.weight)/SUM(tt.weight) AS DECIMAL(18,0))-CAST(SUM(tt2.progress*tt2.weight)/SUM(tt2.weight) AS DECIMAL(18,0)) fenshu FROM tr_user tu LEFT JOIN tr_target tt ON tu.user_id=tt.manager_id  LEFT JOIN tr_target2 tt2 ON tt.id=tt2.id WHERE tu.dept_id=(SELECT dept_id FROM tr_user 
+  WHERE user_id=#{user_id}) AND tt2.CopyTime LIKE CONCAT('%',#{mon},'%') GROUP BY tu.user_id ORDER BY fenshu DESC 
+  </select>
+   <!--下属绩效分数排行  -->
+  <select id="getxsmd" resultType="yd.slgl.entity.UsersEntity">
+  SELECT user_id user_id,NAME name,dept_name dept_name FROM tr_user WHERE user_id != #{user_id} AND sjldid=#{user_id}
+  </select>
+  <select id="getxsmdsc" resultType="yd.slgl.entity.UsersEntity">
+  SELECT user_id user_id,NAME name,dept_name dept_name,mobile mobile FROM tr_user WHERE user_id != #{user_id} AND sjldid=#{user_id}
+  <if test=" name !=null and name !=''">and name LIKE CONCAT('%',#{name},'%')</if>
+  </select>
+  
+  <!-- 监控人员信息 -->
+  <select id="getjkryxx" resultType="yd.slgl.entity.UsersEntity">
+  SELECT tu.user_id user_id,tu.name NAME,tu.dept_name dept_name,tu.zw zw,CAST(SUM(tt.progress*tt.weight)/SUM(tt.weight) AS DECIMAL(18,0)) fenshu,tu.mobile moblile FROM tr_user tu LEFT JOIN tr_target tt ON tu.user_id=tt.manager_id WHERE tu.user_id IN (SELECT user_id FROM tr_monitor WHERE mon_id=#{user_id}) GROUP BY tu.user_id 
+  </select>
+  <!-- 监控名单 -->
+  <select id="getjkmd" resultType="yd.slgl.entity.UsersEntity">
+  SELECT user_id user_id,NAME NAME,dept_name dept_name FROM tr_user WHERE user_id NOT IN (SELECT user_id FROM tr_monitor WHERE mon_id=#{user_id})
+  <if test=' dj=="1" ' >AND dj != 1 and user_id !=#{user_id}</if>
+  <if test=' dj=="2" ' >AND dj != 1 AND dj!=2 and user_id !=#{user_id} </if>
+  <if test=' dj=="3" ' >AND dj != 1 AND dj!=2 AND dj !=3 and user_id !=#{user_id} </if>
+  <if test=' dj=="4" ' >AND dj != 1 AND dj!=2 AND dj !=3 AND dj!=4 and user_id !=#{user_id}</if>
+  </select>
+  <insert id="getcunfang">
+  INSERT INTO tr_monitor(user_id,mon_id) VALUES (#{user_id},#{mon_id})
+  </insert>
+  <delete id="getshanchu">
+  DELETE FROM tr_monitor WHERE user_id=#{user_id} and mon_id=#{mon_id};
+  </delete>
+  <!-- 查询监控人 -->
+  <select id="getcxjk" resultType="java.lang.Integer">
+  SELECT COUNT(1) FROM tr_monitor WHERE user_id=#{user_id} and mon_id=#{mon_id};
+  </select>
+  <!-- 速查 -->
+  <select id="standtypelist" resultType="yd.slgl.entity.StandardType">
+   SELECT id,name,parent_id,level FROM tr_standardtype WHERE 1=1
+   <if test='name!=null and name!=""'>
+    AND name LIKE CONCAT('%',#{name},'%')
+   </if>
+   order by id
+  </select>
+   <!-- 微信 -->
+<select id="getwxOpenid" resultType="yd.slgl.entity.UsersEntity">
+   SELECT wx_id,name FROM tr_user WHERE 1=1
+   <if test='user_id!=null and user_id!=""'>
+    AND user_id=#{user_id}
+   </if>
+  </select>
+  <insert id="insertmess">
+  INSERT INTO tr_message(openid,templateid,content,endTime,url) VALUE(#{openid},#{templateid},#{content},#{endTime},#{url})
+  </insert>
+  <select id="getcanyuren" resultType="yd.slgl.entity.UsersEntity">
+  SELECT user_id FROM tr_participant WHERE 1=1
+  <if test="targetid!=null">
+   AND target_id=#{targetid}
+  </if>
+ </select>
+ <!-- <select id="getwxuser" resultType="yd.slgl.entity.UsersEntity">
+  SELECT user_id,NAME,dj FROM tr_user WHERE wx_id=#{wx_id}
+ </select> -->
+ <select id="wxtargetlist" resultType="yd.slgl.entity.Target">
+ SELECT tar.id,tar.parent_id,tar.creator_id,tar.manager_id,tar.participant,
+	tar.target_name,tar.target_category,tar.target_info,tar.weight,
+	tar.target_stand,tar.target_stand_contion,tar.target_stand_info,tar.start_time,
+	tar.end_time,tar.check_type,tar.target_dj,tar.brother,tar.target_dj level,tar.target_name title,ur.name name,
+	tar.check_time,tar.check_status,tar.result_type,tar.parent_name,ind.index_name target_stand_name,
+	tar.complate_time,tar.complate_value,tar.set_year,tar.is_qy,tar.target_index,tar.progress,ind.index_name target_stand_name,
+	tar.follow,tar.funds,tar.actual_funds,tar.importancedj,ur.name manager_name,ur2.name upManager,ur2.user_id upManager_id FROM tr_target tar LEFT JOIN tr_user ur
+    ON tar.manager_id=ur.user_id LEFT JOIN tr_user ur2 ON tar.creator_id=ur2.user_id LEFT JOIN tr_index ind ON tar.target_stand=ind.id WHERE tar.id=#{target_id} 
+    </select>
+    <select id="wxtargetparentid1" resultType="yd.slgl.entity.Target">
+   SELECT tar.id,tar.parent_id,tar.creator_id,tar.manager_id,tar.participant,
+	tar.target_name,tar.target_category,tar.target_info,
+	tar.target_stand,tar.target_stand_contion,tar.target_stand_info,tar.start_time,
+	tar.end_time,tar.check_type,tar.target_dj,tar.brother,tar.target_dj level,
+	tar.check_time,tar.check_status,tar.result_type,
+	tar.complate_time,tar.complate_value,tar.set_year,tar.is_qy,tar.target_index,tar.progress,
+	tar.follow,tar.funds,tar.actual_funds,tar.importancedj,ur.name manager_name FROM tr_target tar LEFT JOIN tr_user ur
+    ON tar.manager_id=ur.user_id WHERE 1=1
+   <if test='target_dj=="2"'>
+    AND tar.id=#{parent_id}
+   </if>
+   <if test='target_dj=="3"'>
+    AND tar.id=(SELECT parent_id FROM tr_target WHERE id=#{parent_id})
+   </if>
+   <if test='target_dj=="4"'>
+    AND tar.id=(SELECT parent_id FROM tr_target WHERE id=(SELECT parent_id FROM tr_target WHERE id=#{parent_id}))
+   </if>
+  </select>
+  
+  <select id="wxtar" resultType="yd.slgl.entity.Target">
+ SELECT tar.id,tar.parent_id,tar.creator_id,tar.manager_id,tar.participant,
+	tar.target_name,tar.target_category,tar.target_info,tar.weight,
+	tar.target_stand,tar.target_stand_contion,tar.target_stand_info,tar.start_time,
+	tar.end_time,tar.check_type,tar.target_dj,tar.brother,tar.target_dj level,tar.target_name title,ur.name name,
+	tar.check_time,tar.check_status,tar.result_type,tar.parent_name,ind.index_name target_stand_name,
+	tar.complate_time,tar.complate_value,tar.set_year,tar.is_qy,tar.target_index,tar.progress,ind.index_name target_stand_name,
+	tar.follow,tar.funds,tar.actual_funds,tar.importancedj,ur.name manager_name,ur2.name upManager,ur2.user_id upManager_id FROM tr_target tar LEFT JOIN tr_user ur
+    ON tar.manager_id=ur.user_id LEFT JOIN tr_user ur2 ON tar.creator_id=ur2.user_id LEFT JOIN tr_index ind ON tar.target_stand=ind.id WHERE tar.id=#{target_id} 
+    </select>
+  <select id="guanzhuxinxi" resultType="yd.slgl.entity.Target">
+  SELECT target_id id FROM tr_follow WHERE follow_id=#{user_id}
+  </select>
+  <!-- 查询个人信息 -->
+  <select id="getxinxi" resultType="yd.slgl.entity.UsersEntity">
+  SELECT NAME,PASSWORD,wx_id FROM tr_user WHERE user_id=#{user_id}
+ </select>
+ <!-- 查询站内信 -->
+ <insert id="insertinform">
+ INSERT INTO tr_messages(recId,message) VALUE(#{user_id},#{content})
+ </insert>
+ <select id="getmess" resultType="yd.slgl.entity.Mess">
+ SELECT recId,mess_id,message,STATUS,create_date FROM tr_messages WHERE recId=#{user_id}
+ </select>
+ <update id="upmess">
+ UPDATE tr_messages SET STATUS='已读' WHERE mess_id=#{mess_id}
+ </update>
+ <delete id="demess">
+ DELETE FROM tr_messages WHERE mess_id=#{mess_id}
+ </delete>
+ <!-- 微信小程序 -->
+ <select id="xcxtargetlist" resultType="yd.slgl.entity.Target">
+    SELECT tar.id,tar.parent_id,tar.creator_id,tar.manager_id,tar.participant,
+	tar.target_name,tar.target_category,tar.target_info,
+	tar.target_stand,tar.target_stand_contion,tar.target_stand_info,tar.start_time,
+	tar.end_time,tar.check_type,tar.brother,tar.target_dj,tar.target_category,tar.target_extends,
+	tar.check_time,tar.check_status,tar.result_type,ur2.name upManager,tar2.manager_id upManager_id,
+	tar.complate_time,tar.complate_value,tar.set_year,tar.is_qy,tar.target_index,tar.progress,
+	tar.follow,tar.funds,tar.actual_funds,tar.importancedj,ur.name manager_name FROM tr_target tar LEFT JOIN tr_user ur ON tar.manager_id=ur.user_id LEFT JOIN tr_target tar2 ON tar.parent_id=tar2.id
+	LEFT JOIN tr_user ur2 ON tar2.manager_id=ur2.user_id WHERE 1=1 
+    <if test="user_id!=null">
+	   AND (tar.manager_id=#{user_id}
+	   OR tar.id IN(SELECT target_id FROM tr_participant WHERE user_id=#{user_id}))
+	  </if>
+	  order by tar.id
+ </select>
+ <select id="selcjx" resultType="yd.slgl.entity.Target">
+ SELECT tu.user_id id,tt.manager_id manager_id,CAST(SUM(tt.progress*tt.weight)/SUM(tt.weight) AS DECIMAL(18,2)) progress,tu.name manager_name FROM tr_target tt,tr_user tu  WHERE tt.manager_id=tu.user_id
+AND tt.manager_id=#{user_id}
+ </select>
+ <select id="selcfz" resultType="java.lang.Integer">
+ SELECT COUNT(1) FROM tr_target WHERE manager_id=#{user_id}
+ </select>
+ <select id="selcwc" resultType="java.lang.Integer">
+ SELECT COUNT(1) FROM tr_target WHERE manager_id=#{user_id} AND result_type=3
+ </select>
+ <select id="selcsj" resultType="java.lang.Integer">
+ SELECT COUNT(1) FROM tr_target WHERE manager_id=#{user_id} OR id IN(SELECT target_id FROM tr_participant WHERE user_id=#{user_id})
+ </select>
+ <select id="xcxtargets" resultType="yd.slgl.entity.Target">
+ SELECT id,target_name,progress FROM tr_target WHERE manager_id=#{user_id}
+ </select>
+ <select id="getUserByxgs" resultType="yd.slgl.entity.UsersEntity">
+ SELECT user_id,NAME,mobile FROM tr_user WHERE user_id LIKE CONCAT('%',#{user_id},'%') OR mobile LIKE CONCAT('%',#{user_id},'%') OR NAME LIKE CONCAT('%',#{user_id},'%')
+ </select>
+</mapper>

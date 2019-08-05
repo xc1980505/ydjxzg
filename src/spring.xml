@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans  xmlns="http://www.springframework.org/schema/beans"  
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+xmlns:aop="http://www.springframework.org/schema/aop"   
+xmlns:context="http://www.springframework.org/schema/context"  
+xmlns:jee="http://www.springframework.org/schema/jee"  
+xmlns:lang="http://www.springframework.org/schema/lang"  
+xmlns:util="http://www.springframework.org/schema/util"  
+xmlns:tx="http://www.springframework.org/schema/tx"  
+xmlns:mvc="http://www.springframework.org/schema/mvc"    
+xsi:schemaLocation="http://www.springframework.org/schema/beans  
+
+ http://www.springframework.org/schema/beans/spring-beans.xsd   
+ http://www.springframework.org/schema/aop    
+ http://www.springframework.org/schema/aop/spring-aop.xsd   
+ http://www.springframework.org/schema/jee    
+ http://www.springframework.org/schema/jee/spring-jee.xsd   
+ http://www.springframework.org/schema/lang    
+ http://www.springframework.org/schema/lang/spring-lang.xsd   
+ http://www.springframework.org/schema/context    
+ http://www.springframework.org/schema/context/spring-context.xsd   
+ http://www.springframework.org/schema/tx    
+ http://www.springframework.org/schema/tx/spring-tx.xsd   
+ http://www.springframework.org/schema/util    
+ http://www.springframework.org/schema/util/spring-util.xsd   
+ http://www.springframework.org/schema/mvc    
+ http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+ 
+ 	<!-- 扫描spring组件 -->
+ 	<context:component-scan base-package="yd.*"></context:component-scan>
+ 	<!-- 加载jdbc资源文件 -->
+ 	<bean id="propertyConfigurer"
+    class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="location" value="classpath:jdbc.properties" />
+</bean>
+	<!-- 创建数据源（数据库连接池使用jdbc） 数据源1-->
+ 	<bean id="dataSourceOne" class="org.apache.commons.dbcp.BasicDataSource">
+ 		<property name="driverClassName" value="${jdbc.driverClass}"/>
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="testOnBorrow" value="true" />
+		<property name="validationQuery" value="select 1" />
+ 	</bean>
+ 	
+ 	<!-- 创建数据源（数据库连接池使用jdbc） 数据源2-->
+ 	<bean id="dataSourceTwo" class="org.apache.commons.dbcp.BasicDataSource">
+ 		<property name="driverClassName" value="${jdbc.two.driverClass}"/>
+		<property name="url" value="${jdbc.two.url}" />
+		<property name="username" value="${jdbc.two.username}" />
+		<property name="password" value="${jdbc.two.password}" />
+		<property name="testOnBorrow" value="true" />
+		<property name="validationQuery" value="select 1" />
+ 	</bean>
+ 	<!-- 创建数据源（数据库连接池使用jdbc） 数据源3-->
+ 	<bean id="dataSourceThree" class="org.apache.commons.dbcp.BasicDataSource">
+ 		<property name="driverClassName" value="${jdbc.three.driverClass}"/>
+		<property name="url" value="${jdbc.three.url}" />
+		<property name="username" value="${jdbc.three.username}" />
+		<property name="password" value="${jdbc.three.password}" />
+		<property name="testOnBorrow" value="true" />
+		<property name="validationQuery" value="select 1" />
+ 	</bean>
+ 	
+ 	<!-- 创建数据源（数据库连接池使用jdbc） 数据源4-->
+ 	<bean id="dataSourceFour" class="org.apache.commons.dbcp.BasicDataSource">
+ 		<property name="driverClassName" value="${jdbc.four.driverClass}"/>
+		<property name="url" value="${jdbc.four.url}" />
+		<property name="username" value="${jdbc.four.username}" />
+		<property name="password" value="${jdbc.four.password}" />
+		<property name="testOnBorrow" value="true" />
+		<property name="validationQuery" value="select 1" />
+ 	</bean>
+ 	<!-- <bean id="dataSource" class="yd.dataSource.RoutingDataSource">
+ 	 为targetDataSources注入两个数据源
+ 	  <property name="targetDataSources">
+ 	     <map key-type="java.lang.String">
+ 	       <entry key="ds1" value-ref="dataSourceOne"/>
+ 	       <entry key="ds2" value-ref="dataSourceTwo"/> 
+ 	     </map> 
+ 	    </property> 
+ 	     为指定数据源RoutingDataSource注入默认的数据源
+ 	      <property name="defaultTargetDataSource" ref="dataSourceOne"/>
+ 	  </bean> -->
+ 	
+ 	<!-- 数据源 1 创建sqlSession -->
+ 	<bean id="sqlSessionFactoryOne" class="org.mybatis.spring.SqlSessionFactoryBean">
+ 		<property name="dataSource" ref="dataSourceOne"></property>
+ 		<property name="mapperLocations" value="classpath:yd/jxzg/mapper/*.xml"></property>
+ 	</bean>
+ 	
+ 	<!--数据源 2  创建sqlSession -->
+ 	<bean id="sqlSessionFactoryTwo" class="org.mybatis.spring.SqlSessionFactoryBean">
+ 		<property name="dataSource" ref="dataSourceTwo"></property>
+ 		<property name="mapperLocations" value="classpath:yd/slgl/mapper/*.xml"></property>
+ 	</bean>
+ 	<!--数据源 3  创建sqlSession -->
+ 	<bean id="sqlSessionFactoryThree" class="org.mybatis.spring.SqlSessionFactoryBean">
+ 		<property name="dataSource" ref="dataSourceThree"></property>
+ 		<property name="mapperLocations" value="classpath:yd/htgl/mapper/*.xml"></property>
+ 	</bean>
+ 	<!--数据源 4 创建sqlSession -->
+ 	<bean id="sqlSessionFactoryFour" class="org.mybatis.spring.SqlSessionFactoryBean">
+ 		<property name="dataSource" ref="dataSourceFour"></property>
+ 		<property name="mapperLocations" value="classpath:yd/wxzg/mapper/*.xml"></property>
+ 	</bean>
+ 	<!-- 扫描myBatis操作数据库的接口 -->
+ 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+ 		<property name="basePackage" value="yd.jxzg.mapper"></property>
+ 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryOne" />
+ 	</bean>
+ 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+ 		<property name="basePackage" value="yd.slgl.mapper"></property>
+ 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryTwo" />
+ 	</bean>
+ 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+ 		<property name="basePackage" value="yd.htgl.mapper"></property>
+ 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryThree" />
+ 	</bean>
+ 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+ 		<property name="basePackage" value="yd.wxzg.mapper"></property>
+ 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryFour" />
+ 	</bean>
+ 	<!-- 配置事务管理器 -->
+ 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+ 		<property name="dataSource" ref="dataSourceOne"></property>
+ 	</bean>
+ 	<bean id="transactionManagerTwo" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+ 		<property name="dataSource" ref="dataSourceTwo"></property>
+ 	</bean>
+ 	<bean id="transactionManagerThree" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+ 		<property name="dataSource" ref="dataSourceThree"></property>
+ 	</bean>
+ 	<bean id="transactionManagerFour" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+ 		<property name="dataSource" ref="dataSourceFour"></property>
+ 	</bean>
+ 	<!-- 配置事务通知 -->
+ 	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+ 		<tx:attributes>
+ 			<tx:method name="insert*" rollback-for="Exception"/>
+ 			<tx:method name="add*" rollback-for="Exception"/>
+ 			<tx:method name="update*" rollback-for="Exception"/>
+ 			<tx:method name="delete*" rollback-for="Exception"/>
+ 		</tx:attributes>
+ 	</tx:advice>
+ 	<tx:advice id="transactionAdviceTwo" transaction-manager="transactionManagerTwo">
+ 		<tx:attributes>
+ 			<tx:method name="insert*" rollback-for="Exception"/>
+ 			<tx:method name="add*" rollback-for="Exception"/>
+ 			<tx:method name="update*" rollback-for="Exception"/>
+ 			<tx:method name="delete*" rollback-for="Exception"/>
+ 		</tx:attributes>
+ 	</tx:advice>
+ 	<tx:advice id="transactionAdviceThree" transaction-manager="transactionManagerThree">
+ 		<tx:attributes>
+ 			<tx:method name="insert*" rollback-for="Exception"/>
+ 			<tx:method name="add*" rollback-for="Exception"/>
+ 			<tx:method name="update*" rollback-for="Exception"/>
+ 			<tx:method name="delete*" rollback-for="Exception"/>
+ 		</tx:attributes>
+ 	</tx:advice>
+ 	<tx:advice id="transactionAdviceFour" transaction-manager="transactionManagerFour">
+ 		<tx:attributes>
+ 			<tx:method name="insert*" rollback-for="Exception"/>
+ 			<tx:method name="add*" rollback-for="Exception"/>
+ 			<tx:method name="update*" rollback-for="Exception"/>
+ 			<tx:method name="delete*" rollback-for="Exception"/>
+ 		</tx:attributes>
+ 	</tx:advice>
+ 	<!-- 配置关注点，并关联事务通知 -->
+ 	<aop:config>
+ 		<aop:pointcut expression="execution(* yd.jxzg.service.impl.*.*(..))" id="managedMethod"/>
+ 		<aop:advisor advice-ref="transactionAdvice" pointcut-ref="managedMethod" order="2"/>
+ 	</aop:config>
+ 	<aop:config>
+ 		<aop:pointcut expression="execution(* yd.slgl.service.impl.*.*(..))" id="managedMethodTwo"/>
+ 		<aop:advisor advice-ref="transactionAdviceTwo" pointcut-ref="managedMethodTwo" order="3"/>
+ 	</aop:config>
+ 	<aop:config>
+ 		<aop:pointcut expression="execution(* yd.htgl.service.impl.*.*(..))" id="managedMethodThree"/>
+ 		<aop:advisor advice-ref="transactionAdviceThree" pointcut-ref="managedMethodThree" order="4"/>
+ 	</aop:config>
+ 	<aop:config>
+ 		<aop:pointcut expression="execution(* yd.wxzg.service.impl.*.*(..))" id="managedMethodFour"/>
+ 		<aop:advisor advice-ref="transactionAdviceFour" pointcut-ref="managedMethodFour" order="4"/>
+ 	</aop:config>
+ 	<import resource="SpringQuart.xml"/> 
+ </beans>

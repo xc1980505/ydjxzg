@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="yd.htgl.mapper.HtglMapper">
+
+<select id="organizalist" resultType="yd.htgl.entity.Organiza">
+ SELECT id,dept_name,parent_id,level_num FROM tr_organization WHERE id=0
+</select>
+
+<select id="getChildrenOrganiza" resultType="yd.htgl.entity.Organiza">
+SELECT id,dept_name,parent_id,level_num FROM tr_organization WHERE parent_id=#{id} ORDER BY id
+</select>
+
+<insert id="addzzbm">
+INSERT INTO tr_organization(dept_name,parent_id,level_num) 
+   VALUES(#{organiza.dept_name},#{organiza.parent_id},#{organiza.level_num})
+</insert>
+
+<select id="getbumenry" resultType="yd.htgl.entity.UsersEntity">
+SELECT NAME,mobile,gender,wx_num,zw FROM tr_user WHERE 1=1
+<if test="id!=0 and id!=null and id!='' ">
+  and dept_id=#{id}
+</if>
+</select>
+<update id="editOrganiza">
+   UPDATE tr_organization SET dept_name=#{dept_name} WHERE id=#{id}
+  </update>
+  <delete id="deleteOrganiza">
+  DELETE FROM tr_organization WHERE id=#{id}
+  </delete>
+  <update id="updateUser">
+  UPDATE tr_user SET name=#{UsersEntity.name},password=#{UsersEntity.password},gender=#{UsersEntity.gender},mobile=#{UsersEntity.mobile},email=#{UsersEntity.email},
+  wx_num=#{UsersEntity.wx_num},dj=#{UsersEntity.dj},dept_id=#{UsersEntity.dept_id},dept_name=#{UsersEntity.dept_name},zw=#{UsersEntity.zw},STATUS=#{UsersEntity.status}
+  WHERE user_id=#{UsersEntity.user_id}
+  </update>
+  <select id="getuserlist" resultType="yd.htgl.entity.UsersEntity">
+  SELECT user_id,name,password,gender,mobile,email,wx_num,dj,dept_name,zw,status FROM tr_user ORDER BY user_id
+  </select>
+  <delete id="deleteUser">
+  DELETE FROM tr_user WHERE user_id=#{user_id}
+  </delete>
+  <select id="selectorg" resultType="yd.htgl.entity.Organiza">
+  SELECT dept_name FROM tr_organization WHERE id=#{id}
+  </select>
+  <select id="bumenlist" resultType="yd.htgl.entity.Organiza">
+ SELECT id,dept_name,parent_id,level_num FROM tr_organization WHERE id !=0 order by id
+</select>
+ <select id="selstatus" resultType="yd.htgl.entity.UsersEntity">
+ SELECT user_id,STATUS FROM tr_user WHERE dept_id=#{dept_id} AND STATUS=1 order by user_id
+ </select>
+ <insert id="insertUser">
+ INSERT INTO tr_user(user_id,NAME,gender,mobile,email,wx_num,qq_num,dj,dept_id,dept_name,zw,sjldid,STATUS) VALUES (#{UsersEntity.user_id},#{UsersEntity.name},#{UsersEntity.gender},#{UsersEntity.mobile},#{UsersEntity.email},
+  #{UsersEntity.wx_num},#{UsersEntity.qq_num},#{UsersEntity.dj},#{UsersEntity.dept_id},#{UsersEntity.dept_name},#{UsersEntity.zw},#{UsersEntity.sjldid},#{UsersEntity.status})
+ </insert>
+ <select id="selectldid" resultType="String">
+ SELECT user_id FROM tr_user WHERE dept_id=(SELECT parent_id FROM tr_organization WHERE id=#{dept_id}) AND STATUS=1 order by user_id
+ </select>
+ <insert id="insertZu">
+ INSERT INTO tr_role(role_name,role_code) VALUES(#{role_name},#{role_code})
+ </insert>
+ <select id="selectpermis" resultType="yd.htgl.entity.Permis">
+ SELECT permis_id,permis_name FROM tr_permis where permis_order=1 ORDER BY permis_id
+ </select>
+ <select id="sepermi" resultType="yd.htgl.entity.Permis">
+ SELECT permis_id,permis_name FROM tr_permis where parent_permis=#{permis_id} ORDER BY permis_id
+ </select>
+ <select id="selectpermi" resultType="yd.htgl.entity.Permis">
+ SELECT permis_id,permis_name FROM tr_permis WHERE permis_id IN(SELECT permis_id FROM role_permis WHERE role_id=#{role_id}) order by permis_id
+ </select>
+ <select id="selectrole" resultType="yd.htgl.entity.Role">
+ SELECT role_id,role_name,role_code FROM tr_role where role_name=#{role_name} order by role_id
+ </select>
+ <select id="srolebyname" resultType="yd.htgl.entity.Role">
+ SELECT role_id,role_name,role_code FROM tr_role where role_name LIKE CONCAT('%',#{role_name},'%') order by role_id
+ </select>
+ <select id="slerole" resultType="yd.htgl.entity.Role">
+ SELECT role_id,role_name,role_code FROM tr_role order by role_id
+ </select>
+ <select id="getzu" resultType="yd.htgl.entity.Role">
+ SELECT role_id,role_name,role_code FROM tr_role where role_id=#{role_id} order by role_id
+ </select>
+ <update id="updaterole">
+ UPDATE tr_role SET role_code=#{role_code},role_name=#{role_name} WHERE role_id=#{role_id}
+ </update>
+ <delete id="deleterole">
+ DELETE FROM tr_role WHERE role_id=#{role_id}
+ </delete>
+ <insert id="isertpermis">
+ INSERT INTO role_permis(role_id,permis_id) VALUES(#{role_id},#{permis_id})
+ </insert>
+ <delete id="deleterop">
+ DELETE FROM role_permis WHERE role_id=#{role_id}
+ </delete>
+ 
+ <delete id="deleteuserrop">
+ DELETE FROM user_role WHERE role_id=#{role_id}
+ </delete>
+ <select id="seleuserRoles" resultType="yd.htgl.entity.Role">
+ SELECT role_id,role_name FROM tr_role WHERE role_id IN(SELECT role_id FROM user_role WHERE user_id=#{user_id}) order by role_id
+ </select>
+ <insert id="insertuserRole">
+ INSERT INTO user_role(role_id,user_id) VALUES(#{role_id},#{user_id})
+ </insert>
+ <delete id="deleteuserRole">
+ DELETE FROM user_role WHERE user_id=#{user_id}
+ </delete>
+ <select id="getrybyid" resultType="yd.htgl.entity.UsersEntity">
+ SELECT user_id,name,password,gender,mobile,email,wx_num,dj,dept_name,zw,status FROM tr_user where user_id=#{user_id} order by user_id
+ </select>
+ <select id="getrybyname" resultType="yd.htgl.entity.UsersEntity">
+ SELECT user_id,name,password,gender,mobile,email,wx_num,dj,dept_name,zw,status FROM tr_user where name LIKE CONCAT('%',#{name},'%') order by user_id
+ </select>
+ 
+ <!-- 后台新SQL -->
+ <!-- 查询教师信息 -->
+ <select id="getTeacher" resultType="yd.htgl.entity.Teacher">
+ SELECT tt.teacher_id teacher_id,tt.number number,tt.name name,tt.sex sex,tt.birth birth,tt.nation nation,tt.education education,tt.degree degree,tt.is_backbone is_backbone,
+ tt.is_pcwb is_pcwb,tt.is_starteach is_starteach,tt.duty duty,tt.jslx jslx,tt.mobile mobile,tt.enabled enabled,tt.leader leader,tt.card card,
+tt.qq qq,tt.email email,tt.professional professional,tt.wx wx,tt.password password,tor.dept_name department_name FROM tr_teacher tt LEFT JOIN 
+tr_organization tor ON tt.department_id =tor.id
+ </select>
+ <!-- 重置密码 -->
+ <update id="ResetPass">
+ UPDATE tr_teacher SET PASSWORD=#{password} WHERE number=#{number}
+ </update>
+ <!-- 删除教师 -->
+ <delete id="delTeacher">
+ DELETE FROM tr_teacher WHERE number =#{number}
+ </delete>
+ <!-- 插入教师数据 -->
+ <insert id="inTeacher">
+ INSERT INTO tr_teacher(teacher_id,number,NAME,sex,birth,nation,education,is_backbone,is_pcwb,duty,jslx,mobile,leader,card,qq,email,professional,wx)
+VALUES(#{teacher.teacher_id},#{teacher.number},#{teacher.name},#{teacher.sex},#{teacher.birth},#{teacher.nation},#{teacher.education},#{teacher.is_backbone},#{teacher.is_pcwb},#{teacher.duty},#{teacher.jslx},
+#{teacher.mobile},#{teacher.leader},#{teacher.card},#{teacher.qq},#{teacher.email},#{teacher.professional},#{teacher.wx})
+ </insert>
+ <select id="getPass" resultType="yd.htgl.entity.Teacher">
+select password from tr_teacher WHERE number=#{number}
+</select>
+<!-- 修改 -->
+<update id="upTeacher">
+ UPDATE tr_teacher SET number=#{teacher.number},NAME=#{teacher.name},sex=#{teacher.sex},birth=#{teacher.birth},nation=#{teacher.nation},education=#{teacher.education},
+ is_backbone=#{teacher.is_backbone},is_pcwb=#{teacher.is_pcwb},duty=#{teacher.duty},jslx=#{teacher.jslx},department_id=#{teacher.department_id},
+ mobile=#{teacher.mobile},leader=#{teacher.leader},director=#{teacher.director},card=#{teacher.card},qq#{teacher.qq},email=#{teacher.email},
+ professional=#{teacher.professional},wx=#{teacher.wx} WHERE teacher_id=#{teacher.teacher_id}
+</update>
+
+ <select id="checkTeacher" resultType="java.lang.Integer">
+ SELECT COUNT(1) FROM tr_teacher WHERE number=#{number}
+ </select>
+ <select id="sjzg" resultType="yd.htgl.entity.Teacher">
+ SELECT teacher_id FROM tr_teacher WHERE director=1 AND department_id IN (SELECT parent_id FROM tr_organization WHERE id=#{department_id})
+ </select>
+ <insert id="instOrgan">
+ INSERT INTO dept_teacher(teacher_id,organ_id) VALUE(#{teacher_id},#{dept_id})
+ </insert>
+ <!-- 添加部门负责人 -->
+ <update id="updateOrgan">
+ UPDATE tr_organization SET head=#{head} WHERE id=#{id}
+ </update>
+ <!-- 查看部门主管 -->
+ <select id="majorzg" resultType="yd.htgl.entity.Organiza">
+ SELECT dept_name,head FROM tr_organization WHERE  id=#{dept_id}
+ </select>
+ <!-- 搜索 -->
+ <select id="search" resultType="yd.htgl.entity.Teacher">
+ SELECT tt.number,tt.name,tt.sex,tt.birth,tt.nation,tt.education,tt.degree,tt.is_backbone,tt.is_pcwb,tt.is_starteach,tt.duty,tt.jslx,tt.department_id,tt.mobile,tt.enabled,tt.leader,tt.director,tt.card,
+ tt.qq,tt.email,tt.professional,tt.wx,tt.password,tor.dept_name department_name FROM tr_teacher tt LEFT JOIN 
+ tr_organization tor ON tt.department_id =tor.id WHERE NAME LIKE CONCAT('%',#{name},'%') AND tt.department_id IN (SELECT id FROM tr_organization WHERE dept_name LIKE CONCAT('%',#{department_name},'%'))
+ </select>
+</mapper>

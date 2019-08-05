@@ -1,0 +1,60 @@
+.orgchart{
+  padding: 0;
+  padding-right: 20px;
+  padding-bottom: 40px;
+}
+.orgchart .second-menu-icon {
+    transition: opacity .5s;
+    opacity: 0;
+    right: -5px;
+    top: -5px;
+    z-index: 2;
+    color: rgba(68, 157, 68, 0.5);
+    font-size: 18px;
+    position: absolute;
+}
+.orgchart .second-menu-icon:hover {
+  color: #449d44;
+}
+.orgchart .node{
+  width: 260px;
+}
+.orgchart .fourthLevel{
+  width: 130px;
+}
+.orgchart .node:hover .second-menu-icon {
+  opacity: 1;
+}
+.orgchart .node .second-menu {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: -70px;
+  border-radius: 35px;
+  box-shadow: 0 0 10px 1px #999;
+  background-color: #fff;
+  z-index: 1;
+}
+.orgchart .node .title{
+  padding: 5px 10px!important;
+}
+.orgchart .node .content{
+  height: auto;
+  color: #666666;
+  padding: 3px 0;
+}
+.orgchart .firstLevel .title{
+  background: #E42739!important;
+  line-height: 40px!important;
+}
+.orgchart .secondLevel .title{
+  background: #7CB349!important;
+  line-height: 40px!important;
+}
+.orgchart .thirdLevel .title{
+  background: #358FE2!important;
+  line-height: 40px!important;
+}
+.orgchart .fourthLevel .title{
+  background: #EF8629!important;
+}

@@ -1,0 +1,4110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="yd.jxzg.mapper.HxMapper">
+  <select id="stuListByBj" resultType="yd.jxzg.entity.StudentEntity">
+      SELECT xs.xh,xs.xm,xs.xbm,xs.csrq,xs.jg,xs.sfzjh,xs.zym,xs.rxny,xs.rxnj,xs.bh,zy.zymc zymc,xs.xjzt
+      FROM gxxs01_bzks xs LEFT JOIN gxxx04_bj bj ON xs.bh=bj.bh LEFT JOIN gxjx01_bzks_zy zy ON xs.zym=zy.zyh WHERE xs.bh=#{bh} AND xjzt='1'
+  </select>
+  <select id="totalCountStudent" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM gxxs01_bzks WHERE xjztmc!='退学'
+  </select>
+  <select id="getfenzy" resultType="yd.jxzg.common.TjCount">
+  	SELECT COUNT(1) zcount,xs.zym dm,zy.zymc mc FROM gxxs01_bzks xs LEFT JOIN gxjx01_bzks_zy zy ON xs.zym=zy.zyh WHERE xs.xjzt='1' 
+  	 GROUP BY zym ORDER BY zcount DESC
+  </select>
+  <select id="getStuCountByZym" resultType="yd.jxzg.common.TjCount">
+    SELECT COUNT(1) zcount,xs.rxnj mc FROM gxxs01_bzks xs WHERE zym=#{zym} AND xjzt='1' GROUP BY rxnj ORDER BY rxnj
+  </select>
+  <select id="getStuCountByRxnj" resultType="yd.jxzg.common.TjCount">
+    SELECT COUNT(1) zcount,xs.bh mc FROM gxxs01_bzks xs WHERE zym=#{zym} AND rxnj=#{rxnj} AND xjzt='1' GROUP BY bh ORDER BY zcount DESC
+  </select>
+<!--   获取当年的学生详细信息 -->
+  <select id="getStudList" resultType="yd.jxzg.entity.StudentEntity">
+   SELECT xs.xh,xs.xm,xs.xbm,xs.csrq,xs.jg,xs.sfzjh,xs.zym,xs.rxny,xs.rxnj,xs.bh,zy.zymc zymc,xs.xjzt
+      FROM gxxs01_bzks xs LEFT JOIN gxxx04_bj bj ON xs.bh=bj.bh LEFT JOIN gxjx01_bzks_zy zy ON xs.zym=zy.zyh WHERE xjzt='1'
+  </select>
+  <select id="getzyJsCount" resultType="java.lang.Integer">
+  	SELECT COUNT(1) FROM gxjg01_jzg WHERE zyjszwmc!=''
+  </select>
+  <select id="getgljs" resultType="java.lang.Integer" >
+    SELECT COUNT(1) FROM gxjg01_jzg WHERE zyjszwmc!='' AND zwmc!='' AND zwmc!='教师' AND zyjszwmc !='工勤';
+  </select>
+  <select id="getjnjs" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM gxjg01_jzg WHERE zyjszwmc!='' AND zwmc!='' AND zwmc = '教师' AND zyjszwmc!='工勤';
+  </select>
+  <select id="getgqJs" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM gxjg01_jzg WHERE zyjszwmc ='工勤';
+  </select>
+  <select id="getJzgList" resultType="yd.jxzg.entity.JzgEntity">
+  	SELECT zgh zgh,xm xm,xbm xbm, zwmc zwmc,zyjszwmc zyjszwmc,is_wp iswp,is_ggjzg isggjzg,is_zydtr iszydtr,is_ssjzg isssjzg FROM gxjg01_jzg WHERE zyjszwmc !='' AND zwmc!='' AND zwmc!='教师' OR zyjszwmc='工勤' 
+  </select>
+  <select id="getsbzz" resultType="double">
+  	SELECT sbzcz*10000 FROM tr_xx_zcqk WHERE year='2017'
+  </select>
+  <select id="getsbtb" resultType="yd.jxzg.common.TjCount">
+  	SELECT sbzcz zcount ,year mc FROM tr_xx_zcqk
+  </select>
+  <!-- 毕业生去向 -->
+  <select id="bysqx" resultType="yd.jxzg.common.TjCount">
+ SELECT COUNT(1) zcount,gb.zymc mc,gbz.zyh dm FROM gxxx_bysqk gb LEFT JOIN gxjx01_bzks_zy gbz ON gb.zymc=gbz.ZYMC WHERE bylx =#{bylx}  GROUP BY  zymc 
+  </select>
+  <select id="getsxgws" resultType="java.lang.Integer">
+  	SELECT SUM(pxrs) FROM tr_zy_xs
+  </select>
+  <select id="getxwjd" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM gxgz04_xwsxjd
+  </select>
+  <select id="getxwjdtb" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount ,xwsxjdjlrq  mc FROM gxgz04_xwsxjd GROUP BY xwsxjdjlrq ORDER BY xwsxjdjlrq
+  </select>
+  <select  id="getjdsxqd" resultType="yd.jxzg.entity.XwJdEntity">
+   SELECT xwsxjdh  ,xwsxjdmc ,sxxm ,syzy ,xwsxjdjlrq FROM gxgz04_xwsxjd WHERE xwsxjdjlrq = #{jdrq}
+  </select>
+  <select id="getgjbfb" resultType="double">
+   SELECT (SELECT COUNT(1) FROM gxjg01_jzg WHERE zyjszwmc='高级讲师')/COUNT(1) FROM gxjg01_jzg
+  </select>
+  <select id="getjscount" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM gxjg01_jzg WHERE zyjszwmc='讲师' OR zyjszwmc='高级讲师'
+  </select>
+  <select id="getdoublejs" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM tr_jzg_basic WHERE is_ssjzg='1'
+  </select>
+  <select id="getxxzmj" resultType="double">
+   SELECT zdmj  FROM tr_xx_xxmj WHERE year='2017'
+  </select>
+  <select id="getxsjzmj" resultType="double">
+   SELECT xsmj FROM tr_xx_xxmj
+  </select>
+  <select id="getTyydmj" resultType="double">
+   SELECT jxjfzyf_tyg FROM tr_xx_xxmj
+  </select>
+  <select id="gettszs" resultType="java.lang.Integer">
+   SELECT ts_hj FROM gxxx_zcqk WHERE nf='2017' AND zclx='1'
+  </select>
+  <select id="getzztstbt" resultType="yd.jxzg.common.TjCount">
+  SELECT ts_hj zcount ,nf mc FROM gxxx_zcqk WHERE zclx='1' ORDER BY nf
+  </select>
+  <select id="getsjyqsbzz" resultType="double">
+  SELECT gdzc_sb_hj*10000 FROM gxxx_zcqk WHERE nf='2017' AND zclx='1'
+  </select>
+  <select id="getjsjzs" resultType="java.lang.Integer">
+  SELECT jsj_hj FROM gxxx_zcqk WHERE nf='2017' AND zclx='1'
+  </select>
+  <select id="getjsjtbt" resultType="yd.jxzg.common.TjCount">
+  SELECT jsj_hj zcount ,nf mc FROM gxxx_zcqk WHERE zclx='1' ORDER BY nf
+  </select>
+ <select id="getXxgjzmj" resultType="yd.jxzg.entity.XxmjEntity">
+   SELECT zdmj zdmj ,zdmj_lhyd zdmjlhyd,xsmj xsmj,xsmj_xxcq xsmjxxcq ,xsmj_fxxcq xsmjfxxcq,jxjfzyf jxjfzyf,
+     jxjfzyf_js jxjfzyfjs,jxjfzyf_tsg jxjfzyftsg,jxjfzyf_sys jxjfzyfsys,jxjfzyf_tyg jxjfzyftyg,jxjfzyf_ht jxjfzyfht,xzbg xzbg,shyf shyf ,
+     shyf_sxss shyfsxss,xhyf_xxst xhyfxxst,xhyf_jgss xhyfjgss,shyf_jgst shyfjgst,shyf_shfl shyfshfl,jgzc jgzc,qtyf qtyf  FROM tr_xx_xxmj
+  </select>
+  <select id="getzxszs" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM gxxs01_bzks WHERE xjzt='1' OR xjzt='3'
+  </select>
+  <select id="getxxzysl" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM gxjx01_bzks_zy
+  </select>
+  <select id="getzyByNfList" resultType="yd.jxzg.entity.ZyxxEntity">
+   SELECT zyh,zymc,zyyxmc,xz ,zylx FROM gxjx01_bzks_zy
+  </select>
+  <select id="getggkcsl" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM gxjx01_bzks_kc WHERE kcxzdm='1'
+  </select>
+  <select id="getzykcsl" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM gxjx01_bzks_kc WHERE kcxzdm='2'
+  </select>
+  <select id="getKclist" resultType="yd.jxzg.entity.KcEntity">
+  SELECT kcdm,kcmc,zydm,xf,zymc, njdm,njmc, kcxzdm,kcxzmc FROM gxjx01_bzks_kc WHERE 1=1
+  <if test="nf!=null">
+   AND njdm=#{nf}
+  </if> 
+  </select>
+  <select id="getggkcqd" resultType="yd.jxzg.entity.KcEntity">
+  SELECT kcdm,kcmc,zydm,xf,zymc, njdm,njmc, kcxzdm,kcxzmc FROM gxjx01_bzks_kc WHERE kcxzdm='1'
+  </select>
+  <select id="getzykcqd" resultType="yd.jxzg.entity.KcEntity">
+  SELECT kcdm,kcmc,zydm,xf,zymc, njdm,njmc, kcxzdm,kcxzmc FROM gxjx01_bzks_kc WHERE kcxzdm='2'
+  </select>
+  <select id="getzyByzym" resultType="String">
+    SELECT zymc FROM gxjx01_bzks_zy WHERE zyh=#{zym}
+  </select>
+  <select id="getlhmj" resultType="double">
+   SELECT zdmj_lhyd FROM tr_xx_xxmj
+  </select>
+   <select id="getxscqmj" resultType="double">
+   SELECT xsmj_xxcq FROM tr_xx_xxmj
+  </select>
+  <select id="getdztstbt" resultType="yd.jxzg.common.TjCount" >
+    SELECT dzts zcount ,year mc FROM tr_xx_zcqk  ORDER BY year
+  </select>
+  <select id="getjxyfmj" resultType="double">
+   SELECT jxjfzyf FROM tr_xx_xxmj WHERE year='2017'
+  </select>
+  <select id="getxzbgyfmj" resultType="double">
+   SELECT xzbg FROM tr_xx_xxmj WHERE year='2017'
+  </select>
+  <select id="getwldmtjssl" resultType="java.lang.Integer">
+   SELECT wldmtjs FROM tr_xx_zcqk WHERE year='2017'
+  </select>
+  <select id="getdks" resultType="java.lang.Integer">
+   SELECT nr FROM gxxx_xxjbqk WHERE bh='8' AND nf='2017'
+  </select>
+  <select id="getdktbt" resultType="yd.jxzg.common.TjCount">
+   SELECT nf mc ,nr zcount FROM gxxx_xxjbqk WHERE bh='8'
+  </select>
+  <select id="getswkcs" resultType="java.lang.Integer">
+    SELECT swkcs FROM gxxx_xxhjsqk WHERE nf='2017'
+  </select>
+  <select id="getswkctbt" resultType="yd.jxzg.common.TjCount">
+    SELECT nf mc,swkcs zcount FROM gxxx_xxhjsqk
+  </select>
+  <select id="getxnsjgws" resultType="java.lang.Integer">
+   SELECT SUM(gws) FROM tr_xx_xnxjjd WHERE year='2017'
+  </select>
+  <select id="getmnxnsjgws" resultType="yd.jxzg.common.TjCount">
+   SELECT year mc ,SUM(gws) zcount FROM tr_xx_xnxjjd GROUP BY year
+  </select>
+  <select id="getdoublejsList" resultType="yd.jxzg.entity.JzgEntity">
+   SELECT zgh zgh,xm xm,xbm xbm, zwmc zwmc,zyjszwmc zyjszwmc,is_wp iswp,is_ggjzg isggjzg,is_zydtr iszydtr,is_ssjzg isssjzg FROM gxjg01_jzg WHERE zyjszwmc !='' AND is_ssjzg='1'
+  </select>
+   <select id="getkcListBynfandzym" resultType="yd.jxzg.entity.KcEntity">
+      SELECT kcdm,kcmc,zydm,xf,zymc, njdm,njmc, kcxzdm,kcxzmc FROM gxjx01_bzks_kc WHERE 1=1
+      <if test="nf!=null"> 
+         AND njdm=#{nf} 
+     </if>
+     <if test="zym!=null">
+        AND zydm=#{zym}
+     </if>
+  </select>
+  <select id="getxwjdsyts" resultType="java.lang.Integer">
+   SELECT SUM(jdsysj) FROM gxgz04_xwsxjd
+  </select>
+  <select id="getjdjdxsl" resultType="java.lang.Integer">
+   SELECT SUM(jdxsl) FROM gxgz04_xwsxjd
+  </select>
+  <select id="getjssjsj" resultType="java.lang.Integer">
+   SELECT SUM(jssj) FROM tr_zy_xs WHERE year='2017'
+  </select>
+  <select id="getbyssl" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM gxxx_bysqk WHERE year='2017'
+  </select>
+  <select id="getzyzgzshql" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM gxxx_bysqk WHERE sfhqsz='是' AND year='2017'
+  </select>
+  <select id="getbyszy" resultType="yd.jxzg.common.TjCount">
+   SELECT zydm dm,zymc mc  FROM gxxx_bysqk WHERE zydm!='' GROUP BY zydm,zymc 
+  </select>
+  <select id="getbysslByzy" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM gxxx_bysqk WHERE year='2017' AND zydm=#{zym}
+  </select>
+  <select id="getzyzgzshlqlbyzy" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM gxxx_bysqk WHERE year='2017'  AND sfhqsz='是'
+  </select>
+  <select id="getzgzList" resultType="yd.jxzg.entity.ZgzsEntity">
+   SELECT xm,xb,nj,bjmc,sfdk,sfzg,qxx,jydwxz,jydw,sfhqsz,hqszmc,zydm,zymc,year FROM gxxx_bysqk WHERE sfhqsz='是'
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if>
+  </select>
+  <select id="getzgzLi" resultType="yd.jxzg.entity.ZgzsEntity">
+   SELECT xm,xb,nj,bjmc,sfdk,sfzg,qxx,jydwxz,jydw,sfhqsz,hqszmc,zydm,zymc,year FROM gxxx_bysqk WHERE sfhqsz='是'
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+
+  </select>
+  <select id="getzyzxssltbt" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM gxxs01_bzks WHERE zym=#{zym}
+  </select>
+  <select id="getstuzy" resultType="yd.jxzg.common.TjCount">
+   SELECT zym dm,zymc mc FROM gxxs01_bzks WHERE zym!='' GROUP BY zym,zymc
+  </select>
+  <select id="getstuListbyZyNf" resultType="yd.jxzg.entity.StudentEntity">
+    SELECT xs.xh,xs.xm,xs.xbm,xs.csrq,xs.jg,xs.sfzjh,xs.zym,xs.rxny,xs.rxnj,xs.bh,zy.zymc zymc,xs.xjzt
+      FROM gxxs01_bzks xs LEFT JOIN gxxx04_bj bj ON xs.bh=bj.bh LEFT JOIN gxjx01_bzks_zy zy ON xs.zym=zy.zyh WHERE rxnj=#{nf} AND zym=#{zym} AND xjzt='1'
+  </select>
+  <select id="getnjlist" resultType="yd.jxzg.common.TjCount">
+    SELECT rxnj zcount FROM gxxs01_bzks GROUP BY rxnj
+  </select>
+  <select id="getxzsbtb" resultType="yd.jxzg.common.TjCount">
+   SELECT xzsbzcz zcount ,year mc FROM tr_xx_zcqk ORDER BY year
+  </select>
+  <select id="getfzyfmj" resultType="double">
+   SELECT jxjfzyf FROM tr_xx_xxmj WHERE year='2017'
+  </select>
+  <select id="getggzyfmj" resultType="yd.jxzg.entity.XxmjEntity">
+   SELECT jxjfzyf_js jxjfzyfjs,jxjfzyf_tsg jxjfzyftsg,jxjfzyf_sys jxjfzyfsys,jxjfzyf_tyg jxjfzyftyg,jxjfzyf_ht jxjfzyfht FROM tr_xx_xxmj
+  </select>
+  <select id="getshyfzmj" resultType="double">
+   SELECT shyf FROM tr_xx_xxmj WHERE year='2017'
+  </select>
+  <select id="getgshyfmj" resultType="yd.jxzg.entity.XxmjEntity">
+   SELECT shyf_sxss shyfsxss,xhyf_xxst xhyfxxst,xhyf_jgss xhyfjgss,shyf_jgst shyfjgst,shyf_shfl shyfshfl FROM tr_xx_xxmj WHERE year='2017'
+  </select>
+  <select id="getkdxxjbqk" resultType="yd.jxzg.entity.XxjbqkEntity">
+   SELECT a.nf nf ,a.nr nr, a.dw dw,b.nr rwfs  FROM   gxxx_xxjbqk a LEFT JOIN  gxxx_xxjbqk b ON a.bh=b.bh+1 WHERE a.bh=8 AND a.nf=#{nf} GROUP BY a.nf,a.nr,a.dw,b.nr
+  </select>
+  <select id="getwlxxjd" resultType="yd.jxzg.common.TjCount">
+   SELECT wlxxds_hj zcount ,nf mc FROM gxxx_xxhjsqk
+  </select>
+  <select id="getjxsbtrjetbt" resultType="yd.jxzg.common.TjCount">
+   SELECT gdzc_sb_dnxz zcount ,nf mc FROM gxxx_zcqk WHERE zclx=1
+  </select>
+  <select  id="getbxjfzcbt" resultType="yd.jxzg.common.TjCount">
+   SELECT zcje zcount ,zclx mc FROM zz_jfzclb WHERE year='2017'
+  </select>
+  <select id="getzrfjz" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM tr_jzg_basic WHERE is_wp='0'
+   <if test="zymc!=null">
+     AND dept_name=#{zymc}
+   </if>
+  </select>
+  <select id="getjzjssl" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM tr_jzg_basic WHERE 1=1 
+   <if test="zymc!=null">
+     AND dept_name=#{zymc}
+   </if>
+  </select>
+  <select id="getzyList" resultType="yd.jxzg.common.TjCount">
+   SELECT zyh dm ,zymc mc FROM gxjx01_bzks_zy WHERE zyh!=''
+  </select>
+  <select id="getsfzysltbt"  resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM gxjx01_bzks_zy WHERE is_gjjsf='1' or is_gsfjs='1'
+  </select>
+  <select id="getsfzylist" resultType="yd.jxzg.entity.ZyxxEntity">
+   SELECT zyh,zymc,zyyxmc,xz ,zylx ,is_gsfjs isgsfjs, is_gjjsf isgjjfs FROM gxjx01_bzks_zy WHERE is_gjjsf='1' or is_gsfjs='1'
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+   <select id="getszdzysl"  resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM gxjx01_bzks_zy WHERE is_ssf='1'
+  </select>
+  <select id="getxzszdzymd" resultType="yd.jxzg.entity.ZyxxEntity">
+   SELECT zyh,zymc,zyyxmc,xz ,zylx ,is_ssf isssf FROM gxjx01_bzks_zy WHERE is_ssf='1'
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="getxzszymd" resultType="yd.jxzg.entity.ZyxxEntity">
+   SELECT zyh,zymc,zyyxmc,xz ,zylx ,is_szd isszd FROM gxjx01_bzks_zy WHERE is_szd='1'
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="getjgzzmj" resultType="double">
+  SELECT jgzc FROM tr_xx_xxmj WHERE year='2017'
+  </select>
+  <select id="getqtmj" resultType="double">
+  SELECT qtyf FROM tr_xx_xxmj WHERE year='2017'
+  </select>
+  <select id="sppzysl" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM gxjx01_bzks_zy WHERE is_szd='1'
+  </select>
+   <select id="getzysl" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM gxjx01_bzks_zy
+  </select>
+  <select id="getqttszymd" resultType="yd.jxzg.entity.ZyxxEntity">
+   SELECT zyh,zymc,zyyxmc,xz ,zylx ,is_szd isszd,is_ssf isssf FROM gxjx01_bzks_zy WHERE is_szd!='1' AND is_ssf!='1' AND  is_gjjsf!='1' AND is_gsfjs!='1'
+  </select>
+  <select id="getkcList1" resultType="yd.jxzg.entity.KcEntity">
+  SELECT kcdm,kcmc,zydm,xf,zymc, njdm,njmc, kcxzdm,kcxzmc FROM gxjx01_bzks_kc WHERE 1=1 <if test="nf!=null">
+   AND njdm=#{nf} 
+  </if>
+  <if test="zym!=null">
+    AND zydm=#{zym}
+  </if> 
+  </select>
+  <select id="getkczy" resultType="yd.jxzg.common.TjCount">
+   SELECT zydm dm,zymc mc FROM gxjx01_bzks_kc WHERE zydm!='' GROUP BY zydm,zymc
+  </select>
+  <select id="getkcxn" resultType="yd.jxzg.common.TjCount">
+   SELECT njdm dm,njmc mc FROM gxjx01_bzks_kc WHERE zydm!='' GROUP BY njdm,njmc
+  </select>
+  <select id="getjpkctbt" resultType="yd.jxzg.common.TjCount">
+   SELECT jpkcsl zcount,year mc FROM zz_zy_jpkc
+  </select>
+  <select id="getjpkcqd" resultType="yd.jxzg.entity.KcEntity">
+   SELECT kcdm,kcmc,zydm,xf,zymc, njdm,njmc, kcxzdm,kcxzmc FROM gxjx01_bzks_kc WHERE njdm=#{nf} limit 0,5
+  </select>
+  <select id="getlnxzttkc" resultType="yd.jxzg.common.TjCount">
+   SELECT year mc ,xz zcount ,tt xcount FROM zz_xtttkc ORDER BY year
+  </select>
+  <select id="getxzttkcqd" resultType="yd.jxzg.entity.KcEntity">
+   SELECT kcdm,kcmc,zydm,xf,zymc, njdm,njmc, kcxzdm,kcxzmc FROM gxjx01_bzks_kc WHERE njdm=#{nf} limit 6,11
+  </select>
+  <select id="getgnzxkcsl" resultType="yd.jxzg.common.TjCount">
+   SELECT nf mc ,swkcs zcount FROM gxxx_xxhjsqk ORDER BY nf
+  </select>
+  <select id="getdqlist" resultType="yd.jxzg.common.TjCount">
+   SELECT areaCode dm , CONCAT(s.province,s.city) mc FROM s_area_code s
+  </select>
+  <select id="getpycc" resultType="yd.jxzg.common.TjCount">
+   SELECT dm ,mc FROM gx_code_pycc
+  </select>
+  <select id="getstusl" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM gxxs01_bzks WHERE 1=1 
+   <if test="lb!=null">
+     AND pyccdm=#{lb}
+   </if>
+   <if test="nf!=null">
+     AND rxnjdm=#{nf}
+   </if>
+   <if test="zym!=null">
+     AND zym=#{zym}
+   </if>
+  </select>
+   <select id="getstumd" resultType="yd.jxzg.entity.StudentEntity">
+   SELECT xs.xh,xs.xm,xs.xbm,xs.csrq,xs.jg,xs.sfzjh,xs.zym,xs.rxny,xs.rxnj,xs.bh,zy.zymc zymc,xs.xjzt
+   FROM gxxs01_bzks xs LEFT JOIN gxxx04_bj bj ON xs.bh=bj.bh LEFT JOIN gxjx01_bzks_zy zy
+   ON xs.zym=zy.zyh WHERE 1=1 
+   <if test="lb!=null">
+     AND xs.pyccdm=#{lb}
+   </if>
+   <if test="nf!=null">
+     AND xs.rxnjdm=#{nf}
+   </if>
+   <if test="zym!=null">
+     AND xs.zym=#{zym}
+   </if>
+  </select>
+  <select id="getxxzssl" resultType="java.lang.Integer">
+   SELECT SUM(ZSS) FROM tr_xx_zsqk WHERE YEAR='2017'
+  </select>
+  <select id="getgndjsl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc FROM tr_jzg_basic WHERE 1=1 
+   <if test="lb!=null">
+    AND jslx=#{lb}
+   </if> GROUP BY year
+  </select>
+  <select id="getjyqktbt" resultType="yd.jxzg.common.TjCount">
+   SELECT year mc,SUM(byss) zcount,SUM(jyrs) xcount FROM tr_xx_zsqk GROUP BY year
+  </select>
+  <select id="getgzyjyl" resultType="yd.jxzg.common.TjCount">
+   SELECT zymc mc,(COUNT(1)-1)/COUNT(1)*100 zcount FROM gxxx_bysqk GROUP BY zymc
+  </select>
+  <select id="getjyxsmd" resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,zymc bl1,jydw bl2,year bl3 FROM gxxx_bysqk WHERE 1=1
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if>
+  </select>
+  <select id="gethzqysl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,jydw mc FROM gxxx_bysqk WHERE 1=1 
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if> GROUP BY jydw
+  </select>
+  <select id="getzylist2" resultType="yd.jxzg.common.TjCount">
+   SELECT zydm dm,zymc mc FROM gxxx_bysqk GROUP BY zymc,zydm
+  </select>
+  <select id="getqyxssl" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM gxxx_bysqk WHERE year='2017' AND jydw=#{mc}
+  </select>
+  <select id="getqyjymd" resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,zymc bl1,jydw bl2,year bl3 FROM gxxx_bysqk WHERE 1=1
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+   <if test="mc!=null">
+    AND jydw=#{mc}
+   </if>
+  </select>
+  <select id="getzjxsslpm" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount ,zymc mc FROM gxxs01_bzks WHERE xjzt=1 AND zymc!=''
+   <if test="nf!=null">
+     AND rxnj=#{nf}
+   </if> GROUP BY zymc ORDER BY zcount desc
+  </select>
+  <select id="getgxnxsrs" resultType="yd.jxzg.common.TjCount">
+  SELECT COUNT(1) zcount ,RXNJ mc FROM gxxs01_bzks WHERE zymc=#{zymc} GROUP BY RXNJ
+  </select>
+  <select id="getgnjxssl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount ,rxnj mc FROM gxxs01_bzks WHERE xjzt=1
+   <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if> GROUP BY rxnj ORDER BY rxnj
+  </select>
+  <select id="getbjxssl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount ,bh mc FROM gxxs01_bzks WHERE xjzt=1
+   <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if>
+   <if test="nf!=null">
+     AND rxnj=#{nf}
+   </if>
+    GROUP BY bh ORDER BY COUNT(1)
+  </select>
+  <select id="getxslssl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,rxnj mc FROM gxxs01_bzks WHERE xjztmc='退学' 
+   <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if> GROUP BY rxnj ORDER BY COUNT(1)
+  </select>
+  <select id="getlsnjxssl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,rxnj mc FROM gxxs01_bzks WHERE xjztmc='退学' GROUP BY rxnj ORDER BY COUNT(1)
+  </select>
+  <select id="getbjpjcj" resultType="yd.jxzg.common.TjCount">
+   SELECT avg(BFZKSCJ) zcount,bjmc mc FROM gxjx01_bzks_kscj WHERE 1=1
+   <if test="nf!=null">
+     AND xn=#{nf}
+   </if>
+   <if test="kcmc!=null">
+     AND kcmc=#{kcmc}
+   </if>
+   <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if>
+    GROUP BY bjmc ORDER BY avg(BFZKSCJ) desc
+  </select>
+  <select id="getcjList" resultType="yd.jxzg.entity.StuCj">
+   SELECT xh,xn,xm,BFZKSCJ,kcmc,kcdm,bjdm,bjmc FROM gxjx01_bzks_kscj WHERE 1=1
+   <if test="nf!=null">
+     AND xn=#{nf}
+   </if>
+   <if test="kcmc!=null">
+     AND kcmc=#{kcmc}
+   </if>
+  </select>
+  <select id="gethqzsbl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount, zymc mc FROM gxxx_bysqk WHERE 1=1 AND zymc!='' AND sfhqsz='是'
+   <if test="nf!=null">
+     AND year=#{nf}
+   </if> GROUP BY zymc ORDER BY COUNT(1) desc
+  </select>
+  <select id="gethqzsxs" resultType="yd.jxzg.entity.ZgzsEntity">
+   SELECT xm,xb,nj,bjmc,sfdk,sfzg,qxx,jydwxz,jydw,sfhqsz,hqszmc,zydm,zymc,year FROM gxxx_bysqk WHERE year='2017'
+   <if test="zym!=null">
+    AND zydm=#{zym}
+   </if>
+  </select>
+  <select id="getzjjssl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,dept_name mc,dept_id dm FROM tr_jzg_basic WHERE zyjszw_dj in ('中级','副高级') GROUP BY dept_id,dept_name
+  </select>
+  <select id="getzyxcpm" resultType="yd.jxzg.common.TjCount">
+   SELECT avg(gz) zcount ,zy mc FROM zz_bysxz WHERE 1=1
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if> GROUP BY zy ORDER BY avg(gz) desc
+  </select>
+  <select id="getzyxztbt" resultType="yd.jxzg.common.TjCount">
+   SELECT avg(gz) zcount FROM zz_bysxz WHERE 1=1
+   <if test="zymc!=null">
+     AND zy=#{zymc}
+   </if>
+  </select>
+  <select id="getbysxzmx" resultType="yd.jxzg.entity.BysxzEntity">
+     SELECT xh ,xm ,zy ,xqhzdw,gz,year FROM zz_bysxz WHERE 1=1
+     <if test="nf!=null">
+      AND year=#{nf}
+     </if>
+     <if test="zymc!=null">
+      AND zy=#{zymc}
+     </if>
+  </select>
+  <select id="getbysjymx" resultType="yd.jxzg.common.TjCount">
+     SELECT xm mc ,zymc bl1,jydw bl2,qxx bl3,YEAR bl4,jydwxz bl5,jydwgm bl6,xb bl7 FROM gxxx_bysqk WHERE 1=1
+     <if test="nf!=null">
+      AND year=#{nf}
+     </if>
+     <if test="zymc!=null">
+      AND zymc=#{zymc}
+     </if>
+  </select>
+  <select id="getgzyjylpm" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1)/(SELECT COUNT(1) FROM zz_byhmc) zj ,zy mc FROM zz_bysxz WHERE 1=1
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+    GROUP BY zy ORDER BY zj desc
+  </select>
+  <select id="getzyjytbt" resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM zz_byhmc WHERE year=a.year <if test="zymc!=null">
+    AND a.zymc=#{zymc}
+   </if>)*100/COUNT(1) zcount ,a.year mc FROM zz_bysxz a WHERE 1=1
+   <if test="zymc!=null">
+    AND a.zymc=#{zymc}
+   </if>
+    GROUP BY a.year ORDER BY a.year
+  </select>
+  <select id="getsjgwpm" resultType="yd.jxzg.common.TjCount">
+    SELECT gws zcount,mxzy_zhu mc FROM tr_xx_xnxjjd WHERE year='2017' AND mxzy_zhu!='' ORDER BY gws desc
+  </select>
+  <select id="getsbjepm" resultType="yd.jxzg.common.TjCount">
+    SELECT yqsbz zj,mxzy_zhu mc FROM tr_xx_xnxjjd WHERE year='2017' AND mxzy_zhu!='' ORDER BY yqsbz desc
+  </select>
+  <select id="getxwjdslpm" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,syzy mc FROM gxgz04_xwsxjd WHERE 1=1 
+   <if test="nf!=null">
+    AND xwsxjdjlrq=#{nf}
+   </if>
+    GROUP BY syzy
+  </select>
+  <select id="getxwjdmx" resultType="yd.jxzg.entity.XwJdEntity">
+    SELECT xwsxjdh  ,xwsxjdmc ,sxxm ,syzy ,xwsxjdjlrq FROM gxgz04_xwsxjd WHERE 1=1
+    <if test="nf!=null">
+     AND xwsxjdjlrq=#{nf}
+    </if>
+    <if test="zymc!=null">
+     AND syzy=#{zymc}
+    </if>
+  </select>
+  <select id="getgzyxssl" resultType="yd.jxzg.common.TjCount">
+   SELECT zss zcount ,zymc mc FROM tr_xx_zsqk WHERE 1=1
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if> GROUP BY zymc
+  </select>
+  <select id="getstuByZy" resultType="yd.jxzg.entity.StudentEntity">
+      SELECT xs.xh,xs.xm,xs.xbm,TIMESTAMPDIFF(YEAR,xs.csrq,CURDATE()),xs.jg,xs.sfzjh,xs.zym,xs.rxny,xs.rxnj,xs.bh,zy.zymc zymc,xs.xjzt
+      FROM gxxs01_bzks xs LEFT JOIN gxxx04_bj bj ON xs.bh=bj.bh LEFT JOIN gxjx01_bzks_zy zy ON xs.zym=zy.zyh WHERE xjzt='1'
+      <if test="nf!=null">
+       AND xs.rxnj=#{nf}
+      </if>
+      <if test="zymc!=null">
+       AND zy.zymc=#{zymc}
+      </if>
+      <if test="lb!=null">
+       AND xs.pyccmc=#{lb}
+      </if>
+  </select>
+  <select id="getxszysl" resultType="yd.jxzg.common.TjCount">
+     SELECT COUNT(1) zcount,zymc mc FROM gxxs01_bzks WHERE zymc!='' AND rxnj='2017' GROUP BY zymc
+  </select>
+  <select id="getlnzyxssl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,rxnj mc FROM gxxs01_bzks WHERE 1=1
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if> GROUP BY rxnj
+  </select>
+  <select id="getxsjyflfb" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,pyccmc mc FROM gxxs01_bzks WHERE pyccmc!='' AND rxnj='2017' GROUP BY pyccmc 
+  </select>
+  <select id="getxzflxstbt" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,rxnj mc FROM gxxs01_bzks WHERE pyccmc!=''
+   <if test="lb!=null">
+     AND pyccmc=#{lb}
+   </if> GROUP BY rxnj 
+  </select>
+  <select id="getbjlist" resultType="yd.jxzg.common.TjCount">
+   SELECT bh mc FROM gxxs01_bzks WHERE bh!='' GROUP BY bh
+  </select>
+  <!-- //按范围查询 -->
+  <select id="getstuage" resultType="yd.jxzg.common.TjCount">
+	SELECT nnd mc,COUNT(*) zcount  FROM(  
+	 SELECT   
+	 case  
+	  <![CDATA[  WHEN TIMESTAMPDIFF(YEAR,csrq,CURDATE())<=15 THEN '15岁以下'
+		WHEN TIMESTAMPDIFF(YEAR,csrq,CURDATE())>=16 AND TIMESTAMPDIFF(YEAR,csrq,CURDATE())<=20 THEN '16-20岁'   
+	    WHEN TIMESTAMPDIFF(YEAR,csrq,CURDATE())>=21 AND TIMESTAMPDIFF(YEAR,csrq,CURDATE())<=25 THEN '21-25岁'
+		WHEN TIMESTAMPDIFF(YEAR,csrq,CURDATE())>=26 AND TIMESTAMPDIFF(YEAR,csrq,CURDATE())<=30 THEN '26-30岁'   
+	    WHEN TIMESTAMPDIFF(YEAR,csrq,CURDATE())>=31  THEN '31岁以上'   
+	 end     ]]>
+	 as nnd FROM gxxs01_bzks WHERE csrq!='' AND rxnj='2017'
+	 <if test="zymc!=null">
+	   AND zymc=#{zymc}
+	 </if>
+	 <if test="bh!=null">
+	   AND bh=#{bh}
+	 </if>
+	)gxxs01_bzks  GROUP BY nnd
+  </select>
+  <select id="getstuagefb" resultType="yd.jxzg.entity.StudentEntity">
+     SELECT xs.xh,xs.xm,xs.xbm,TIMESTAMPDIFF(YEAR,xs.csrq,CURDATE()),xs.jg,xs.sfzjh,xs.zym,xs.rxny,xs.rxnj,xs.bh,zy.zymc zymc,xs.xjzt
+      FROM gxxs01_bzks xs LEFT JOIN gxxx04_bj bj ON xs.bh=bj.bh LEFT JOIN gxjx01_bzks_zy zy ON xs.zym=zy.zyh WHERE xjzt='1'
+      <if test="bh!=null">
+       AND xs.bh=#{bh}
+      </if>
+      <if test="zymc!=null">
+       AND xs.zymc=#{zymc}
+      </if>
+      <if test='aged=="1"'>
+       <![CDATA[  AND TIMESTAMPDIFF(YEAR,xs.csrq,CURDATE())<=15 ]]>
+      </if>
+      <if test='aged=="2"'>
+      <![CDATA[  AND TIMESTAMPDIFF(YEAR,xs.csrq,CURDATE())>=16 AND TIMESTAMPDIFF(YEAR,xs.csrq,CURDATE())<=20  ]]>
+      </if>
+      <if test='aged=="3"'>
+        <![CDATA[ AND TIMESTAMPDIFF(YEAR,xs.csrq,CURDATE())>=21 AND TIMESTAMPDIFF(YEAR,xs.csrq,CURDATE())<=25 ]]>
+      </if>
+      <if test='aged=="4"'>
+        <![CDATA[ AND TIMESTAMPDIFF(YEAR,xs.csrq,CURDATE())>=26 AND TIMESTAMPDIFF(YEAR,xs.csrq,CURDATE())<=30 ]]>
+      </if>
+      <if test='aged=="5"'>
+       <![CDATA[ AND TIMESTAMPDIFF(YEAR,xs.csrq,CURDATE())>=31  ]]>
+      </if>
+  </select>
+  <select id="getxsxbfb" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(*) zcount,xbm mc FROM gxxs01_bzks GROUP BY xbm
+  </select>
+  <select id="getxbxsmx" resultType="yd.jxzg.entity.StudentEntity">
+   SELECT xs.xh,xs.xm,xs.xbm,TIMESTAMPDIFF(YEAR,xs.csrq,CURDATE()),xs.jg,xs.sfzjh,xs.zym,xs.rxny,xs.rxnj,xs.bh,zy.zymc zymc,xs.xjzt
+      FROM gxxs01_bzks xs LEFT JOIN gxxx04_bj bj ON xs.bh=bj.bh LEFT JOIN gxjx01_bzks_zy zy ON xs.zym=zy.zyh WHERE xjzt='1'
+      <if test="bh!=null">
+       AND xs.bh=#{bh}
+      </if>
+      <if test="zymc!=null">
+       AND xs.zymc=#{zymc}
+      </if>
+      <if test="lb!=null">
+       AND xs.xbm=#{lb}
+      </if>
+  </select>
+  <select id="getssmzfb" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(*) zcount,mzmc mc FROM gxxs01_bzks WHERE mzmc!='' AND mzmc!='汉族' GROUP BY mzmc
+  </select>
+  <select id="getssmzmx" resultType="yd.jxzg.entity.StudentEntity">
+   SELECT xs.xh,xs.xm,xs.xbm,TIMESTAMPDIFF(YEAR,xs.csrq,CURDATE()),xs.jg,xs.sfzjh,xs.zym,xs.rxny,xs.rxnj,xs.bh,zy.zymc zymc,xs.xjzt
+      FROM gxxs01_bzks xs LEFT JOIN gxxx04_bj bj ON xs.bh=bj.bh LEFT JOIN gxjx01_bzks_zy zy ON xs.zym=zy.zyh WHERE xjzt='1'
+      <if test="bh!=null">
+       AND xs.bh=#{bh}
+      </if>
+      <if test="zymc!=null">
+       AND xs.zymc=#{zymc}
+      </if>
+      <if test="lb!=null">
+       AND xs.mzmc=#{lb}
+      </if>
+  </select>
+  <select id="getxssyzl" resultType="yd.jxzg.common.TjCount">
+    SELECT nnd mc,COUNT(*) zcount  FROM(  
+	 SELECT   
+	 case  
+	<![CDATA[  WHEN bfzkscj<=60 THEN '60分及以下' 
+		WHEN bfzkscj>=61 AND bfzkscj<=70 THEN '61-70分'   
+	    WHEN bfzkscj>=71 AND bfzkscj<=80 THEN '71-80分'
+		WHEN bfzkscj>=81 AND bfzkscj<=90 THEN '81-90分'   ]]>
+        WHEN bfzkscj>=91  THEN '90分及以上'   
+        end  
+       as nnd FROM gxjx01_bzks_kscj WHERE bfzkscj!=''
+    ) gxjx01_bzks_kscj  GROUP BY nnd
+  </select>
+  <select id="getxzcjmx" resultType="yd.jxzg.entity.StuCj">
+   SELECT xh,xn,xm,BFZKSCJ,kcmc,kcdm,bjdm,bjmc FROM gxjx01_bzks_kscj WHERE 1=1
+   <if test="bh!=null">
+       AND xs.bh=#{bh}
+      </if>
+      <if test="zymc!=null">
+       AND xs.zymc=#{zymc}
+      </if>
+      <if test='lb=="1"'>
+      <![CDATA[  AND BFZKSCJ<=60 ]]>
+      </if>
+      <if test='lb=="2"'>
+      <![CDATA[  AND Bbfzkscj>=61 AND bfzkscj<=70 ]]>
+      </if>
+      <if test='lb=="3"'>
+     <![CDATA[  AND bfzkscj>=71 AND bfzkscj<=80 ]]>
+      </if>
+      <if test='lb=="4"'>
+     <![CDATA[  AND bfzkscj>=81 AND bfzkscj<=90 ]]>
+      </if>
+      <if test='lb=="5"'>
+      <![CDATA[  AND bfzkscj>=91 ]]>
+      </if>
+  </select>
+  <select id="getdxsmx" resultType="yd.jxzg.entity.StudentEntity">
+    SELECT xs.xh,xs.xm,xs.xbm,xs.csrq,xs.jg,xs.sfzjh,xs.zym,xs.rxny,xs.rxnj,xs.bh,zy.zymc zymc,xs.xjzt
+      FROM gxxs01_bzks xs LEFT JOIN gxxx04_bj bj ON xs.bh=bj.bh LEFT JOIN gxjx01_bzks_zy zy ON xs.zym=zy.zyh WHERE rxnj=#{nf} AND zymc=#{zymc} AND xjzt='1'
+  </select>
+  <select id="getgzyxssltbt" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(*) zcount,year mc FROM gxxs01_bzks WHERE 1=1
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if> GROUP BY rxnj
+  </select>
+  <select id="getbdry" resultType="yd.jxzg.common.TjCount">
+   SELECT (5+floor(rAND()*5))/10 zj,rxnj mc FROM gxxs01_bzks WHERE 1=1
+   <if test="lb!=null">
+    AND rxqd=#{lb}
+   </if>
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if> GROUP BY rxnj
+  </select>
+  <select id="getdkjysl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc FROM gxxx_bysqk WHERE 1=1 
+   <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if> GROUP BY year
+  </select>
+  <select id="getlndkjybl" resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM gxxx_bysqk WHERE sfdk='是' AND year=a.year
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if>
+   )/COUNT(1)*100 zcount ,a.year mc FROM  gxxx_bysqk a WHERE 1=1 
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if>  GROUP BY a.year
+  </select>
+  <select id="getdkjyxsmx" resultType="yd.jxzg.entity.ZgzsEntity">
+   SELECT xm,xb,nj,bjmc,sfdk,sfzg,qxx,jydwxz,jydw,sfhqsz,hqszmc,zydm,zymc,year FROM gxxx_bysqk WHERE sfdk='是'
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if>
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="getghypx" resultType="yd.jxzg.common.TjCount">
+    SELECT COUNT(1) zcount ,hylx mc FROM gxxx_bysqk WHERE 1=1
+    <if test="zymc!=null">
+     AND zymc=#{zymc}
+    </if>
+     GROUP BY hylx ORDER BY COUNT(1) desc
+  </select>
+  <select id="hyjytbt" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc FROM gxxx_bysqk
+   <if test="lb!=null">
+    AND hylx=#{lb}
+   </if> GROUP BY year
+  </select>
+  <select id="gethyjymx" resultType="yd.jxzg.entity.ZgzsEntity">
+   SELECT xm,xb,nj,bjmc,sfdk,sfzg,qxx,jydwxz,jydw,sfhqsz,hqszmc,zydm,zymc,year FROM gxxx_bysqk WHERE sfdk='是'
+   <if test="lb!=null">
+    AND hylx=#{lb}
+   </if>
+  </select>
+  <select id="getsxxxpm" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount ,jydw mc FROM gxxx_bysqk WHERE 1=1
+   <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if>
+   <if test="nf!=null">
+     AND year=#{nf}
+   </if>
+    GROUP BY jydw ORDER BY COUNT(1) desc
+  </select>
+  <select id="getlnsxsl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) FROM gxxx_bysqk WHERE 1=1 
+   <if test="mc!=null">
+    AND jydw=#{mc}
+   </if> GROUP BY year
+  </select>
+  <select id="getxzxxsxmx"  resultType="yd.jxzg.entity.ZgzsEntity">
+   SELECT xm,xb,nj,bjmc,sfdk,sfzg,qxx,jydwxz,jydw,sfhqsz,hqszmc,zydm,zymc,year FROM gxxx_bysqk WHERE 1=1
+   <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if>
+   <if test="nf!=null">
+     AND year=#{nf}
+   </if>
+  </select>
+  <select id="getjyqdbt" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,jyqd mc FROM gxxx_bysqk GROUP BY jyqd
+  </select>
+  <select id="getqdlnjysl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc FROM gxxx_bysqk WHERE 1=1
+   <if test="mc!= null">
+    AND jyqd=#{mc}
+   </if>
+    GROUP BY year
+  </select>
+  <select id="getqdjymx" resultType="yd.jxzg.entity.ZgzsEntity">
+   SELECT xm,xb,nj,bjmc,sfdk,sfzg,qxx,jydwxz,jydw,sfhqsz,jyqd,hqszmc,zydm,zymc,year FROM gxxx_bysqk WHERE 1=1
+   <if test="mc!=null">
+     AND jyqd=#{mc}
+   </if>
+   <if test="nf!=null">
+     AND year=#{nf}
+   </if>
+  </select>
+  <select id="getdgsxqy" resultType="yd.jxzg.common.TjCount">
+   SELECT yjbys_dgsxdwmc mc FROM gxxs_dgsx GROUP BY yjbys_dgsxdwmc
+  </select>
+  <select id="getlndgsxrs"  resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc FROM gxxs_dgsx WHERE 1=1
+   <if test="mc!=null">
+     AND yjbys_dgsxdwmc=#{mc}
+   </if>
+   <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if>
+    GROUP BY year
+  </select>
+  <select id="getdgsxmx" resultType="yd.jxzg.entity.DgsxEntity">
+   SELECT yjbys_mc mc,yjbys_xh xh,zydm zydm,zymc zymc,yjbys_dgsxdwmc dgdw,bx_xzmc dgsxbxmc,bx_bxfczf bxxx,year year,yjbys_qysfly sfly FROM gxxs_dgsx WHERE 1=1
+   <if test="mc!=null">
+     AND yjbys_dgsxdwmc=#{mc}
+   </if>
+   <if test="nf!=null">
+     AND year=#{nf}
+   </if>
+    <if test="zymc!=null">
+     AND zymc=#{zymc}
+    </if>
+  </select>
+  <select id="getdgsxhly" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc FROM gxxs_dgsx WHERE yjbys_qysfly='是'
+    <if test="mc!=null">
+     AND yjbys_dgsxdwmc=#{mc}
+   </if>
+   <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if> GROUP BY year
+  </select>
+  <select id="getdgsxhymx" resultType="yd.jxzg.entity.DgsxEntity">
+     SELECT yjbys_mc mc,yjbys_xh xh,zydm zydm,zymc zymc,yjbys_dgsxdwmc dgdw,bx_xzmc dgsxbxmc,bx_bxfczf bxxx,year year,yjbys_qysfly sfly FROM gxxs_dgsx WHERE yjbys_qysfly='是'
+   <if test="mc!=null">
+     AND yjbys_dgsxdwmc=#{mc}
+   </if>
+   <if test="nf!=null">
+     AND year=#{nf}
+   </if>
+    <if test="zymc!=null">
+     AND zymc=#{zymc}
+    </if>
+  </select>
+  <select id="getlndglyl" resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM gxxs_dgsx WHERE yjbys_qysfly='是' AND year =a.year GROUP BY year)/COUNT(1) zj ,year mc FROM gxxs_dgsx a GROUP BY year
+  </select>
+  <select id="getghzqyjy" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc FROM gxxs_dgsx WHERE yjbys_qysfly='是'
+   <if test="mc!=null">
+    AND yjbys_dgsxdwmc=#{mc}
+   </if> GROUP BY year
+  </select>
+  <select id="getxzqyjymx" resultType="yd.jxzg.entity.DgsxEntity">
+     SELECT yjbys_mc mc,yjbys_xh xh,zymc zymc,yjbys_dgsxdwmc dgdw,year year FROM gxxs_dgsx WHERE yjbys_qysfly='是'
+   <if test="mc!=null">
+     AND yjbys_dgsxdwmc=#{mc}
+   </if>
+   <if test="nf!=null">
+     AND year=#{nf}
+   </if>
+  </select>
+  <select id="getjyszy" resultType="yd.jxzg.common.TjCount">
+   SELECT zymc mc,zydm dm FROM gxxx_bysqk GROUP BY zymc,zydm
+  </select>
+  <select id="getjydysl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,CONCAT(are.province,are.city) mc FROM gxxx_bysqk bys LEFT JOIN gxxs01_bzks gx ON bys.xm=gx.xm LEFT JOIN s_area_code are ON left(gx.sfzjh,6)=are.areaCode 
+   <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if> GROUP BY mc
+  </select>
+  <select id="getxdyjysl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc FROM gxxx_bysqk WHERE 1=1
+    <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if>
+   <if test="mc!=null">
+    AND jydw=#{mc}
+   </if> GROUP BY year
+  </select>
+  <select id="getbysdymx" resultType="yd.jxzg.entity.ZgzsEntity">
+    SELECT xm,xb,nj,bjmc,sfdk,sfzg,qxx,jydwxz,jyqy_ss jyqyss,jydw,sfhqsz,hqszmc,zydm,zymc,year FROM gxxx_bysqk WHERE 1=1
+    <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if>
+   <if test="mc!=null">
+     AND jydw=#{mc}
+   </if>
+   <if test="nf!=null">
+     AND year=#{nf}
+   </if>
+   </select>
+   <select id="getdwmyd" resultType="yd.jxzg.common.TjCount">
+    SELECT avg(dwmyd) zcount,year mc FROM gxxx_bysqk WHERE 1=1
+    <if test="zymc!=null">
+      AND zymc=#{zymc}
+    </if> GROUP BY year ORDER BY year
+   </select>
+  <select id="getgqymydmc" resultType="yd.jxzg.common.TjCount">
+    
+  </select>
+  <select id="getbysxzfb"  resultType="yd.jxzg.common.TjCount">
+    SELECT  nnd mc,COUNT(*) zcount FROM (
+        SELECT
+ 			 case
+	<![CDATA[   WHEN qxx<=1500 THEN '1500及以下'
+				WHEN qxx>=1501 AND qxx<=2000 THEN '1501-2000'
+				WHEN qxx>=2001 AND qxx<=2500 THEN '2001-2500'
+				WHEN qxx>=2501 AND qxx<=3000 THEN '2501-3000'
+ 				WHEN qxx>=3001 THEN '3000以上' ]]>
+				end as nnd FROM  gxxx_bysqk WHERE 1=1 
+				 <if test="nf!=null">
+				     AND year=#{nf}
+				  </if>
+				  <if test="zymc!=null">
+				     AND zymc=#{zymc}
+				  </if>
+				  <if test="lb!=null">
+				     AND pycc=#{lb}
+				  </if>
+     ) gxxx_bysqk   GROUP BY nnd 
+  </select>
+  <select id="getxzbfxzmx" resultType="yd.jxzg.entity.ZgzsEntity">
+    SELECT xm,xb,nj,bjmc,sfdk,sfzg,qxx,jydwxz,jydw,sfhqsz,hqszmc,zydm,zymc,year FROM gxxx_bysqk WHERE 1=1
+    <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if>
+   <if test="lb!=null">
+     AND pycc=#{lb}
+   </if>
+   <if test="nf!=null">
+     AND year=#{nf}
+   </if>
+   <if test='dg=="1"'>
+    <![CDATA[ AND qxx<=1500 ]]>
+   </if>
+   <if test='dg=="2"'>
+     <![CDATA[ AND qxx>=1501 AND qxx<=2000  ]]>
+   </if>
+   <if test='dg=="3"'>
+     <![CDATA[ AND qxx>=2001 AND qxx<=2500 ]]>
+   </if>
+   <if test='dg=="4"'>
+     <![CDATA[ AND qxx>=2501 AND qxx<=3000 ]]>
+   </if>
+   <if test='dg=="5"'>
+    <![CDATA[  AND qxx>=3001 ]]>
+   </if>
+  </select>
+  <select id="getlnbysxc" resultType="yd.jxzg.common.TjCount">
+    SELECT AVG(QXX) zj,YEAR mc FROM gxxx_bysqk WHERE 1=1
+    <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if>
+   <if test="lb!=null">
+     AND pycc=#{lb}
+   </if> GROUP BY year
+  </select>
+  <select id="getxdzyssbtbt" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,(SELECT COUNT(1)  FROM tr_jzg_basic WHERE dept_id=yxsh) xcount,yxmc mc,yxsh dm FROM gxxs01_bzks WHERE 1=1
+ 
+     AND yxsh = #{zym}
+  
+    GROUP BY yxsh 
+  </select>
+  <select id="getggjssl" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM tr_jzg_basic WHERE dept_id not in ('02','03','04')
+  </select>
+  <select id="getgzyssb" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,(SELECT COUNT(1)  FROM tr_jzg_basic WHERE dept_id=a.yxsh) xcount,a.yxmc mc,a.yxsh dm FROM  gxxs01_bzks a WHERE a.yxsh!='' AND a.yxmc!='' GROUP BY a.yxsh,a.yxmc 
+  </select>
+  <select id="getxdzyjssl" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM tr_jzg_basic WHERE 1=1 
+   <if test="zym!=null">
+    AND dept_id=#{zym}
+   </if> GROUP BY dept_id
+  </select>
+  <select id="getxdzynfjsmd" resultType="yd.jxzg.entity.JzgEntity">
+   SELECT zgh zgh,xm xm,xbid xbm,dept_id yxsh,dept_name yxmc,xlmc,zzmmmc zzmmm FROM tr_jzg_basic WHERE dept_name !='' 
+   <if test="zym!=null">
+    AND dept_id=#{zym}
+   </if>  
+  </select>
+  <select id="getxznfzjzjs" resultType="yd.jxzg.entity.JzgEntity">
+  SELECT zgh zgh,xm xm,xbid xbm,dept_id yxsh,dept_name yxmc,xlmc,zzmmmc zzmmm,is_jz isjz FROM tr_jzg_basic WHERE dept_name !='' 
+   <if test="zym!=null">
+    AND dept_id=#{zym}
+   </if>  
+  </select>
+  <select id="ggjslist" resultType="yd.jxzg.entity.JzgEntity">
+   SELECT zgh,xm,xbid xbm,dept_id yxsh,dept_name yxmc,xlmc,zzmmmc zzmmm FROM tr_jzg_basic WHERE dept_id in ('02','03','04')
+  </select>
+  <select id="getlnbmxssltb" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,rxnj mc FROM gxxs01_bzks WHERE 1=1
+   <if test="zym!=null">
+     AND yxsh=#{zym}
+   </if> GROUP BY rxnj
+  </select>
+  <select id="getydbmxsmd" resultType="yd.jxzg.entity.StudentEntity">
+    SELECT xs.xh,xs.xm,xs.xbm,xs.csrq,xs.jg,xs.yxsh,xs.yxmc,xs.zym,xs.rxny,xs.rxnj,xs.bh,zy.zymc zymc,xs.xjzt
+      FROM gxxs01_bzks xs LEFT JOIN gxxx04_bj bj ON xs.bh=bj.bh LEFT JOIN gxjx01_bzks_zy zy ON xs.zym=zy.zyh WHERE 1=1
+      <if test="zym!=null">
+       AND yxsh=#{zym}
+      </if>
+      <if test="nf!=null">
+       AND rxnj=#{nf}
+      </if>
+  </select>
+  <select id="getgzyjsbl" resultType="yd.jxzg.common.TjCount">
+  <!--  SELECT (COUNT(1)*100)/(SELECT COUNT(1) FROM tr_jzg_basic WHERE dept_id !="") zcount,dept_id dm,dept_name mc FROM tr_jzg_basic WHERE 1=1 GROUP BY dept_id,dept_name -->
+  SELECT (COUNT(1)*100)/(SELECT COUNT(1) FROM tr_jzg_basic WHERE dept_id !="" AND is_jslx=1) zcount,dept_id dm,dept_name mc FROM tr_jzg_basic WHERE is_jslx=1  GROUP BY dept_id,dept_name
+  </select>
+  <select id="getgzyjsbltbt" resultType="yd.jxzg.common.TjCount">
+   SELECT (COUNT(1)*100)/(SELECT COUNT(1) FROM tr_jzg_basic WHERE dept_id !="") zcount,dept_id dm,dept_name bll,YEAR mc FROM tr_jzg_basic  WHERE 1=1 and
+   <if test="zymc!=null">
+    dept_name=#{zymc}
+   </if>
+   GROUP BY year
+  </select>
+  <select id="getgzyzrjssl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount ,dept_id dm,dept_name mc FROM tr_jzg_basic WHERE  zw = '教师' AND zyjszw_mc!='工勤' GROUP BY dept_id,dept_name
+  </select>
+  <select id="getgzygjjs" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount ,dept_id dm,dept_name mc FROM tr_jzg_basic WHERE dept_id in ('02','03','04') GROUP BY dept_id,dept_name
+  </select>
+  <select id="zygjzwsl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc FROM tr_jzg_basic WHERE 1=1 
+   <if test="zymc!=null">
+     AND dept_name=#{zymc}
+   </if> GROUP BY year
+  </select>
+  <select id="getgjzwmd" resultType="yd.jxzg.entity.JzgEntity">
+   SELECT zgh zgh,xm xm,xbid xbm,dept_id yxsh,dept_name yxmc,zzmmmc zzmmm,zyjszw_mc zyjszwmc FROM tr_jzg_basic WHERE zyjszw_mc='高级讲师'
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>
+  </select>
+  <select id="gzyssxjsbl" resultType="yd.jxzg.common.TjCount">
+   SELECT (COUNT(1)*100)/(SELECT COUNT(1) FROM tr_jzg_basic WHERE dept_name=a.dept_name) zcount,dept_name mc FROM tr_jzg_basic a WHERE is_ssjzg='1' GROUP BY dept_name
+  </select>
+  <select id="getxdzyssxjsbl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1)/(SELECT COUNT(1) FROM tr_jzg_basic WHERE dept_name=a.dept_name)*100 zcount,year mc FROM tr_jzg_basic a WHERE is_ssjzg='1'
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if> GROUP BY year
+  </select>
+  <select id="getxdssxjsmd" resultType="yd.jxzg.entity.JzgEntity">
+    SELECT zgh zgh,xm xm,xbid xbm,dept_id yxsh,dept_name yxmc,zzmmmc zzmmm,zyjszw_mc zyjszwmc,is_ssjzg isssjzg FROM tr_jzg_basic WHERE is_ssjzg='1'
+   <if test="zymc!=null and zymc!='各专业'">
+    AND dept_name=#{zymc}
+   </if>
+  </select>
+  <select id="getqklxsl" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM zz_xxbkxx WHERE year='2017' AND dl='期刊'
+  </select>
+  <select id="getlnqklxsl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc FROM zz_xxbkxx WHERE dl='期刊' GROUP BY year
+  </select>
+  <select id="getsjczbk" resultType="double">
+   SELECT SUM(je)/(SELECT COUNT(1) FROM gxxs01_bzks) FROM zz_bkqk WHERE year='2017'
+  </select>
+  <select id="getsjczbktbt" resultType="yd.jxzg.common.TjCount">
+   SELECT (SUM(je)*10000)/(SELECT COUNT(1) FROM gxxs01_bzks) zcount,year mc FROM zz_bkqk GROUP BY year
+  </select>
+   <select id="getbkflbt" resultType="yd.jxzg.common.TjCount">
+   SELECT lx mc ,je zcount FROM zz_bkqk  WHERE 1=1 
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if> 
+  </select>
+  <select id="getbkflmx" resultType="yd.jxzg.common.TjCount">
+   SELECT mc mc,lx bl1,je bl2,year bl3 FROM zz_bkqk WHERE 1=1
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+    <if test="mc!=null">
+    AND lx=#{mc}
+   </if>
+  </select>
+  <select id="getjzgsltbt" resultType="yd.jxzg.common.TjCount">
+   SELECT year mc,COUNT(1) zcount FROM tr_jzg_basic GROUP BY year
+  </select>
+  <select id="getxzsbqd" resultType="yd.jxzg.common.TjCount">
+   SELECT xzsbmc mc,sl bl1,je bl2,year bl3 FROM zz_xzsb WHERE 1=1
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="getqtqymj" resultType="yd.jxzg.common.TjCount">
+  SELECT mc mc,mj bl1,lx bl2,YEAR bl3 FROM zz_xzyfmj WHERE lx='其它' 
+  </select>
+  <select id="getxzjxyf" resultType="yd.jxzg.common.TjCount">
+   SELECT mc mc,mj bl1,lx bl2,year bl3 FROM zz_xzyfmj WHERE lx='教学、辅助'
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="getxzxzbgqd" resultType="yd.jxzg.common.TjCount">
+  SELECT mc mc,mj bl1,lx bl2,year bl3 FROM zz_xzyfmj WHERE lx='行政'
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="getxzjsjqd" resultType="yd.jxzg.common.TjCount">
+   SELECT mc mc,sl bl1,je bl2,year bl3 FROM zz_jsj WHERE lx='新增'
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="getwldmtmx" resultType="yd.jxzg.common.TjCount">
+    SELECT jsmc mc,wllx bl1,jsjsl zcount,tyysl xcount ,zws bl2,year bl3 FROM zz_wldmt WHERE 1=1
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="getjxgwxq" resultType="yd.jxzg.common.TjCount">
+   SELECT mc mc,sl zcount,lx bl1,year bl3,gws xcount FROM zz_gwsmx WHERE 1=1
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="getjszylist" resultType="yd.jxzg.common.TjCount">
+   SELECT dept_id dm,dept_name mc FROM tr_jzg_basic GROUP BY dept_id,dept_name
+  </select>
+  <select id="getxwjdjhb" resultType="yd.jxzg.entity.XwJdEntity">
+    SELECT xwsxjdh  ,xwsxjdmc ,sxxm ,syzy ,xwsxjdjlrq FROM gxgz04_xwsxjd WHERE 1=1 
+    <if test="nf!=null">
+     AND xwsxjdjlrq = #{nf}
+    </if>
+  </select>
+  <select id="getxdnfdjflbt" resultType="yd.jxzg.common.TjCount">
+   SELECT zclx mc,zcje bl1 FROM zz_jfzclb WHERE 1=1
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="getxdnfdjflmx" resultType="yd.jxzg.common.TjCount">
+   SELECT zclx mc,zcje bl1,year bl2 FROM zz_jfzclb WHERE 1=1
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+   <if test="lb!=null">
+    AND zclx=#{lb}
+   </if>
+  </select>
+  <select id="getjzjslist" resultType="yd.jxzg.entity.JzgEntity">
+    SELECT zgh zgh,xm xm,xbid xbm,dept_id yxsh,dept_name,xlmc yxmc,zzmmmc zzmmm,zyjszw_mc zyjszwmc,is_ssjzg isssjzg FROM tr_jzg_basic WHERE is_wp='1'
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="getqysj" resultType="yd.jxzg.common.TjCount">
+    SELECT xm mc,gzdl_dwmc title,gzdl_gw bl1,gzdl_sj bl2, gzdl_pcbm bl3 FROM tr_jzg_gzdl
+  </select>
+  <select id="getbyscj" resultType="yd.jxzg.entity.ZgzsEntity">
+   SELECT xm,xb,nj,bjmc,sfdk,sfzg,qxx,jydwxz,jydw,sfhqsz,hqszmc,zydm,zymc,year,xyaqmyd FROM gxxx_bysqk WHERE 1=1 and jsjdgks='是'
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if>
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="getxszsl" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM gxxs01_bzks
+  </select>
+  <select id="getlsxssl" resultType="yd.jxzg.entity.StudentEntity">
+    SELECT xs.xh,xs.xm,xs.xbm,xs.csrq,xs.jg,xs.sfzjh,xs.zym,xs.rxny,xs.rxnj,xs.bh,xs.xjztmc
+      FROM gxxs01_bzks xs WHERE xjztmc='退学'
+      <if test="zymc!=null">
+        AND xs.zymc=#{zymc}
+      </if>
+  </select>
+  <select id="getzybdqd" resultType="yd.jxzg.entity.ZyxxEntity">
+   SELECT zyh,zymc,zyzt,year FROM gxjx01_bzks_zy WHERE zyzt in ('0','2')
+  </select>
+  <select id="getcxzszy" resultType="yd.jxzg.entity.ZyxxEntity">
+   SELECT zyh,zymc,zyzt,year FROM gxjx01_bzks_zy WHERE zyzt ='1'
+  </select>
+  <select id="getqrzpxbbd" resultType="yd.jxzg.entity.ZyxxEntity">
+   SELECT zyh,zymc,zyzt,year FROM gxjx01_bzks_zy WHERE zyzt in ('0','2') AND xxlx!='全日制'
+  </select>
+  <select id="getsxsvsyl" resultType="yd.jxzg.common.TjCount">
+   SELECT SUM(sysl) zcount,year mc FROM zz_xzsb WHERE 1=1
+   <if test="mc!=null">
+    AND ks=#{mc}
+   </if> GROUP BY year
+  </select>
+  <select id="getsxks" resultType="yd.jxzg.common.TjCount">
+   SELECT ks mc FROM zz_xzsb GROUP BY ks
+  </select>
+  <select id="getsxssbsyqd" resultType="yd.jxzg.common.TjCount">
+   SELECT xzsbmc title,ks bl1,je bl2,year bl3 FROM zz_xzsb WHERE 1=1 
+   <if test="nf!=null">
+     AND year=#{nf}
+   </if>
+   <if test="mc!=null">
+     AND ks=#{mc}
+   </if>
+  </select>
+  <select id="getjzgzzmj" resultType="yd.jxzg.common.TjCount">
+   SELECT mc mc,mj zj FROM zz_xzyfmj WHERE year='2017' AND lx='教工住宅'
+  </select>
+  <select id="getqtydmj" resultType="yd.jxzg.common.TjCount">
+   SELECT mc mc,mj zj FROM zz_xzyfmj WHERE year='2017' AND lx='其它'
+  </select>
+  <select id="getlnbksl" resultType="yd.jxzg.common.TjCount">
+   SELECT SUM(sl) zcount ,year mc FROM zz_xxbkxx GROUP BY year
+  </select>
+  <select id="getqkgesl" resultType="yd.jxzg.common.TjCount">
+   SELECT lx mc,sl zcount FROM zz_xxbkxx WHERE dl='期刊'
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="getgltssl"  resultType="yd.jxzg.common.TjCount">
+   SELECT sl zcount,lx mc FROM zz_xxbkxx WHERE dl='图书'
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="getdztslxsl"  resultType="yd.jxzg.common.TjCount">
+   SELECT sl zcount,lx mc FROM zz_xxbkxx WHERE dl='电子书'
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="gettysbmx" resultType="yd.jxzg.common.TjCount">
+   SELECT xzsbmc mc ,sl bl1 ,ks bl2,lx bl3 FROM zz_xzsb WHERE lx='通用设备'
+   <if test="nf!=null">
+    AND year!=#{nf}
+   </if>
+  </select>
+  <select id="getzysbmx" resultType="yd.jxzg.common.TjCount">
+   SELECT xzsbmc mc ,sl bl1 ,ks bl2,lx bl3 FROM zz_xzsb WHERE lx='专业设备'
+   <if test="nf!=null">
+    AND year!=#{nf}
+   </if>
+  </select>
+  <select id="getxxjdfb" resultType="yd.jxzg.common.TjCount">
+   SELECT mc mc,jdsl zcount,YEAR bl1 FROM zz_jdfb WHERE YEAR=#{nf}
+  </select>
+  <select id="getzyjfmx" resultType="yd.jxzg.common.TjCount">
+   SELECT zclx mc,zcje zj,year bl1 FROM zz_jfzclb WHERE 1=1
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="getstujkqd" resultType="yd.jxzg.common.TjCount">
+   SELECT mc mc,sg bl1,tz bl2, sl bl3,title sfhg FROM zz_xstzqk
+  </select>
+  <select id="getgzydysl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,dept_name mc FROM tr_jzg_basic WHERE zzmmmc='党员' GROUP BY dept_name
+  </select>
+  <select id="getdylist" resultType="yd.jxzg.entity.JzgEntity">
+   SELECT xm xm,xbid xbm,dept_name yxmc,zzmmmc zzmmm FROM tr_jzg_basic WHERE zzmmmc='党员' 
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>
+    <if test="nf!=null">
+    AND year=#{nf}
+   </if>  
+  </select>
+  <select id="getdjpx" resultType="yd.jxzg.common.TjCount">
+   SELECT hdmx mc,rs zcount,year bl1 FROM zz_djpxhd WHERE lx='1'
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="getjzgdypxmd" resultType="yd.jxzg.entity.JzgEntity">
+   SELECT xm xm,xbid xbm,dept_name yxmc,zzmmmc zzmmm FROM tr_jzg_basic WHERE zzmmmc='党员' ORDER BY rAND() limit 10
+  </select>
+  <select id="getdjhd" resultType="yd.jxzg.common.TjCount">
+   SELECT hdmx mc,rs zcount,year bl1 FROM zz_djpxhd WHERE lx='2'
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="getdjhdsl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc FROM zz_djpxhd WHERE lx='2' GROUP BY year
+  </select>
+  <select id="getzypxpm" resultType="yd.jxzg.common.TjCount">
+   SELECT SUM(pxrs) zcount,year mc  FROM tr_zy_xs GROUP BY year ORDER BY SUM(pxrs) desc
+  </select>
+  <select id="getpxxmmx" resultType="yd.jxzg.common.TjCount">
+    SELECT zymc mc,pxrs zcount,year bl1 FROM tr_zy_xs WHERE 1=1 and zymc !=''
+    <if test="zymc!=null">
+     AND zymc=#{zymc}
+    </if>
+    <if test="nf!=null">
+     AND year=#{nf}
+    </if>
+  </select>
+  <select id="getxspxlist" resultType="yd.jxzg.entity.StudentEntity">
+   SELECT xm xm,zymc zymc,bh bh,yxmc yxmc FROM gxxs01_bzks WHERE 1=1 
+    <if test="zymc!=null">
+     AND zymc=#{zymc}
+    </if>
+    <if test="nf!=null">
+     AND RXNJ=#{nf}
+    </if>  ORDER BY rAND() limit 10
+  </select>
+  <select id="getrcyjpm" resultType="yd.jxzg.common.TjCount">
+   SELECT rcyj zcount,zymc mc FROM gxjx01_bzks_zy WHERE rcyj!=''
+   <if test="zymc!=null">
+     AND zymc=#{zymc}
+    </if>
+    <if test="nf!=null">
+     AND year=#{nf}
+    </if> ORDER BY rcyj desc
+  </select>
+  <select id="getlnrcyjsl" resultType="java.lang.Integer">
+   SELECT rcyj FROM gxjx01_bzks_zy WHERE 1=1
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if>
+  </select>
+  <select id="getrcyjmx" resultType="yd.jxzg.entity.JzgEntity">
+   SELECT xm xm,xbid xbm,dept_name yxmc,zzmmmc zzmmm FROM tr_jzg_basic ORDER BY rAND() limit 10  
+  </select>
+  <select id="getlnzgjjssl" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM tr_jzg_basic WHERE zyjszw_dj in ('中级','副高级')
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>
+  </select>
+  <select id="getgjjslist" resultType="yd.jxzg.entity.JzgEntity">
+   SELECT zgh zgh,xm xm,xbid xbm,dept_id yxsh,dept_name yxmc,zzmmmc zzmmm FROM tr_jzg_basic WHERE zyjszw_dj in ('中级','副高级')
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>
+    <if test="nf!=null">
+    AND year=#{nf}
+   </if>  
+  </select>
+  <select id="getszxldbt"  resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM tr_jzg_basic WHERE xlmc='本科' AND year=a.year
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>) 'dm',
+   (SELECT COUNT(1) FROM tr_jzg_basic WHERE xlmc='大专' AND year=a.year
+  <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>) 'bl1',
+ (SELECT COUNT(1) FROM tr_jzg_basic WHERE xlmc='研究生' AND year=a.year
+  <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>) 'bl2' ,
+ (SELECT COUNT(1) FROM tr_jzg_basic WHERE xlmc='中专' AND year=a.year
+  <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>) 'bl3' ,year mc
+ FROM tr_jzg_basic a GROUP BY year
+  </select>
+  <select id="getzyszxl" resultType="yd.jxzg.common.TjCount">
+    SELECT (SELECT COUNT(1) FROM tr_jzg_basic WHERE xlmc='本科' AND dept_name=a.dept_name) 'bl1',
+   (SELECT COUNT(1) FROM tr_jzg_basic WHERE xlmc='大专' AND dept_name=a.dept_name) 'bl2',
+   (SELECT COUNT(1) FROM tr_jzg_basic WHERE xlmc='研究生' AND dept_name=a.dept_name) 'bl3' ,
+   (SELECT COUNT(1) FROM tr_jzg_basic WHERE xlmc='中专' AND dept_name=a.dept_name) 'bl4' ,dept_name mc
+   FROM tr_jzg_basic a GROUP BY dept_name
+  </select>
+  <select id="getjsmd" resultType="yd.jxzg.entity.JzgEntity">
+    SELECT zgh zgh,xm xm,xbid xbm,dept_id yxsh,is_jz isjz,dept_name,xlmc,is_jslx isjslx,zzmmmc zzmmm,zyjszw_dj zyjszwdj,is_ssjzg isssjzg FROM tr_jzg_basic WHERE 1=1
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="getjszcdjt" resultType="yd.jxzg.common.TjCount">
+    SELECT (SELECT COUNT(1) FROM tr_jzg_basic WHERE zyjszw_dj='初级' AND dept_name=a.dept_name) 'bl1',
+ (SELECT COUNT(1) FROM tr_jzg_basic WHERE zyjszw_dj='中级' AND dept_name=a.dept_name) 'bl2',
+ (SELECT COUNT(1) FROM tr_jzg_basic WHERE zyjszw_dj='副高级' AND dept_name=a.dept_name) 'bl3' ,dept_name mc
+ FROM tr_jzg_basic a GROUP BY dept_name
+  </select>
+   <select id="getzyzcbht"  resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM tr_jzg_basic WHERE zyjszw_dj='初级' AND year=a.year
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>) 'dm',
+   (SELECT COUNT(1) FROM tr_jzg_basic WHERE zyjszw_dj='中级' AND year=a.year
+  <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>) 'bl1',
+ (SELECT COUNT(1) FROM tr_jzg_basic WHERE zyjszw_dj='副高级' AND year=a.year
+  <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>) 'bl2' ,year mc
+ FROM tr_jzg_basic a GROUP BY year
+  </select>
+  <select id="getssxjsblpm"  resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1)/(SELECT COUNT(1) FROM tr_jzg_basic WHERE dept_name=a.dept_name) zj,dept_name mc FROM tr_jzg_basic a WHERE is_ssjzg='1'
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if> GROUP BY dept_name ORDER BY zj
+  </select>
+  <select id="getzjzjs"  resultType="yd.jxzg.common.TjCount">
+   SELECT  (SELECT COUNT(1) FROM tr_jzg_basic WHERE is_jz='0' AND dept_name=a.dept_name) 'bl1',
+ (SELECT COUNT(1) FROM tr_jzg_basic WHERE is_jz='1' AND dept_name=a.dept_name) 'bl2' ,dept_name mc
+ FROM tr_jzg_basic a GROUP BY dept_name
+  </select>
+  <select id="getzyzjzjstbt" resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM tr_jzg_basic WHERE is_jz='1' AND year=a.year
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>) 'bl2',
+   (SELECT COUNT(1) FROM tr_jzg_basic WHERE is_jz='0' AND year=a.year
+  <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>) 'bl1',year mc
+   FROM tr_jzg_basic a GROUP BY year ORDER BY year
+  </select>
+  <select id="getwhzyjsdjt" resultType="yd.jxzg.common.TjCount">
+   SELECT  (SELECT COUNT(1) FROM tr_jzg_basic WHERE is_jslx='0' AND dept_name=a.dept_name) 'bl1',
+ (SELECT COUNT(1) FROM tr_jzg_basic WHERE is_jslx='1' AND dept_name=a.dept_name) 'bl2' ,dept_name mc
+ FROM tr_jzg_basic a GROUP BY dept_name
+  </select>
+  <select id="getxzwzjsdjt" resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM tr_jzg_basic WHERE is_jslx='1' AND year=a.year
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>) 'bl2',
+   (SELECT COUNT(1) FROM tr_jzg_basic WHERE is_jslx='0' AND year=a.year
+  <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>) 'bl1',year mc
+   FROM tr_jzg_basic a GROUP BY year
+  </select>
+  <select id="getbysmydpm"  resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM gxxx_bysqk WHERE dwmyd>=70 AND zymc=a.zymc)/COUNT(1) zj, zymc mc FROM gxxx_bysqk a WHERE 1=1
+   <if test="nf!=null">
+     AND year=#{nf}
+   </if> GROUP BY zymc ORDER BY zj desc
+  </select>
+  <select id="getzybysmydtbt"  resultType="yd.jxzg.common.TjCount">
+  SELECT (SELECT COUNT(1) FROM gxxx_bysqk WHERE dwmyd>=70 AND year=a.year)/COUNT(1)*100 zcount, year mc FROM gxxx_bysqk a WHERE 1=1
+   <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if> GROUP BY year 
+  </select>
+  <select id="getmydmx" resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,zymc dm,jydw bl1,dwmyd bl2 FROM gxxx_bysqk WHERE 1=1
+   <if test="nf!=null">
+     AND year=#{nf}
+   </if>
+   <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if>
+  </select>
+  <select id="getsxmydpm" resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM gxxs_dgsx WHERE myd>=70 AND zymc=a.zymc)/COUNT(1) zj, zymc mc FROM gxxs_dgsx a WHERE 1=1
+   <if test="nf!=null">
+     AND year=#{nf}
+   </if> GROUP BY zymc ORDER BY zj desc
+  </select>
+  <select id="getsxmymx"  resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,zymc dm,myd bl1,year bl2 FROM gxxs_dgsx WHERE 1=1
+   <if test="nf!=null">
+     AND year=#{nf}
+   </if>
+   <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if>
+  </select>
+  <select id="getsxmydtbt"  resultType="yd.jxzg.common.TjCount">
+  SELECT (SELECT COUNT(1) FROM gxxs_dgsx WHERE myd>=70 AND zymc=a.zymc)/COUNT(1) zj, year mc FROM gxxs_dgsx a WHERE 1=1
+   <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if> GROUP BY year 
+  </select>
+  <select id="getkyslpm"  resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,zymc mc FROM zz_kyxm WHERE 1=1
+   <if test="nf!=null">
+     AND year=#{nf}
+   </if> GROUP BY zymc ORDER BY zcount desc
+  </select>
+  <select id="getkyjepm"  resultType="yd.jxzg.common.TjCount">
+   SELECT SUM(jfzc) zcount,zymc mc FROM zz_kyxm WHERE 1=1
+   <if test="nf!=null">
+     AND year=#{nf}
+   </if> GROUP BY zymc ORDER BY zcount desc
+  </select>
+  <select id="getkyxmmx"  resultType="yd.jxzg.common.TjCount">
+   SELECT mc mc,zymc dm,jfzc bl1,year bl2 FROM zz_kyxm WHERE 1=1
+   <if test="nf!=null">
+     AND year=#{nf}
+   </if>
+   <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if>
+  </select>
+  <select id="getxxsbzslpm"  resultType="yd.jxzg.common.TjCount">
+   SELECT sbsl zcount,zymc mc FROM zz_xxsb ORDER BY sbsl desc
+  </select>
+  <select id="getjsxxsbpm"  resultType="yd.jxzg.common.TjCount">
+   SELECT sjrs zcount,zymc mc FROM zz_xxsb ORDER BY sbsl asc
+  </select>
+  <select id="getxxsbmx" resultType="yd.jxzg.common.TjCount">
+   SELECT mc mc,zymc bl1,sbsl bl2 FROM zz_zyxxsb WHERE 1=1
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if>
+  </select>
+  <select id="gethjqkpm" resultType="yd.jxzg.common.TjCount">
+   SELECT SUM(hjjbdm) zcount,hjlb mc FROM gxxs_xshj  WHERE 1=1
+   <if test="nf!=null">
+     AND hjrq=#{nf}
+   </if> GROUP BY hjlb ORDER BY zcount desc
+  </select>
+  <select id="xshjmx" resultType="yd.jxzg.common.TjCount">
+   SELECT hjmc mc,hjlb title,hjjbmc bl1,zdlsmc bl2,hjrq bl3 FROM gxxs_xshj WHERE 1=1
+   <if test="nf!=null">
+     AND hjrq=#{nf}
+   </if>
+   <if test="zymc!=null">
+     AND hjlb=#{zymc}
+   </if>
+  </select>
+  <select id="hjjqtbt" resultType="yd.jxzg.common.TjCount">
+   SELECT SUM(hjjbdm) zcount,hjrq mc FROM gxxs_xshj WHERE 1=1
+   <if test="zymc!=null">
+    AND hjlb=#{zymc}
+   </if> GROUP BY hjrq
+  </select>
+  <select id="getxsxxmydpm" resultType="yd.jxzg.common.TjCount">
+   SELECT avg(xxmyd) zj,zymc mc FROM gxxs01_bzks WHERE zymc!='' GROUP BY zymc ORDER BY zj desc
+  </select>
+  <select id="getxsxxmydtbt" resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM gxxs01_bzks WHERE xxmyd>=70 AND rxnj=a.rxnj)/COUNT(1) zj zcount,rxnj mc FROM gxxs01_bzks a WHERE 1=1
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if> GROUP BY rxnj
+  </select>
+  <select id="getxsxxmydmx" resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,zymc title,xxmyd bl1,rxnj bl2 FROM gxxs01_bzks WHERE 1=1
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if>
+   <if test="nf!=null">
+     AND rxnj=#{nf}
+   </if> 
+  </select>
+  <select id="getgzyjftrpm" resultType="yd.jxzg.common.TjCount">
+   SELECT zymc mc,jftr zcount FROM gxjx01_bzks_zy WHERE zymc!=''
+   <if test="nf!=null">
+    AND yea=#{nf}
+   </if> ORDER BY zcount desc
+  </select>
+  <select id="getjfz" resultType="java.lang.Integer">
+    SELECT jftr FROM gxjx01_bzks_zy WHERE zymc=#{zymc}
+  </select>
+  <select id="getgzyjftrmx" resultType="yd.jxzg.common.TjCount">
+   SELECT zymc mc,year bl1,jftr bl2 FROM gxjx01_bzks_zy WHERE 1=1
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if>
+   <if test="nf!=null">
+     AND year=#{nf}
+   </if> 
+  </select>
+  <select id="getlnzyssxjsbl" resultType="yd.jxzg.common.TjCount">
+    SELECT COUNT(1)/(SELECT COUNT(1) FROM tr_jzg_basic WHERE year=a.year)*1000 zcount,year mc FROM tr_jzg_basic a WHERE is_ssjzg='1'
+    <if test="zymc!=null">
+     AND dept_name=#{zymc}
+    </if>
+    GROUP BY year ORDER BY year
+  </select>
+  <select id="getxslyxxfb" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,lyxx mc FROM gxxs01_bzks GROUP BY lyxx ORDER BY zcount desc
+  </select>
+  <select id="getxxzssltbt" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,rxnj mc FROM gxxs01_bzks WHERE 1=1
+   <if test="mc!=null">
+    AND lyxx=#{mc}
+   </if> GROUP BY rxnj ORDER BY rxnj 
+  </select>
+  <select id="getzsxxxsmx" resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,zymc bl1,lyxx bl2 ,rxnj bl3 FROM gxxs01_bzks WHERE 1=1
+   <if test="mc!=null">
+    AND lyxx=#{mc}
+   </if>
+   <if test="nf!=null">
+    AND rxnj=#{nf}
+   </if>
+  </select>
+  <select id="getzsrypx" resultType="yd.jxzg.common.TjCount">
+   SELECT SUM(day1) zcount,xm mc FROM zz_zsjzggz GROUP BY xm ORDER BY zcount desc
+  </select>
+  <select id="getgtzsqk" resultType="yd.jxzg.common.TjCount">
+   SELECT day1 zcount,zsrq mc FROM zz_zsjzggz WHERE 1=1
+   <if test="mc!=null">
+    AND xm=#{mc}
+   </if>
+  </select>
+  <select id="getzsjszsmx" resultType="yd.jxzg.common.TjCount">
+  SELECT xm mc,rxnj bl1,zymc bl2,lyxx bl2 FROM gxxs01_bzks WHERE rxnj='2017' ORDER BY rAND() limit 10
+  </select>
+  <select id="getxssyd" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,CONCAT(s.province,s.city) mc FROM gxxs01_bzks gx LEFT JOIN s_area_code s ON left(gx.sfzjh, 6)=s.areaCode WHERE rxnj='2017' GROUP BY mc
+  </select>
+  <select id="getxzdqgzyrs">
+   SELECT COUNT(1) zcount,bx.zymc mc FROM gxxs01_bzks gx LEFT JOIN s_area_code s ON left(gx.sfzjh, 6)=s.areaCode WHERE gx.rxnj='2017'
+   <if test="mc!=null">
+    AND CONCAT(s.province,S.city)=#{mc}
+   </if> GROUP BY mc
+  </select>
+  <select id="getxzzydqxsmx" resultType="yd.jxzg.common.TjCount">
+    SELECT gx.xm mc,CONCAT(s.province,s.city) bl1,rxnj bl2,zymc bl3 FROM  gxxs01_bzks gx LEFT JOIN s_area_code s ON left(gx.sfzjh, 6)=s.areaCode WHERE 1=1
+    <if test="zymc!=null">
+     AND zymc=#{zymc}
+    </if>
+    <if test="mc!=null">
+     AND CONCAT(s.province,s.city)=#{mc}
+    </if>
+    <if test="nf!=null">
+       AND rxnj=#{nf}
+     </if>
+  </select>
+  <select id="getxdzyxssl" resultType="yd.jxzg.common.TjCount">
+  	SELECT COUNT(1) zcount,rxnj mc FROM gxxs01_bzks WHERE 1=1
+  	<if test="zymc!=null">
+  	 AND zymc=#{zymc}
+  	</if>
+  	 GROUP BY rxnj ORDER BY rxnj
+  </select>
+  <select id="getxdzygdqxssl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,CONCAT(s.province,s.city) mc FROM gxxs01_bzks gx
+   LEFT JOIN s_area_code s ON left(gx.sfzjh, 6)=s.areaCode WHERE 1=1
+   <if test="nf!=null">
+    AND rxnj=#{nf}
+   </if>
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if>
+    GROUP BY mc
+  </select>
+  <select id="getxdxxgzyxssl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount ,zymc mc FROM gxxs01_bzks WHERE 1=1
+   <if test="nf!=null">
+    AND rxnj=#{nf}
+   </if>
+   <if test="mc!=null">
+    AND lyxx=#{mc}
+   </if> GROUP BY zymc
+  </select>
+  <select id="getxxlyxxxsmx" resultType="yd.jxzg.common.TjCount">
+    SELECT gx.xm mc,lyxx bl1,rxnj bl2,zymc bl3 FROM  gxxs01_bzks gx LEFT JOIN s_area_code s ON left(gx.sfzjh, 6)=s.areaCode WHERE 1=1
+    <if test="zymc!=null">
+     AND zymc=#{zymc}
+    </if>
+    <if test="mc!=null">
+     AND lyxx=#{mc}
+    </if>
+    <if test="nf!=null">
+       AND rxnj=#{nf}
+     </if>
+  </select>
+  <select id="getxsslsex" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount ,rxnj mc FROM gxxs01_bzks WHERE 1=1
+   <if test="mc!=null">
+    AND xbm=#{mc}
+   </if> GROUP BY rxnj ORDER BY rxnj
+  </select>
+  <select id="getzsjslist" resultType="yd.jxzg.common.TjCount">
+   SELECT xm FROM tr_jzg_basic WHERE dept_name='招生处'
+  </select>
+   <select id="getzsqdList" resultType="yd.jxzg.common.TjCount">
+   SELECT zsqd mc FROM gxxs01_bzks GROUP BY zsqd
+  </select>
+  <select id="getzsjsqdbdrssl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,rxnj mc FROM gxxs01_bzks WHERE 1=1
+   <if test="mc!=null">
+    AND zsls=#{mc}
+   </if>
+   <if test="dg!=null">
+    AND zsqd=#{dg}
+   </if> GROUP BY rxnj ORDER BY rxnj
+  </select>
+  <select id="getxzxbzyxssl">
+    SELECT COUNT(1) zcount,zymc mc FROM gxxs01_bzks WHERE 1=1
+    <if test="mc!=null">
+    AND xbm=#{mc}
+   </if>
+   <if test="nf!=null">
+    AND rxnj=#{nf}
+   </if> GROUP BY zymc
+  </select>
+  <select id="getxbzyxsmxnf" resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,zymc bl1,xbm bl2,rxnj bl3 FROM  gxxs01_bzks WHERE 1=1
+    <if test="mc!=null">
+    AND xbm=#{mc}
+   </if>
+   <if test="nf!=null">
+    AND rxnj=#{nf}
+   </if>
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if>
+   </select>
+   <select id="getzsqdrylnzssl" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) zcount,zymc mc FROM gxxs01_bzks WHERE 1=1
+   <if test="mc!=null">
+    AND zsls=#{mc}
+   </if>
+   <if test="nf!=null">
+    AND rxnj=#{nf}
+   </if>
+    <if test="dg!=null">
+    AND zsqd=#{dg}
+   </if> GROUP BY zymc 
+   </select>
+   <select id="getzyqdzsmd" resultType="yd.jxzg.common.TjCount">
+    SELECT xm mc,zymc bl1,zsls bl2,zsqd bl3,rxnj title FROM gxxs01_bzks WHERE 1=1
+    <if test="nf!=null">
+      AND rxnj=#{nf}
+    </if>
+     <if test="mc!=null">
+    AND zsls=#{mc}
+   </if>
+    <if test="dg!=null">
+    AND zsqd=#{dg}
+   </if>
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if>
+   </select>
+   <select id="getxnzypxgxmxs" resultType="yd.jxzg.common.TjCount">
+    SELECT SUM(kssl) zcount,zsmc mc FROM zz_xnzypxb WHERE 1=1
+    <if test="nf!=null">
+     AND starttime=#{nf}
+    </if> GROUP BY zsmc
+   </select>
+   <select id="getxzxmlnpxtbt" resultType="yd.jxzg.common.TjCount">
+     SELECT SUM(kssl) zcount,starttime mc FROM zz_xnzypxb WHERE 1=1
+    <if test="mc!=null">
+     AND zsmc=#{mc}
+    </if> GROUP BY starttime
+   </select>
+   <select id="getxzxmmx" resultType="yd.jxzg.common.TjCount">
+    SELECT mc mc,zsmc title,kssl bl1,starttime bl2 FROM zz_xnzypxb FROM zz_xnzypxb WHERE 1=1
+    <if test="nf!=null">
+      AND starttime=#{nf}
+    </if>
+    <if test="mc!=null">
+      AND mc=#{mc}
+    </if>
+   </select>
+   <select id="getxsbdrcsl" resultType="yd.jxzg.common.TjCount">
+    SELECT COUNT(1) zcount,rxnj mc FROM gxxs01_bzks gx WHERE 1=1
+    <if test="mc!=null">
+     AND bh=#{mc}
+    </if>
+     GROUP BY rxnj ORDER BY rxnj
+   </select>
+   <select id="getgldqpxb" resultType="yd.jxzg.common.TjCount">
+    SELECT bjm mc FROM zz_pxb
+   </select>
+   <select id="getjnbzsmxsj" resultType="yd.jxzg.common.TjCount">
+    SELECT xm mc ,bjm title,left(starttime,4) bl1 FROM zz_pxb WHERE 1=1
+    <if test="nf!=null">
+     AND left(starttime,4)=#{nf}
+    </if>
+    <if test="mc!=null">
+     AND bjm=#{mc}
+    </if>
+   </select>
+   <select id="getjnbzsrstbt" resultType="yd.jxzg.common.TjCount">
+    SELECT COUNT(1) zcount,year mc FROM zz_pxb WHERE 1=1
+    <if test="bjm!=null">
+     AND bjm=#{mc}
+    </if> GROUP BY year ORDER BY year
+   </select>
+   <select id="getzszjtbt" resultType="yd.jxzg.common.TjCount">
+    SELECT SUM(zsje) zj,year mc FROM zz_zsfyb GROUP BY year
+   </select>
+   <select id="getzsqusyqk" resultType="yd.jxzg.common.TjCount">
+    SELECT SUM(zsje) zj,qdm mc FROM zz_zsfyb WHERE 1=1
+    <if test="nf!=null">
+     AND year=#{nf}
+    </if>
+     GROUP BY qdm
+   </select>
+   <select id="getzszjmx" resultType="yd.jxzg.common.TjCount">
+     SELECT qdm mc,zsfs bl1,zsje bl2,zssl bl3 FROM zz_zsfyb WHERE 1=1
+     <if test="nf!=null">
+      AND year=#{nf}
+     </if>
+     <if test="mc!=null">
+      AND qdm=#{mc}
+     </if>
+   </select>
+   <select id="getrjzsfy" resultType="yd.jxzg.common.TjCount">
+    SELECT SUM(zsje)/SUM(zssl) zj,year mc FROM zz_zsfyb GROUP BY year  
+   </select>
+   <select id="getngqdrjzsfy" resultType="yd.jxzg.common.TjCount">
+    SELECT SUM(zsje)/SUM(zssl) zj,qdm mc FROM zz_zsfyb WHERE 1=1
+     <if test="nf!=null">
+      AND year=#{nf}
+     </if>
+   </select>
+   <select id="getlyxxzsfy" resultType="yd.jxzg.common.TjCount">
+    SELECT SUM(zsje)/SUM(zssl) zj,qdm mc FROM zz_zsfyb WHERE zsfs!='' GROUP BY qdm
+   </select>
+   <select id="getxxjzsfy" resultType="yd.jxzg.common.TjCount">
+     SELECT SUM(zsje)/SUM(zssl) zj,qdm mc FROM zz_zsfyb WHERE zsfs!=''
+     <if test="mc">
+       qdm=#{mc}
+     </if> GROUP BY year ORDER BY year
+   </select>
+   <select id="getbysssltbt" resultType="yd.jxzg.common.TjCount">
+    SELECT COUNT(1) zcount,year mc FROM gxxx_bysqk WHERE 1=1
+    <if test="zymc!=null">
+     AND zymc=#{zymc}
+    </if> GROUP BY year ORDER BY year
+   </select>
+   <select id="getxznfdwjysl" resultType="yd.jxzg.common.TjCount">
+    SELECT COUNT(1) zcount,jydw mc FROM gxxx_btsqk WHERE 1=1
+    <if test="nf!=null">
+     AND year=#{nf}
+    </if> GROUP BY jydw
+   </select>
+   <update id="insertmyd">
+    update gxxs01_bzks set xxmyd=#{t} 
+   </update>
+   <select id="getxslsslbynf" resultType="yd.jxzg.common.TjCount">
+    SELECT COUNT(1) zcount,zymc mc FROM gxxs01_bzks WHERE xjztmc='退学'
+    <if test="nf!=null">
+      AND rxnj=#{nf}
+    </if> GROUP BY zymc
+   </select>
+   <select id="getxslsmx" resultType="yd.jxzg.common.TjCount">
+    SELECT xm mc,lsyy bl1,year bl2 FROM gxxs01_bzks WHERE xjztmc='退学'
+     <if test="nf!=null">
+     AND year=#{nf}
+    </if>
+    <if test="mc!=null">
+      AND lsyy=#{mc}
+    </if>
+   </select>
+   <select id="getxslsyypx" resultType="yd.jxzg.common.TjCount">
+    SELECT COUNT(1) zcount,lsyy mc FROM gxxs01_bzks WHERE xjztmc='退学' GROUP BY lsyy ORDER BY zcount desc
+   </select>
+   <select id="getlnlsyytbt" resultType="yd.jxzg.common.TjCount">
+    SELECT COUNT(1) zcount,rxnj mc FROM gxxs01_bzks xjztmc='退学' WHERE 1=1
+    <if test="mc!=null">
+     AND lsyy=#{mc}
+    </if> GROUP BY rxnj ORDER BY rxnj
+   </select>
+   <select id="getxszgzshqsl" resultType="yd.jxzg.common.TjCount">
+     SELECT COUNT(1) zcount,year mc FROM gxxx_bysqk WHERE 1=1
+     <if test="zymc!=null">
+       AND zymc=#{zymc}
+     </if> GROUP BY year ORDER BY year
+   </select>
+   <select id="getxdnjmx" resultType="yd.jxzg.entity.StudentEntity">
+    SELECT xs.xh,xs.xm,xs.xbm,xs.csrq,xs.jg,xs.sfzjh,xs.zym,xs.rxny,xs.rxnj,xs.bh,xs.xjztmc
+      FROM gxxs01_bzks xs WHERE 1=1
+      <if test="zymc!=null">
+        AND xs.zymc=#{zymc}
+      </if>
+      <if test="nf!=null">
+       AND xs.rxnj=#{nf}
+      </if>
+  </select>
+  <select id="getzykkscj" resultType="yd.jxzg.common.TjCount">
+     SELECT nnd mc,COUNT(*) zcount  FROM(  
+	 SELECT   
+	 case  
+	<![CDATA[  WHEN bfzkscj<=60 THEN '60分及以下' 
+		WHEN bfzkscj>=61 AND bfzkscj<=70 THEN '61-70分'   
+	    WHEN bfzkscj>=71 AND bfzkscj<=80 THEN '71-80分'
+		WHEN bfzkscj>=81 AND bfzkscj<=90 THEN '81-90分'   ]]>
+        WHEN bfzkscj>=91  THEN '90分及以上'   
+        end  
+       as nnd FROM gxjx01_bzks_kscj WHERE bfzkscj!='' AND kcxz='专业课'
+       <if test="zymc!=null">
+         AND zymc =#{zymc}
+       </if>
+       <if test="nf!=null">
+         AND xn =#{nf}
+       </if>
+    ) gxjx01_bzks_kscj  GROUP BY nnd
+  </select>
+  <select id="getwhkkscj" resultType="yd.jxzg.common.TjCount">
+     SELECT nnd mc,COUNT(*) zcount  FROM(  
+	 SELECT   
+	 case  
+	<![CDATA[  WHEN bfzkscj<=60 THEN '60分及以下' 
+		WHEN bfzkscj>=61 AND bfzkscj<=70 THEN '61-70分'   
+	    WHEN bfzkscj>=71 AND bfzkscj<=80 THEN '71-80分'
+		WHEN bfzkscj>=81 AND bfzkscj<=90 THEN '81-90分'   ]]>
+        WHEN bfzkscj>=91  THEN '90分及以上'   
+        end  
+       as nnd FROM gxjx01_bzks_kscj WHERE bfzkscj!='' AND kcxz='公共基础课'
+       <if test="zymc!=null">
+         AND zymc =#{zymc}
+       </if>
+       <if test="nf!=null">
+         AND xn =#{nf}
+       </if>
+    ) gxjx01_bzks_kscj  GROUP BY nnd
+  </select>
+  <select id="getzykksmx" resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,zymc title,bfzkscj bl1,kcxz bl2,xn bl2 WHERE bfzkscj!='' AND kcxz='专业课' 
+       <if test="zymc!=null">
+         AND zymc =#{zymc}
+       </if>
+       <if test="nf!=null">
+         AND xn =#{nf}
+       </if>
+       <if test='dg=="1"'>
+      <![CDATA[  AND BFZKSCJ<=60 ]]>
+      </if>
+      <if test='dg=="2"'>
+      <![CDATA[  AND Bbfzkscj>=61 AND bfzkscj<=70 ]]>
+      </if>
+      <if test='dg=="3"'>
+     <![CDATA[  AND bfzkscj>=71 AND bfzkscj<=80 ]]>
+      </if>
+      <if test='dg=="4"'>
+     <![CDATA[  AND bfzkscj>=81 AND bfzkscj<=90 ]]>
+      </if>
+      <if test='dg=="5"'>
+      <![CDATA[  AND bfzkscj>=91 ]]>
+      </if>
+  </select>
+  <select id="getwhkksmx" resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,zymc title,bfzkscj bl1,kcxz bl2,xn bl2 WHERE bfzkscj!='' AND kcxz='公共基础课' 
+       <if test="zymc!=null">
+         AND zymc =#{zymc}
+       </if>
+       <if test="nf!=null">
+         AND xn =#{nf}
+       </if>
+       <if test='dg=="1"'>
+      <![CDATA[  AND BFZKSCJ<=60 ]]>
+      </if>
+      <if test='dg=="2"'>
+      <![CDATA[  AND Bbfzkscj>=61 AND bfzkscj<=70 ]]>
+      </if>
+      <if test='dg=="3"'>
+     <![CDATA[  AND bfzkscj>=71 AND bfzkscj<=80 ]]>
+      </if>
+      <if test='dg=="4"'>
+     <![CDATA[  AND bfzkscj>=81 AND bfzkscj<=90 ]]>
+      </if>
+      <if test='dg=="5"'>
+      <![CDATA[  AND bfzkscj>=91 ]]>
+      </if>
+  </select>
+  <select id="getxszzfytbt" resultType="yd.jxzg.common.TjCount">
+   SELECT SUM(jxje) zj,bz.rxnj mc FROM gxjx01_bzks_jxj jx LEFT JOIN gxxs01_bzks bz ON jx.xm=bz.xm LEFT JOIN s_area_code s ON left(bz.sfzjh, 6)=s.areaCode WHERE 1=1
+   <if test="zymc!=null">
+    bz.zymc=#{zymc}
+   </if>
+   <if test="dqmc!=null">
+    CONCAT(s.province,s.city)=#{dqmc}
+   </if> GROUP BY bz.rxnj 
+  </select>
+  <select id="getszzxsmx" resultType="yd.jxzg.common.TjCount">
+   SELECT jx.xm mc,bz.zymc title,bz.rxnj bl1,jx.jxje bl2,CONCAT(s.province,s.city) bl3 FROM gxjx01_bzks_jxj jx LEFT JOIN gxxs01_bzks bz ON jx.xm=bz.xm LEFT JOIN s_area_code s ON left(bz.sfzjh, 6)=s.areaCode WHERE 1=1
+   <if test="zymc!=null">
+    bz.zymc=#{zymc}
+   </if>
+   <if test="dqmc!=null">
+    CONCAT(s.province,s.city)=#{dqmc}
+   </if>
+   <if test="nf!=null">
+    bz.bz.rxnj=#{nf}
+   </if>
+  </select> 
+  <select id="getsxsxmydtbt" resultType="yd.jxzg.common.TjCount">
+    SELECT avg(myd) zj,year mc FROM gxxs_dgsx GROUP BY year ORDER BY year
+  </select>
+  <select id="getgjjgtbt" resultType="yd.jxzg.common.TjCount">
+    SELECT COUNT(1) zcount,left(hjrq,4) mc FROM tr_xx_hj WHERE hjjb='国家级' GROUP BY mc
+  </select>
+  <select id="getshengjjtbt" resultType="yd.jxzg.common.TjCount">
+    SELECT COUNT(1) zcount,left(hjrq,4) mc FROM tr_xx_hj WHERE hjjb='省级' GROUP BY mc
+  </select>
+  <select id="getshijjtbt" resultType="yd.jxzg.common.TjCount">
+    SELECT COUNT(1) zcount,left(hjrq,4) mc FROM tr_xx_hj WHERE hjjb='市级' GROUP BY mc
+  </select>
+  <select id="getqtjtbt" resultType="yd.jxzg.common.TjCount">
+    SELECT COUNT(1) zcount,left(hjrq,4) mc FROM tr_xx_hj WHERE hjjb != '市级' AND hjjb != '省级' AND hjjb != '国家级' GROUP BY mc
+  </select>
+  <select id="getxxhjmx"  resultType="yd.jxzg.common.TjCount">
+   SELECT hjmc mc ,hjjb title,fjdw bl1 ,hjrq bl2 FROM tr_xx_hj WHERE 1=1
+   <if test="nf!=null">
+    AND left(hjrq,4)=#{nf}
+   </if>
+   <if test="lb!='其他'">
+	   <if test="lb!=null">
+	    AND hjjb=#{lb}
+	   </if>
+   </if>
+   <if test="lb=='其他'">
+    AND hjjb != '市级' AND hjjb != '省级' AND hjjb != '国家级'
+   </if>
+  </select>
+  <select id="gettnhgl" resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM gxxs01_bzks WHERE tnfs='是' AND rxnj=a.rxnj)/COUNT(1) zj,rxnj mc FROM gxxs01_bzks a WHERE 1=1
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if>
+    GROUP BY rxnj ORDER BY rxnj
+  </select>
+  <select id="gettjhgl" resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM gxxs01_bzks WHERE tjfs='是' AND rxnj=a.rxnj)/COUNT(1) zj,rxnj mc FROM gxxs01_bzks a WHERE 1=1
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if>
+    GROUP BY rxnj ORDER BY rxnj
+  </select>
+  <select id="gettzjcxsmx"  resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,zymc title,tjfs bl1,tnfs bl2,rxnj bl3 FROM gxxs01_bzks where 1=1
+   <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if>
+   <if test="nf!=null">
+     AND rxnj=#{nf}
+   </if>
+  </select>
+  <select id="getszzxsfb" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,CONCAT(s.province,s.city) mc FROM gxjx01_bzks_jxj jx LEFT JOIN gxxs01_bzks bz ON jx.xm=bz.xm 
+   LEFT JOIN s_area_code s ON left(bz.sfzjh, 6)=s.areaCode WHERE rxnj='2017'
+    <if test='dg=="1"'>
+      <![CDATA[  AND BFZKSCJ<=60 ]]>
+      </if>
+      <if test='dg=="2"'>
+      <![CDATA[  AND Bbfzkscj>=61 AND bfzkscj<=70 ]]>
+      </if>
+      <if test='dg=="3"'>
+     <![CDATA[  AND bfzkscj>=71 AND bfzkscj<=80 ]]>
+      </if>
+      <if test='dg=="4"'>
+     <![CDATA[  AND bfzkscj>=81 AND bfzkscj<=90 ]]>
+      </if>
+      <if test='dg=="5"'>
+      <![CDATA[  AND bfzkscj>=91 ]]>
+      </if>
+   GROUP BY mc
+  </select>
+  <select id="getxzszzxslnsl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,bz.rxnj mc FROM gxjx01_bzks_jxj jx LEFT JOIN gxxs01_bzks bz ON jx.xm=bz.xm 
+   LEFT JOIN s_area_code s ON left(bz.sfzjh, 6)=s.areaCode WHERE 1=1
+   <if test="dqmc!=null">
+    CONCAT(s.province,s.city)=#{dqmc}
+   </if> GROUP BY mc
+  </select>
+  <select id="getxsxxmydtbt1" resultType="yd.jxzg.common.TjCount">
+   SELECT avg(xxmyd) zj,rxnj mc FROM gxxs01_bzks GROUP BY rxnj
+  </select>
+  <select id="getbysxyaqmyd" resultType="yd.jxzg.common.TjCount">
+   SELECT avg(dwmyd) zj,year mc FROM gxxx_bysqk GROUP BY year
+  </select>
+  <select id="getxyaqmyd" resultType="yd.jxzg.common.TjCount">
+   SELECT avg(xyaqmyd) zj,rxnj mc FROM gxxs01_bzks GROUP BY rxnj
+  </select>
+  <select id="getxyshmyd" resultType="yd.jxzg.common.TjCount">
+   SELECT avg(xyshmyd) zj,rxnj mc FROM gxxs01_bzks GROUP BY rxnj
+  </select>
+  <select id="getxywhhdmyd" resultType="yd.jxzg.common.TjCount">
+   SELECT avg(whhdmyd) zj,rxnj mc FROM gxxs01_bzks GROUP BY rxnj
+  </select>
+  <select id="getxsxymydmx" resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,whhdmyd bl1,xyshmyd bl2,xyaqmyd bl3,rxnj title FROM gxxs01_bzks WHERE 1=1
+   <if test="nf!=null">
+    AND rxnj=#{nf}
+   </if>
+  </select>
+  <select id="getbysxxmydmx" resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,jydw title,zymc bl1,xyaqmyd bl2,year bl3 FROM gxxx_bysqk WHERE 1=1
+   <if test="nf!=null">
+    year = #{nf}
+   </if>
+  </select>
+  <select id="getjsagefb" resultType="yd.jxzg.common.TjCount">
+    SELECT nnd mc,COUNT(*) zcount  FROM(  
+	 SELECT   
+	 case  
+ <![CDATA[ WHEN TIMESTAMPDIFF(YEAR,substring(sfzh,7,8),CURDATE())<=20 THEN '20岁以下'
+		WHEN TIMESTAMPDIFF(YEAR,substring(sfzh,7,8),CURDATE())>=21 AND TIMESTAMPDIFF(YEAR,substring(sfzh,7,8),CURDATE())<=30 THEN '20-30岁'   
+	  WHEN TIMESTAMPDIFF(YEAR,substring(sfzh,7,8),CURDATE())>=31 AND TIMESTAMPDIFF(YEAR,substring(sfzh,7,8),CURDATE())<=40 THEN '31-40岁'
+		WHEN TIMESTAMPDIFF(YEAR,substring(sfzh,7,8),CURDATE())>=41 AND TIMESTAMPDIFF(YEAR,substring(sfzh,7,8),CURDATE())<=50 THEN '41-50岁'   
+	  WHEN TIMESTAMPDIFF(YEAR,substring(sfzh,7,8),CURDATE())>=51  THEN '51岁以上'   
+	 end   ]]>
+	 as nnd FROM tr_jzg_basic WHERE 1=1 
+	 <if test="zymc!=null">
+	   AND dept_name=#{zymc}
+	 </if>
+	<if test="nf!=null">
+       AND year=#{nf}
+    </if>
+	)tr_jzg_basic  GROUP BY nnd
+  </select>
+  <select id="getxzjsagemx" resultType="yd.jxzg.entity.JzgEntity">
+    SELECT zgh zgh,xm xm,TIMESTAMPDIFF(YEAR,substring(sfzh,7,8),CURDATE()) age,xbid xbm, dept_name yxmc,year year FROM tr_jzg_basic WHERE 1=1
+     <if test="zymc!=null">
+	   AND dept_name=#{zymc}
+	 </if>
+	 <if test="nf!=null">
+       AND year=#{nf}
+     </if>
+     <if test='aged=="0"'>
+      TIMESTAMPDIFF(YEAR,substring(sfzh,7,8),CURDATE())=''
+     </if>
+     <if test='aged=="1"'>
+      <![CDATA[ TIMESTAMPDIFF(YEAR,substring(sfzh,7,8),CURDATE())<=20 ]]>
+     </if>
+     <if test='aged=="2"'>
+     <![CDATA[  TIMESTAMPDIFF(YEAR,substring(sfzh,7,8),CURDATE())>=21 AND TIMESTAMPDIFF(YEAR,substring(sfzh,7,8),CURDATE())<=30 ]]>
+     </if>
+     <if test='aged=="3"'>
+      <![CDATA[ TIMESTAMPDIFF(YEAR,substring(sfzh,7,8),CURDATE())>=31 AND TIMESTAMPDIFF(YEAR,substring(sfzh,7,8),CURDATE())<=40 ]]>
+     </if>
+     <if test='aged=="4"'>
+       <![CDATA[  TIMESTAMPDIFF(YEAR,substring(sfzh,7,8),CURDATE())>=41 AND TIMESTAMPDIFF(YEAR,substring(sfzh,7,8),CURDATE())<=50 ]]>
+     </if>
+     <if test='aged=="5"'>
+       <![CDATA[  TIMESTAMPDIFF(YEAR,substring(sfzh,7,8),CURDATE())>=51 ]]>
+     </if>
+  </select>
+  <select id="getjszcfbbt" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,zyjszw_mc mc FROM tr_jzg_basic GROUP BY mc
+  </select>
+  <select id="getxzzclnsltbt" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc FROM tr_jzg_basic WHERE 1=1
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>
+   <if test="dg!=null">
+    AND zyjszw_mc=#{dg}
+   </if> GROUP BY year ORDER BY year
+  </select>
+  <select id="getxzjszcmx" resultType="yd.jxzg.entity.JzgEntity">
+  	SELECT xm xm,TIMESTAMPDIFF(YEAR,substring(sfzh,7,8),CURDATE()) age,xbid xbm, dept_name yxmc,year year,zyjszw_mc zwmc FROM tr_jzg_basic WHERE 1=1
+     <if test="zymc!=null">
+	   AND dept_name=#{zymc}
+	 </if>
+	 <if test="nf!=null">
+       AND year=#{nf}
+     </if>
+     <if test="dg!=null">
+       AND zyjszw_mc=#{dg}
+     </if>
+  </select>
+  <select id="getjsxlfb" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,xlmc mc FROM tr_jzg_basic GROUP BY xlmc
+  </select>
+  <select id="getxzxlsltbt"  resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc FROM tr_jzg_basic WHERE 1=1
+   <if test="dg!=null">
+    AND xlmc=#{dg}
+   </if>
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if> GROUP BY xlmc
+  </select>
+  <select id="getxzzynfxlmx" resultType="yd.jxzg.entity.JzgEntity">
+  	SELECT xm,TIMESTAMPDIFF(YEAR,substring(sfzh,7,8),CURDATE()) age,xbid xbm, dept_name yxmc,year,xlmc FROM tr_jzg_basic WHERE 1=1
+     <if test="zymc!=null">
+	   AND dept_name=#{zymc}
+	 </if>
+	 <if test="nf!=null">
+       AND year=#{nf}
+     </if>
+     <if test="dg!=null">
+       AND xlmc=#{dg}
+     </if>
+  </select>
+  <select id="getgjgjssldjt" resultType="yd.jxzg.common.TjCount">
+  SELECT  (SELECT COUNT(1) FROM tr_jzg_basic WHERE jslx='管' AND year=a.year
+    <if test="zymc!=null">
+       AND dept_name=#{zymc}
+   </if>) bl1,
+ (SELECT COUNT(1) FROM tr_jzg_basic WHERE jslx='技' AND year=a.year
+ <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>) bl2 ,
+ (SELECT COUNT(1) FROM tr_jzg_basic WHERE jslx='工' AND year=a.year
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>) bl3 ,year mc
+ FROM tr_jzg_basic a WHERE 1=1
+ <if test="zymc!=null">
+  AND dept_name=#{zymc}
+ </if>
+  GROUP BY year
+  </select>
+  <select id="getgjgjsbldjt" resultType="yd.jxzg.common.TjCount">
+    SELECT  round((SELECT COUNT(1) FROM tr_jzg_basic WHERE jslx='管' AND year=a.year
+    <if test="zymc!=null">
+       AND dept_name=#{zymc}
+     </if>)/COUNT(1)*100) bl1,
+   round((SELECT COUNT(1) FROM tr_jzg_basic WHERE jslx='技' AND year=a.year
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>)/COUNT(1)*100) bl2 ,
+    round((SELECT COUNT(1) FROM tr_jzg_basic WHERE jslx='工' AND year=a.year
+    <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>)/COUNT(1)*100) bl3 ,year mc
+     FROM tr_jzg_basic a WHERE 1=1
+ <if test="zymc!=null">
+  AND dept_name=#{zymc}
+ </if>
+  GROUP BY year
+  </select>
+   <select id="getbznwjssl" resultType="yd.jxzg.common.TjCount">
+       SELECT  (SELECT COUNT(1) FROM tr_jzg_basic WHERE is_bz='否' AND year=a.year 
+       <if test="zymc!=null">
+          AND dept_name=#{zymc}
+       </if>) bl1,
+ (SELECT COUNT(1) FROM tr_jzg_basic WHERE is_bz='是' AND year=a.year
+       <if test="zymc!=null">
+          AND dept_name=#{zymc}
+       </if>) bl2 ,year mc
+ FROM tr_jzg_basic a WHERE 1=1
+ <if test="zymc!=null">
+  AND dept_name=#{zymc}
+ </if>
+  GROUP BY year
+  </select>
+   <select id="getbznwjsbl" resultType="yd.jxzg.common.TjCount">
+    SELECT  round((SELECT COUNT(1) FROM tr_jzg_basic WHERE is_bz='否' AND year=a.year
+    <if test="zymc!=null">
+          AND dept_name=#{zymc}
+    </if>)/COUNT(1)*100) bl1,
+ round((SELECT COUNT(1) FROM tr_jzg_basic WHERE is_bz='是' AND year=a.year
+    <if test="zymc!=null">
+          AND dept_name=#{zymc}
+    </if>)/COUNT(1)*100) bl2 ,year mc
+ FROM tr_jzg_basic a WHERE 1=1
+ <if test="zymc!=null">
+  AND dept_name=#{zymc}
+ </if>
+  GROUP BY year
+  </select>
+  <select id="getzjzjsbldjt" resultType="yd.jxzg.common.TjCount">
+   SELECT round((SELECT COUNT(1) FROM tr_jzg_basic WHERE is_jz='1' AND year=a.year
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>)/COUNT(1)*100) bl2,
+   round((SELECT COUNT(1) FROM tr_jzg_basic WHERE is_jz='0' AND year=a.year
+  <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>)/COUNT(1)*100) bl1,year mc
+   FROM tr_jzg_basic a
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if> GROUP BY year
+  </select>
+  <select id="getjszgzsbltbt"  resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM tr_jzg_basic WHERE zyjszw_dj!='其他' AND zyjszw_dj!='' AND year=a.year
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>)/COUNT(1) zj,year mc FROM tr_jzg_basic a WHERE 1=1
+   <if test="zymc!=null">
+    AND a.dept_name=#{zymc}
+   </if> GROUP BY year
+  </select>
+  <select id="getxzczzmx" resultType="yd.jxzg.entity.JzgEntity">
+   SELECT xm,TIMESTAMPDIFF(YEAR,substring(sfzh,7,8),CURDATE()) age,xbid xbm, dept_name yxmc,year,xlmc,zyjszw_mc,zyjszw_dj FROM tr_jzg_basic WHERE zyjszw_dj!='其他' AND zyjszw_dj!=''
+     <if test="zymc!=null">
+	   AND dept_name=#{zymc}
+	 </if>
+	 <if test="nf!=null">
+       AND year=#{nf}
+     </if>
+  </select>
+  <select id="getssbtbbht" resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM gxxs01_bzks WHERE rxnj=a.year 
+   <if test="zymc!=null">
+    AND yxmc=#{zymc}
+   </if>)/COUNT(1) zcount,year mc FROM tr_jzg_basic a WHERE 1=1
+   <if test="zymc!=null">
+     AND dept_name=#{zymc}
+   </if> GROUP BY year
+  </select>
+  <select id="getjscjgzns" resultType="yd.jxzg.common.TjCount">
+    SELECT nnd mc,COUNT(*) zcount  FROM(  
+	 SELECT   
+	 case  
+ <![CDATA[ WHEN gznf<=3 THEN '3年以下'
+		WHEN gznf>=4 AND gznf<=10 THEN '4-10年'   
+	    WHEN gznf>=11 AND gznf<=20 THEN '11-20年'
+		WHEN gznf>=21 AND gznf<=30 THEN '21-30年'   
+	    WHEN gznf>=31  THEN '31年以上'   
+	 end   ]]>
+	 as nnd FROM tr_jzg_basic WHERE 1=1 
+	 <if test="zymc!=null">
+	   AND dept_name=#{zymc}
+	 </if>
+	<if test="nf!=null">
+       AND year=#{nf}
+    </if>
+	)tr_jzg_basic GROUP BY nnd
+  </select>
+  <select id="getjsgzsjmx" resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,zymc title,age bl1,gznf bl2,year bl3 FROM tr_jzg_basic WHERE 1=1
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+     <if test='dg=="1"'>
+      <![CDATA[  AND gznf<=3 ]]>
+      </if>
+      <if test='dg=="2"'>
+      <![CDATA[  AND gznf>=4 AND gznf<=10 ]]>
+      </if>
+      <if test='dg=="3"'>
+     <![CDATA[  AND gznf>=11 AND gznf<=20 ]]>
+      </if>
+      <if test='dg=="4"'>
+     <![CDATA[  AND gznf>=21 AND gznf<=30 ]]>
+      </if>
+      <if test='dg=="5"'>
+      <![CDATA[  AND gznf>=31 ]]>
+      </if>
+  </select>
+  <select id="getjsrjpxkstbt" resultType="yd.jxzg.common.TjCount">
+    SELECT SUM(pxkssl)/COUNT(1) zj,year mc FROM tr_jzg_basic WHERE 1=1
+    <if test="zymc!=null">
+     AND dept_name=#{zymc}
+    </if> GROUP BY year
+  </select>
+  <select id="getjspxksmx" resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,dept_name title,pxkssl bl1,year bl3 FROM tr_jzg_basic WHERE 1=1
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+    <if test="zymc!=null">
+	   AND dept_name=#{zymc}
+	 </if>
+  </select>
+  <select id="getjskyktsl" resultType="yd.jxzg.common.TjCount">
+    SELECT COUNT(1) zcount,left(zykt_lxrq,4) mc FROM tr_jzg_zykt WHERE 1=1
+    <if test="zymc!=null">
+     AND zymc=#{zymc}  
+    </if> GROUP BY mc
+  </select>
+  <select id="getxzktmx" resultType="yd.jxzg.common.TjCount">
+   SELECT zykt_ktmc mc,zykt_ktfl title,zykt_lxrq bl1,zykt_wcrsx bl2 FROM tr_jzg_zykt WHERE 1=1
+   <if test="nf!=null">
+    left(zykt_lxrq,4)=#{nf}
+   </if>
+   <if test="zymc!=null">
+    AND zymc=#{zymc}  
+   </if>
+  </select>
+  <select id="getjyzyjszwsl" resultType="yd.jxzg.common.TjCount">
+    SELECT COUNT(1) zcount,year mc FROM tr_jzg_basic a WHERE zyjszw_dj in ('初级','中级','副高级')
+    <if test="zymc!=null">
+     AND dept_name=#{zymc}  
+    </if> GROUP BY mc
+  </select>
+    <select id="getjyzyjszwbl" resultType="yd.jxzg.common.TjCount">
+    SELECT (SELECT COUNT(1) FROM tr_jzg_basic WHERE zyjszw_dj in ('初级','中级','副高级') AND year=a.year 
+    <if test="zymc!=null">
+     AND dept_name=#{zymc}
+    </if>)/COUNT(1) zcount,year mc FROM tr_jzg_basic a WHERE 1=1
+    <if test="zymc!=null">
+     AND dept_name=#{zymc}  
+    </if> GROUP BY mc
+  </select>
+  <select id="getjyzyjszwzmx" resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,dept_name zymc,zyjszw_dj bl1,zyjszw_mc bl2,year bl3 FROM tr_jzg_basic WHERE zyjszw_dj in ('初级','中级','副高级')
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+   <select id="getjyzyzyzgzssl"  resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc FROM tr_jzg_basic WHERE zyjszw_dj!='其他' AND zyjszw_dj!=''
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if> GROUP BY year
+  </select>
+  <select id="getlnggjssl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc FROM tr_jzg_basic WHERE is_ggjzg='1'
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if> GROUP BY year
+  </select>
+  <select id="getlnggjsbl" resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM tr_jzg_basic WHERE is_ggjzg='1' AND year=a.year 
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>)/COUNT(1) zj,year mc FROM tr_jzg_basic a WHERE 1=1
+   <if test="zymc!=null">
+     AND dept_name=#{zymc}
+   </if> GROUP BY year
+  </select>
+  <select id="getggjsmx" resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,dept_name zymc,zyjszw_dj bl1,is_ggjzg bl2,year bl3 FROM tr_jzg_basic WHERE is_ggjzg='1'
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="getzyjssl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc FROM tr_jzg_basic WHERE is_jslx='1'
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if> GROUP BY year
+  </select>
+   <select id="getxdzyjsbl" resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM tr_jzg_basic WHERE is_jslx='1' AND year=a.year
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>)/COUNT(1) zj,year mc FROM tr_jzg_basic a WHERE 1=1
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if> GROUP BY year
+  </select>
+  <select id="getssxjssl" resultType="yd.jxzg.common.TjCount">
+    SELECT COUNT(1) zcount,year mc FROM tr_jzg_basic WHERE is_ssjzg='1'
+    <if test="zymc!=null">
+     AND dept_name=#{zymc}
+    </if> GROUP BY year
+  </select>
+  <select id="getssxjsbl" resultType="yd.jxzg.common.TjCount">
+    SELECT (SELECT COUNT(1) FROM tr_jzg_basic WHERE is_ssjzg='1' AND year=a.year
+    <if test="zymc!=null">
+     AND dept_name=#{zymc}
+    </if>)/COUNT(1) zj,year mc FROM tr_jzg_basic a WHERE 1=1
+     <if test="zymc!=null">
+     AND dept_name=#{zymc}
+    </if> GROUP BY year
+  </select>
+  <select id="getlnjxmssl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc FROM tr_jzg_basic WHERE is_jxms ='1'
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if> GROUP BY year
+  </select>
+  <select id="getlnjxmsbl" resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM tr_jzg_basic WHERE is_jxms ='1' AND year=a.year
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>)/COUNT(1) zj,year mc FROM tr_jzg_basic a WHERE 1=1
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if> GROUP BY year
+  </select>
+  <select id="getjxmsmx" resultType="yd.jxzg.common.TjCount">
+    SELECT xm mc,dept_name bl1,is_jxms bl2,year bl3 FROM tr_jzg_basic WHERE is_jxms='1'
+    <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="gethjjsbm" resultType="yd.jxzg.common.TjCount">
+   SELECT dept_id mc FROM tr_jzg_basic GROUP BY mc
+   </select>
+   <select id="getjshjrstj" resultType="yd.jxzg.common.TjCount">
+    SELECT nnd mc,COUNT(*) zcount  FROM(  
+	 SELECT   
+	 <![CDATA[ case
+	 WHEN hjjbmc ='国家级' THEN '国家级'
+	 WHEN hjjbmc ='省级' THEN '省级'
+	 WHEN hjjbmc ='市级' THEN '市级'  
+	 WHEN hjjbmc !='市级' AND hjjbmc !='省级' AND hjjbmc !='国家级' THEN '其他'
+	 ]]>  end   
+	 as nnd FROM tr_jzg_hj WHERE 1=1
+	 <if test="zymc!=null">
+	  dept_id=#{zymc}
+	 </if>
+	 <if test="nf!=null">
+	  left(hjrq,4)=#{nf}
+	 </if>
+	)tr_jzg_hj GROUP BY mc
+   </select>
+   <select id="getjshjmx" resultType="yd.jxzg.common.TjCount">
+     SELECT hjmc mc,jsmd title,hjjbmc bl1,dept_id bl2,hjrq bl3 FROM tr_jzg_hj WHERE 1=1
+     <if test="nf!=null">
+      AND left(hjrq,4)
+     </if>
+     <if test="zymc!=null">
+      AND dept_id=#{zymc}
+     </if>
+   </select>
+   <select id="getjygglist" resultType="yd.jxzg.common.TjCount">
+    SELECT jydw mc FROM gxxx_bysqk GROUP BY jydw
+   </select>
+   <select id="getjyhwdbht" resultType="yd.jxzg.common.TjCount">
+     SELECT (SELECT COUNT(1) FROM gxxx_bysqk WHERE sflz='1' AND year=a.year <if test="zymc!=null">
+      AND zymc=#{zymc}
+     </if>
+     <if test="mc!=null">
+      AND jydw=#{mc}
+     </if>)/COUNT(1) zj,year mc FROM gxxx_bysqk a WHERE 1=1
+     <if test="zymc!=null">
+      AND zymc=#{zymc}
+     </if>
+     <if test="mc!=null">
+      AND jydw=#{mc}
+     </if> GROUP BY year ORDER BY year
+   </select>
+   <select id="getlzxsmx" resultType="yd.jxzg.entity.ZgzsEntity">
+    SELECT xm,xb,sfdk,sfzg,qxx,jydw,zydm,zymc,year FROM gxxx_bysqk WHERE sfzg='是'
+    <if test="nf!=null">
+      year=#{nf}
+    </if>
+     <if test="zymc!=null">
+      AND zymc=#{zymc}
+     </if>
+     <if test="mc!=null">
+      AND jydw=#{mc}
+     </if>
+   </select>
+   <select id="getsxjyxszb" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM gxxx_bysqk
+   </select>
+   <select id="getsxxssl" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM zz_sxxs
+   </select>
+   <select id="getzszysl" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM gxjx01_bzks_zy WHERE zyzt='1'
+   </select>
+   <select id="getzszylist" resultType="yd.jxzg.common.TjCount">
+   SELECT zyh dm,zymc mc FROM gxjx01_bzks_zy WHERE zyzt='1'
+   </select>
+   <select id="getbysjydqfb" resultType="yd.jxzg.common.TjCount">
+    SELECT COUNT(1) zcount,CONCAT(jyqy_ss,jyqy_ds) mc FROM gxxx_bysqk WHERE bylx='1' GROUP BY mc
+   </select>
+   <select id="getbysjydq" resultType="yd.jxzg.common.TjCount">
+    SELECT CONCAT(jyqy_ss,jyqy_ds) mc FROM gxxx_bysqk WHERE bylx='1' GROUP BY mc
+   </select>
+   <select id="getxzdqbyssltbt" resultType="yd.jxzg.common.TjCount">
+    SELECT COUNT(1) zcount,year mc FROM gxxx_bysqk WHERE bylx='1'
+    <if test="dqmc!=null">
+     AND CONCAT(jyqy_ss,jyqy_ds)=#{dqmc}
+    </if> GROUP BY year
+   </select>
+   <select id="xzbysqxmx" resultType="yd.jxzg.entity.ZgzsEntity">
+     SELECT xm,xb,sfdk,sfzg,qxx,jydw,zymc,jyqy_ss,jyqy_ds,year FROM gxxx_bysqk WHERE 1=1
+    <if test="nf!=null">
+      year=#{nf}
+    </if>
+     <if test="dqmc!=null">
+      AND CONCAT(jyqy_ss,jyqy_ds)=#{dqmc}
+     </if>
+   </select>
+   <select id="glshfwsl" resultType="yd.jxzg.common.TjCount">
+    SELECT COUNT(1) zcount,hylx mc FROM gxxx_bysqk GROUP BY hylx
+   </select>
+   <select id="shfwlist" resultType="yd.jxzg.common.TjCount">
+    SELECT hylx mc FROM gxxx_bysqk GROUP BY hylx
+   </select>
+   <select id="getshfwsktbt" resultType="yd.jxzg.common.TjCount">
+    SELECT COUNT(1) zcount,year mc FROM gxxx_bysqk WHERE 1=1
+    <if test="mc">
+     AND hylx=#{mc}
+    </if> GROUP BY year
+   </select>
+   <select id="xzfwmx" resultType="yd.jxzg.entity.ZgzsEntity">
+     SELECT xm,xb,hylx,sfzg,qxx,jydw,zymc,jyqy_ss,jyqy_ds,year FROM gxxx_bysqk WHERE 1=1
+    <if test="nf!=null">
+      year=#{nf}
+    </if>
+     <if test="mc!=null">
+      AND hylx=#{mc}
+     </if>
+   </select>
+   <select id="getcxxsbl"  resultType="double">
+      SELECT COUNT(1)/(SELECT COUNT(1) FROM gxxs01_bzks WHERE xjztmc='退学' ) FROM gxxs01_bzks 
+   </select>
+   <select id="getcxxsbltbt" resultType="yd.jxzg.common.TjCount">
+    SELECT (SELECT COUNT(1) FROM gxxs01_bzks WHERE xjztmc='退学' AND rxnj = a.rxnj 
+    <if test="zymc!=null">
+     AND zymc=#{zymc}
+    </if>)*100/COUNT(1) zcount,rxnj mc FROM gxxs01_bzks a WHERE 1=1
+    <if test="zymc!=null">
+     AND a.zymc=#{zymc}
+    </if> GROUP BY mc
+   </select>
+  <select id="cxxsmx" resultType="yd.jxzg.entity.StudentEntity">
+     SELECT xm,xbm,zymc,xjztmc,rxnjmc,lsyy,zymc,rxnj FROM gxxs01_bzks WHERE xjztmc='退学'
+    <if test="nf!=null">
+      year=#{nf}
+    </if>
+     <if test="zymc!=null">
+      AND zymc=#{zymc}
+     </if>
+     </select>
+     <select id="getyjbysszhql" resultType="double">
+       SELECT (SELECT COUNT(1) FROM gxxx_bysqk WHERE sfhqsz='是')/COUNT(1) FROM gxxx_bysqk
+     </select>
+     <select id="getlnyjbysszhql" resultType="yd.jxzg.common.TjCount">
+       SELECT (SELECT COUNT(1) FROM gxxx_bysqk WHERE sfhqsz='是' AND year=a.year 
+       <if test="zymc!=null">
+        AND zymc=#{zymc}
+       </if>)/COUNT(1)*100 zcount,year mc FROM gxxx_bysqk a WHERE 1=1
+        <if test="zymc!=null">
+        AND zymc=#{zymc}
+       </if> GROUP BY mc
+     </select>
+     <select id="getyjbysszhqmd" resultType="yd.jxzg.entity.ZgzsEntity">
+       SELECT xm,xb,hylx,qxx,jydw,zymc,sfhqsz,year FROM gxxx_bysqk WHERE 1=1
+    <if test="nf!=null">
+      year=#{nf}
+    </if>
+     <if test="zymc!=null">
+      AND zymc=#{zymc}
+     </if>
+     </select>
+     <select id="getzjjyl" resultType="double">
+      SELECT COUNT(1)/(SELECT COUNT(1) FROM zz_byhmc) FROM zz_bysxz
+     </select>
+     <select id="byhmxlist" resultType="yd.jxzg.common.TjCount">
+      SELECT zy mc FROM zz_byhmc GROUP BY zy
+     </select>
+     <select id="getinsertmyd" >
+      update gxxs01_bzks set xxmyd=#{t} WHERE xxmyd=#{i}
+     </select>
+     <select id="getyjbysjyl" resultType="double">
+      SELECT (SELECT COUNT(1) FROM gxxx_bysqk WHERE sfdk='是')/COUNT(1) FROM gxxx_bysqk
+     </select>
+     <select id="getsjbysmyd" resultType="double">
+      SELECT avg(dwmyd) FROM gxxx_bysqk
+     </select>
+     <select id="getdygzjg" resultType="yd.jxzg.common.TjCount">
+      SELECT jgmc mc,COUNT(1) zcount FROM gxxx_dyjg GROUP BY jgmc
+     </select>
+     <select id="getdyjgmd" resultType="yd.jxzg.common.TjCount">
+      SELECT jgmc mc,jgcy bl1,drzw bl2 FROM gxxx_dyjg
+     </select>
+     <select id="getyjstzdbl" resultType="double">
+      SELECT (SELECT COUNT(1) FROM gxxx_bysqk WHERE tzfs>70)/COUNT(1) FROM gxxx_bysqk
+     </select>
+     <select id="getlnyjbystzdbl" resultType="yd.jxzg.common.TjCount">
+      SELECT (SELECT COUNT(1) FROM gxxx_bysqk WHERE tzfs>70 AND year=a.year
+      <if test="zymc!=null">
+        AND zymc=#{zymc}
+      </if>)/COUNT(1) FROM gxxx_bysqk a WHERE 1=1
+      <if test="zymc!=null">
+        AND zymc=#{zymc}
+      </if> GROUP BY year
+     </select>
+     <select id="getbystzfsmd" resultType="yd.jxzg.common.TjCount">
+       SELECT xm mc,zymc title,tjsf bl1,tnfs bl2,tzfs bl3 FROM gxxx_bysqk WHERE tzfs>70 
+       <if test="zymc!=null">
+        AND zymc=#{zymc}
+      </if>
+      <if test="nf!=null">
+        AND year=#{nf}
+      </if>
+     </select>
+     <select id="getxxsjwjl" resultType="double">
+      SELECT (SELECT COUNT(1) FROM gxxs_xswjqk)/COUNT(1) FROM gxxs01_bzks
+     </select>
+     <select id="getdqxssjwjl" resultType="yd.jxzg.common.TjCount">
+       SELECT (SELECT COUNT(1) FROM gxxs_xswjqk WHERE rxnj=a.rxnj <if test="zymc!=null">
+       AND zymc=#{zymc}
+      </if>)/COUNT(1) FROM gxxs01_bzks a WHERE 1=1
+      <if test="zymc!=null">
+       AND zymc=#{zymc}
+      </if> GROUP BY rxnj
+     </select>
+     <select id="getxdxswjmd" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,wjxzdm bl1,wjms bl2,yxmc title,rxnj bl3 FROM gxxs_xswjqk WHERE 1=1
+       <if test="zymc!=null">
+       AND zymc=#{zymc}
+      </if>
+       <if test="nf!=null">
+       AND rxnj=#{nf}
+      </if>
+     </select>
+     <select id="getdykcylb" resultType="yd.jxzg.common.TjCount">
+       SELECT kcdm dm,kcmc mc,COUNT(1) zcount FROM gxjx01_bzks_kc WHERE kcmc in ('哲学与人生','企业文化','经济政治与社会','职业生涯规划','职业道德与法律','商务礼仪','客户关系管理','客服技巧','礼仪') GROUP BY kcdm,kcmc
+     </select>
+     <select id="getkccjfb" resultType="yd.jxzg.common.TjCount">
+       SELECT nnd mc,COUNT(*) zcount  FROM(  
+	 SELECT   
+	 case  
+	<![CDATA[  WHEN bfzkscj<=60 THEN '60分及以下' 
+		WHEN bfzkscj>=61 AND bfzkscj<=70 THEN '61-70分'   
+	    WHEN bfzkscj>=71 AND bfzkscj<=80 THEN '71-80分'
+		WHEN bfzkscj>=81 AND bfzkscj<=90 THEN '81-90分'   ]]>
+        WHEN bfzkscj>=91  THEN '90分及以上'   
+        end  
+       as nnd FROM gxjx01_bzks_kscj WHERE bfzkscj!='' <if test="kcmc!=null"> AND kcmc=#{kcmc} </if>
+    ) gxjx01_bzks_kscj  GROUP BY nnd
+     </select>
+     <select id="getkscj" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,zymc bl1,bfzkscj bl2,kcmc bl3,year title FROM gxjx01_bzks_kscj WHERE 1=1
+      <if test="zymc!=null">
+        AND zymc=#{zymc}
+      </if>
+      <if test="nf!=null">
+        AND year=#{nf}
+      </if>
+      <if test="kcmc!=null">
+        AND kcmc=#{kcmc}
+      </if>
+     </select>
+     <select id="getkccjmx" resultType="yd.jxzg.common.TjCount">
+       SELECT xm mc,zymc bl1,bfzkscj bl2,kcmc bl3,year title FROM gxjx01_bzks_kscj WHERE 1=1
+      <if test="nf!=null">
+        AND year=#{nf}
+      </if>
+      <if test="kcmc!=null">
+        AND kcmc=#{kcmc}
+      </if>
+      <if test='dg=="1"'>
+      <![CDATA[  AND BFZKSCJ<=60 ]]>
+      </if>
+      <if test='dg=="2"'>
+      <![CDATA[  AND Bbfzkscj>=61 AND bfzkscj<=70 ]]>
+      </if>
+      <if test='dg=="3"'>
+     <![CDATA[  AND bfzkscj>=71 AND bfzkscj<=80 ]]>
+      </if>
+      <if test='dg=="4"'>
+     <![CDATA[  AND bfzkscj>=81 AND bfzkscj<=90 ]]>
+      </if>
+      <if test='dg=="5"'>
+      <![CDATA[  AND bfzkscj>=91 ]]>
+      </if>
+     </select>
+     <select id="getlndygzdwsl" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) zcount,year mc FROM tr_jzg_basic WHERE dept_name='德育组' GROUP BY year
+     </select>
+     <select id="getxzdycymx" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,dept_name title,zw bl1,zyjszw_dj bl2,year bl3  FROM tr_jzg_basic WHERE dept_name='德育组' 
+      <if test="nf!=null">
+       AND year=#{nf}
+      </if>
+     </select>
+     <select id="getcxjxjscg"  resultType="yd.jxzg.common.TjCount">
+       SELECT mc mc,hdrq bl1,year bl2 FROM zz_hdylb WHERE lx='创新型教学建设'
+     </select>
+     <select id="getszjybzxcg"  resultType="yd.jxzg.common.TjCount">
+       SELECT mc mc,hdrq bl1,year bl2 FROM zz_hdylb WHERE lx='素质教育成果'
+     </select>
+     <select id="getshsjhdcg"  resultType="yd.jxzg.common.TjCount">
+       SELECT stmc mc,hdrq bl1,cyzs bl2,hdnr bl3 FROM tr_xx_yghd
+     </select>
+     <select id="getsxxstbt" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) zcount,rxnj mc FROM zz_sxxs WHERE 1=1
+      <if test="zymc!=null">
+       AND zymc=#{zymc}
+      </if>
+       GROUP BY rxnj ORDER BY rxnj
+     </select>
+     <select id="getjyxstbt" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) zcount,year mc FROM gxxx_bysqk WHERE 1=1
+      <if test="zymc!=null">
+       AND zymc=#{zymc}
+      </if>
+      GROUP BY year
+     </select>
+     <select id="getsxxsmxd" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,zymc title,xbm bl1,sfzjh bl3,rxnj bl2 FROM zz_sxxs WHERE 1=1
+      <if test="zymc!=null">
+       AND zymc=#{zymc}
+      </if>
+      <if test="nf!=null">
+       AND rxnj=#{nf}
+      </if>
+     </select>
+     <select id="getjyxsmxd" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,zymc title,xb bl1,jydw bl3,CONCAT(jyqy_ss,jyqy_ds) bl2 FROM gxxx_bysqk WHERE 1=1
+      <if test="zymc!=null">
+       AND zymc=#{zymc}
+      </if>
+      <if test="nf!=null">
+       AND year=#{nf}
+      </if>
+     </select>
+     <select id="getbdzymd" resultType="yd.jxzg.common.TjCount">
+      SELECT zyh dm,zymc mc,zyyxmc title,zyzt bl1,xz bl2 FROM gxjx01_bzks_zy WHERE zyzt!='1'
+     </select>
+     <select id="getgzylqzzt" resultType="yd.jxzg.common.TjCount">
+       SELECT COUNT(1) zcount,xs.zym dm,zy.zymc mc FROM gxxs01_bzks xs LEFT JOIN gxjx01_bzks_zy zy ON xs.zym=zy.zyh 
+  	   GROUP BY zym ORDER BY zcount desc
+     </select>
+     <select id="getjyldysnpjz" resultType="double">
+       SELECT (SELECT COUNT(1) FROM (SELECT COUNT(1)/((SELECT COUNT(1) FROM zz_sxxs WHERE zymc=a.zymc)+
+	(SELECT COUNT(1) FROM gxxx_bysqk WHERE zymc=a.zymc)) zc ,zymc FROM  gxxx_bysqk a GROUP BY zymc)
+	<![CDATA[ zm WHERE zm.zc<0.4)/COUNT(1) FROM (SELECT COUNT(1) FROM gxxx_bysqk GROUP BY zymc) a ]]>
+     </select>
+     <select id="dypjzymd" resultType="yd.jxzg.common.TjCount">
+       SELECT zymc mc,zyh dm,zyyxmc bl1 FROM gxjx01_bzks_zy WHERE zymc in (SELECT zm.zymc FROM (SELECT COUNT(1)/((SELECT COUNT(1) FROM zz_sxxs WHERE zymc=a.zymc)+
+	   (SELECT COUNT(1) FROM gxxx_bysqk WHERE zymc=a.zymc)) zc ,zymc FROM  gxxx_bysqk a GROUP BY zymc)
+	<![CDATA[  zm WHERE zm.zc<0.4) ]]>
+      </select>
+       <select id="zyjsbzxcg"  resultType="yd.jxzg.common.TjCount">
+       SELECT mc mc,hdrq bl1,year bl2 FROM zz_hdylb WHERE lx='专业建设成果'
+       </select>
+     <select id="wckcjsxms" resultType="java.lang.Integer">
+      SELECT COUNT(1) FROM tr_kc_basic WHERE sfwckcjs='是'
+     </select>
+     <select id="wckcjsxmstbt" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) zcount,year mc FROM tr_kc_basic WHERE sfwckcjs='是' GROUP BY year
+     </select>
+     <select id="wckcjsxmmx" resultType="yd.jxzg.common.TjCount">
+      SELECT dm dm,mc mc,zymc title,kcxz_mc bl1,sfwckcjs bl2,year bl3 FROM tr_kc_basic WHERE sfwckcjs='是'
+      <if test="nf!=null">
+       AND year=#{nf}
+      </if>
+     </select>
+     <select id="yzdkcbzs" resultType="java.lang.Integer">
+      SELECT COUNT(1) FROM tr_kc_basic WHERE sfzd_kcbz='是'
+     </select>
+     <select id="yzdkcbzstbt" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) zcount,year mc FROM tr_kc_basic WHERE sfzd_kcbz='是' GROUP BY year
+     </select>
+     <select id="yzdkcbzmx" resultType="yd.jxzg.common.TjCount">
+      SELECT dm dm,mc mc,zymc title,kcxz_mc bl1,sfzd_kcbz bl2,year bl3 FROM tr_kc_basic WHERE sfzd_kcbz='是'
+      <if test="nf!=null">
+       AND year=#{nf}
+      </if>
+     </select>
+     <select id="xqkfkcs" resultType="java.lang.Integer">
+      SELECT COUNT(1) FROM tr_kc_basic WHERE sf_xqhz='是'
+     </select>
+     <select id="xqkfkcstbt" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) zcount,year mc FROM tr_kc_basic WHERE sf_xqhz='是' GROUP BY year
+     </select>
+     <select id="xqkfkcsmx" resultType="yd.jxzg.common.TjCount">
+      SELECT dm dm,mc mc,zymc title,kcxz_mc bl1,is_xqhz bl2,year bl3 FROM tr_kc_basic WHERE sf_xqhz='是' 
+      <if test="nf!=null">
+       AND year=#{nf}
+      </if>
+     </select>
+     <select id="xqkfjcs" resultType="java.lang.Integer">
+      SELECT COUNT(1) FROM tr_kc_basic WHERE sf_xqhz='是'
+     </select>
+     <select id="xqkfjcstbt" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) zcount,year mc FROM tr_kc_basic WHERE sf_xqhz='是' GROUP BY year
+     </select>
+     <select id="xqkfjcsmx" resultType="yd.jxzg.common.TjCount">
+      SELECT dm dm,mc mc,zymc title,kcxz_mc bl1,jcmc bl2,year bl3 FROM tr_kc_basic WHERE sf_xqhz='是'
+      <if test="nf!=null">
+       AND year=#{nf}
+      </if>
+     </select>
+     <select id="kcjsbzxcgylb" resultType="yd.jxzg.common.TjCount">
+      SELECT mc mc,hdms title,hdrq bl1,lx bl2 FROM zz_hdylb WHERE lx='课程建设'
+     </select>
+     <select id="szdwsltbt" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) zcount,year mc FROM tr_jzg_basic WHERE 1=1
+      <if test="zymc!=null">
+       AND dept_name=#{zymc}
+      </if>
+     </select>
+     <select id="sznfzyjsmd" resultType="yd.jxzg.entity.JzgEntity">
+      SELECT zgh zgh,xm xm,xbid xbm,dept_id yxsh,dept_name yxmc,xlmc,zzmmmc zzmmm FROM tr_jzg_basic WHERE 1=1 
+	   <if test="zym!=null">
+	    AND dept_name=#{zym}
+	   </if>  
+	   <if test="nf!=null">
+	    AND year=#{nf}
+	   </if> 
+     </select>
+     <select id="getszdwslnlft" resultType="yd.jxzg.common.TjCount">
+      SELECT nnd mc,COUNT(*) zcount  FROM(  
+	 SELECT   
+	 case  
+ <![CDATA[ WHEN age<=25 THEN '25岁以下'
+		WHEN age>=26 AND age<=35 THEN '26-35岁'   
+	    WHEN age>=36 AND age<=45 THEN '36-45岁'
+		WHEN age>=46 AND age<=55 THEN '46-55岁'   
+	    WHEN age>=55  THEN '55岁以上'   
+	 end   ]]>
+	 as nnd FROM tr_jzg_basic WHERE 1=1 
+	 <if test="zymc!=null">
+	   AND dept_name=#{zymc}
+	 </if>
+	)tr_jzg_basic GROUP BY nnd
+     </select>
+     <select id="xznljssltbt" resultType="yd.jxzg.common.TjCount">
+       SELECT COUNT(1) zcount,year mc FROM tr_jzg_basic WHERE 1=1
+       <if test="zymc!=null">
+        AND dept_name=#{zymc}
+       </if>
+       <if test="aged==0">
+        AND age=''
+       </if>
+       <if test='aged=="1"'>
+       <![CDATA[ AND age<=25 ]]>
+       </if>
+       <if test='aged=="2"'>
+       <![CDATA[ AND age>=26 AND age<=35]]>
+       </if>
+       <if test='aged=="3"'>
+       <![CDATA[ AND age>=36 AND age<=45]]>
+       </if>
+       <if test='aged=="4"'>
+       <![CDATA[ AND age>=46 AND age<=55]]>
+       </if>
+       <if test='aged=="5"'>
+        AND age>=55
+       </if> GROUP BY year
+     </select>
+     <select id="xznljsmd" resultType="yd.jxzg.entity.JzgEntity">
+       SELECT zgh zgh,xm xm,xbid xbm,age age,dept_name yxmc,xlmc,zzmmmc zzmmm FROM tr_jzg_basic WHERE 1=1 
+	   <if test="zym!=null">
+	    AND dept_name=#{zym}
+	   </if>  
+	   <if test="nf!=null">
+	    AND year=#{nf}
+	   </if>
+	   <if test="aged==0">
+        AND age=''
+       </if>
+       <if test="aged==1">
+       <![CDATA[ AND age<=25 ]]>
+       </if>
+       <if test="aged==2">
+       <![CDATA[ AND age>=26 AND age<=35]]>
+       </if>
+       <if test="aged==3">
+       <![CDATA[ AND age>=36 AND age<=45]]>
+       </if>
+       <if test="aged==4">
+       <![CDATA[ AND age>=46 AND age<=55]]>
+       </if>
+       <if test="aged==5">
+        AND age>=55
+       </if> 
+     </select>
+     <select id="getszdwzcft" resultType="yd.jxzg.common.TjCount">
+     SELECT COUNT(1) zcount,zyjszw_mc mc FROM tr_jzg_basic WHERE 1=1
+     <if test="zymc!=null">
+      AND dept_name=#{zymc}
+     </if> GROUP BY mc
+     </select>
+     <select id="getszdwgznfft" resultType="yd.jxzg.common.TjCount">
+       SELECT nnd mc,COUNT(*) zcount  FROM(  
+	 SELECT   
+	 case  
+ <![CDATA[ WHEN gznf<=3 THEN '3年以下'
+		WHEN gznf>=4 AND gznf<=10 THEN '4-10年'   
+	    WHEN gznf>=11 AND gznf<=20 THEN '11-20年'
+		WHEN gznf>=21 AND gznf<=30 THEN '21-30年'   
+	    WHEN gznf>=31  THEN '31年以上'   
+	 end   ]]>
+	 as nnd FROM tr_jzg_basic WHERE 1=1 
+	 <if test="zymc!=null">
+	   AND dept_name=#{zymc}
+	 </if>
+	)tr_jzg_basic GROUP BY nnd
+     </select>
+     <select id="szdwgznftbt" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) mc,year mc FROM tr_jzg_basic WHERE 1=1
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>
+     <if test="dg==1">
+      <![CDATA[  AND gznf<=3 ]]>
+      </if>
+      <if test="dg==2">
+      <![CDATA[  AND gznf>=4 AND gznf<=10 ]]>
+      </if>
+      <if test="dg==3">
+     <![CDATA[  AND gznf>=11 AND gznf<=20 ]]>
+      </if>
+      <if test="dg==4">
+     <![CDATA[  AND gznf>=21 AND gznf<=30 ]]>
+      </if>
+      <if test="dg==5">
+      <![CDATA[  AND gznf>=31 ]]>
+      </if> GROUP BY year
+     </select>
+     <select id="getghjcsyb" resultType="double">
+      SELECT SUM(sysl)/SUM(sl) FROM zz_jc WHERE lx='规划教材'
+     </select>
+     <select id="ghjcsybtbt" resultType="yd.jxzg.common.TjCount">
+      SELECT SUM(sysl)/SUM(sl) zj,year mc FROM zz_jc WHERE lx='规划教材' GROUP BY year
+     </select>
+     <select id="ghjcsymx" resultType="yd.jxzg.common.TjCount">
+       SELECT jcmc mc,cbs bl1,dyzz bl2,year bl3 FROM tr_kc_basic WHERE 1=1
+        <if test="nf!=null">
+        AND year=#{nf}
+        </if> rAND() limit 20
+     </select>
+     <select id="getjbjcsyb" resultType="double">
+      SELECT SUM(sl) FROM zz_jc WHERE lx='校本教材'
+     </select>
+     <select id="jbjcsybtbt" resultType="yd.jxzg.common.TjCount">
+      SELECT SUM(sl) zcount,year mc FROM zz_jc WHERE lx='校本教材' GROUP BY year
+     </select>
+     <select id="jbjcsymx" resultType="yd.jxzg.common.TjCount">
+       SELECT jcmc mc,cbs bl1,dyzz bl2,year bl3 FROM tr_kc_basic WHERE 1=1
+        <if test="nf!=null">
+        AND year=#{nf}
+        </if> rAND() limit 20
+     </select>
+     <select id="getldtskrjsl" resultType="double">
+      SELECT SUM(tslsl)/COUNT(1) FROM tr_jzg_basic WHERE jslx='管'
+     </select>
+     <select id="ldtskrjsltbt" resultType="yd.jxzg.common.TjCount">
+      SELECT SUM(tslsl)/COUNT(1) zcount,year mc FROM tr_jzg_basic WHERE jslx='管' GROUP BY year
+     </select>
+     <select id="ldtskrjslmx" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,dept_name title,tslsl bl2,zw bl3,year bl FROM tr_jzg_basic WHERE jslx='管'
+      <if test="nf!=null">
+       AND year=#{nf}
+      </if>
+     </select>
+     <select id="ldrssjcssl" resultType="double">
+      SELECT SUM(ldsrsjcssl)/COUNT(1) FROM tr_jzg_basic WHERE jslx='管'
+     </select>
+     <select id="ldrssjcstbt" resultType="yd.jxzg.common.TjCount">
+      SELECT SUM(ldsrsjcssl)/COUNT(1) zcount,year mc FROM tr_jzg_basic WHERE jslx='管' GROUP BY year
+     </select>
+     <select id="ldrssjcsqd" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,dept_name title,ldsrsjcssl bl2,zw bl3,year bl FROM tr_jzg_basic WHERE jslx='管'
+      <if test="nf!=null">
+       AND year=#{nf}
+      </if>
+     </select>
+     <select id="getsjkcl" resultType="double">
+      SELECT avg(sjkc_bl) FROM tr_kc_basic
+     </select>
+     <select id="sjxmkcltbt" resultType="yd.jxzg.common.TjCount">
+      SELECT avg(sjkc_bl) zj,year mc FROM tr_kc_basic GROUP BY year
+     </select>
+     <select id="sjxmkclylb" resultType="yd.jxzg.common.TjCount">
+      SELECT mc mc,zymc bl1,sjkc_bl bl2,year bl3 FROM tr_kc_basic WHERE 1=1
+      <if test="nf!=null">
+       AND year=#{nf}
+      </if>
+     </select>
+     <select id="xdzlxjjwtsl" resultType="java.lang.Integer">
+      SELECT COUNT(1) FROM zz_xdzlyjjwt
+     </select>
+     <select id="lnxdzlxjjwtsl" resultType="yd.jxzg.common.TjCount">
+       SELECT COUNT(1) zcount,year mc FROM zz_xdzlyjjwt GROUP BY year
+     </select>
+     <select id="xdzlxjjwtmxt" resultType="yd.jxzg.common.TjCount">
+       SELECT mc mc,wtms bl1,fzr bl2,year bl3 FROM zz_xdzlyjjwt WHERE 1=1
+       <if test="nf!=null">
+        AND year=#{nf}
+       </if>
+     </select>
+     <select id="getjxsgsl" resultType="java.lang.Integer">
+      SELECT COUNT(1) FROM gxxs_xswjqk
+     </select>
+     <select id="lnjxsgsl" resultType="yd.jxzg.common.TjCount">
+       SELECT  COUNT(1) FROM gxxs_xswjqk WHERE  GROUP BY rxnj
+     </select>
+     <select id="jxsgmx" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,wjxzdm bl1,wjms bl2,yxmc title,rxnj bl3 FROM gxxs_xswjqk
+      <if test="nf!=null">
+        rxnj=#{nf}
+      </if>
+     </select>
+     <select id="getxscdl" resultType="double">
+      SELECT avg(sl) FROM zz_cdqkl WHERE lx='1'
+     </select>
+     <select id="xsqkl" resultType="double">
+      SELECT avg(sl) FROM zz_cdqkl WHERE lx='2'
+     </select>
+     <select id="xscdltbt" resultType="yd.jxzg.common.TjCount">
+      SELECT sl zcount,zs mc FROM zz_cdqkl WHERE lx='1'
+     </select>
+     <select id="xsqkltbt" resultType="yd.jxzg.common.TjCount">
+      SELECT sl zcount,zs mc FROM zz_cdqkl WHERE lx='2'
+     </select>
+     <select id="xscdmx" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,zymc bl1,xbm bl2,'5分钟以下' bl3 FROM gxxs01_bzks WHERE 1=1
+       ORDER BY rAND() limit (SELECT sl FROM zz_cdqkl WHERE lx='1' AND zs=#{nf})
+     </select>
+     <select id="xsqkmx" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,zymc bl1,xbm bl2,'一节课及其以上' bl3 FROM gxxs01_bzks WHERE 1=1
+       ORDER BY rAND() limit (SELECT sl FROM zz_cdqkl WHERE lx='2' AND zs=#{nf})
+     </select>
+     <select id="thkcpjxj" resultType="yd.jxzg.common.TjCount">
+     <![CDATA[ SELECT kcmc,(SELECT COUNT(1) FROM zz_kcpjfs WHERE 85<=fs AND kcmc=a.kcmc AND lx='1'),
+		(SELECT COUNT(1) FROM zz_kcpjfs WHERE 60<=fs AND 85>fs AND kcmc=a.kcmc AND lx='1'),
+		(SELECT COUNT(1) FROM zz_kcpjfs WHERE 60>fs AND kcmc=a.kcmc AND lx='1')
+		FROM zz_kcpjfs a WHERE a.lx='1' GROUP BY kcmc ]]>
+     </select>
+     <select id="thkcpjpfr" resultType="yd.jxzg.common.TjCount">
+      SELECT kcmc title,xm mc,fs bl1 FROM zz_kcpjfs WHERE lx='1'
+      <if test="kcmc!=null"> AND kcmc=#{kcmc}</if>
+       <if test="dg==1"> AND fs>=85</if>
+      <if test="dg==2"> AND fs>=60 AND 85>fs</if>
+      <if test="dg==3"> AND 60>fs</if> 
+     </select>
+     <select id="xskcpjxj" resultType="yd.jxzg.common.TjCount">
+     <![CDATA[ SELECT kcmc,(SELECT COUNT(1) FROM zz_kcpjfs WHERE 85<=fs AND kcmc=a.kcmc AND lx='2'),
+		(SELECT COUNT(1) FROM zz_kcpjfs WHERE 60<=fs AND 85>fs AND kcmc=a.kcmc AND lx='2'),
+		(SELECT COUNT(1) FROM zz_kcpjfs WHERE 60>fs AND kcmc=a.kcmc AND lx='2')
+		FROM zz_kcpjfs a WHERE a.lx='2' GROUP BY kcmc ]]>
+     </select>
+     <select id="xskcpjpfr" resultType="yd.jxzg.common.TjCount">
+      SELECT kcmc title,xm mc,fs bl1 FROM zz_kcpjfs WHERE lx='2'
+      <if test="kcmc!=null"> AND kcmc=#{kcmc}</if>
+       <if test="dg==1"> AND fs>=85</if>
+      <if test="dg==2"> AND fs>=60 AND 85>fs</if>
+      <if test="dg==3"> AND 60>fs</if> 
+     </select>
+      <select id="shkcpjxj" resultType="yd.jxzg.common.TjCount">
+     <![CDATA[ SELECT kcmc,(SELECT COUNT(1) FROM zz_kcpjfs WHERE 85<=fs AND kcmc=a.kcmc AND lx='3'),
+		(SELECT COUNT(1) FROM zz_kcpjfs WHERE 60<=fs AND 85>fs AND kcmc=a.kcmc AND lx='3'),
+		(SELECT COUNT(1) FROM zz_kcpjfs WHERE 60>fs AND kcmc=a.kcmc AND lx='3')
+		FROM zz_kcpjfs a WHERE a.lx='3' GROUP BY kcmc ]]>
+     </select>
+     <select id="shkcpjpfr" resultType="yd.jxzg.common.TjCount">
+      SELECT kcmc title,xm mc,fs bl1 FROM zz_kcpjfs WHERE lx='3'
+      <if test="kcmc!=null"> AND kcmc=#{kcmc}</if>
+       <if test="dg==1"> AND fs>=85</if>
+      <if test="dg==2"> AND fs>=60 AND 85>fs </if>
+      <if test="dg==3"> AND 60>fs</if> 
+     </select>
+     <select id="szdwgxlft" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) zcount,xlmc mc FROM tr_jzg_basic WHERE 1=1
+      <if test="zymc!=null">
+       AND dept_name=#{zymc}
+      </if> GROUP BY mc
+     </select>
+     <select id="lnszdwxltbt" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) zcount,xlmc mc FROM tr_jzg_basic WHERE 1=1
+      <if test="zymc!=null">
+       AND dept_name=#{zymc}
+      </if>
+      <if test="dg!=null">
+       AND xlmc=#{dg}
+      </if> GROUP BY mc
+     </select>
+     <select id="szdwxlmd" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,dept_name title,xlmc bl1,zw bl3,year bl2 FROM tr_jzg_basic WHERE 1=1
+      <if test="zymc!=null">
+       AND dept_name=#{zymc}
+      </if>
+      <if test="dg!=null">
+       AND xlmc=#{dg}
+      </if>
+     </select>
+     <select id="zydtrggjssl" resultType="java.lang.Integer">
+       SELECT COUNT(1) FROM tr_jzg_basic WHERE is_ggjzg='1' or is_zydtr='1'
+     </select>
+     <select id="lnzydtrggjs" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) zcount,year mc FROM tr_jzg_basic WHERE is_ggjzg='1' or is_zydtr='1'
+      <if test="zymc!=null">
+       AND dept_name=#{zymc}
+      </if> GROUP BY mc
+     </select>
+     <select id="zydtrggjsmd" resultType="yd.jxzg.entity.JzgEntity">
+      SELECT xm,xbid xbm,dept_name yxmc,age,is_ggjzg isggjzg,is_zydtr iszydtr,xlmc,year FROM tr_jzg_basic WHERE is_ggjzg='1' or is_zydtr='1' 
+      <if test="nf!=null">
+        AND year=#{nf}
+      </if>
+      <if test="zymc!=null">
+       AND dept_name=#{zymc}
+      </if>
+     </select>
+     <select id="jspxlxslylb" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) zcount,pxjx_xmmc mc FROM tr_jzg_pxjx GROUP BY pxjx_xmmc
+     </select>
+     <select id="jspxlxmd" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,pxjx_xmmc title,pxjx_pcbm bl1 FROM tr_jzg_pxjx WHERE 1=1
+      <if test="mc!=null">
+       AND pxjx_xmmc=#{mc}
+      </if>
+     </select>
+     <select id="getwjjssl" resultType="java.lang.Integer">
+      SELECT 0
+     </select>
+     <select id="getgzyjssl" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) zcount,dept_name mc FROM tr_jzg_basic GROUP BY dept_name,dept_id
+     </select>
+     <select id="jsqysjqkylb" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,ddmc title,qysj_dwmc bl1,zymc bl1,qymc bl2,sjdlgw bl3,qysj_sj bl4,year bl5 FROM gxgz03_jsxqsj
+     </select>
+     <select id="getzrssxjsbl" resultType="double">
+      SELECT (SELECT COUNT(1) FROM tr_jzg_basic WHERE is_ssjzg='1' AND zyjszw_dj in ('初级','中级','高级','副高级'))/COUNT(1) FROM tr_jzg_basic WHERE zyjszw_dj in ('初级','中级','高级','副高级')
+     </select>
+     <select id="zrjsssxjsbltbt" resultType="yd.jxzg.common.TjCount">
+       SELECT (SELECT COUNT(1) FROM tr_jzg_basic WHERE is_ssjzg='1' AND zyjszw_dj in ('初级','中级','高级','副高级')
+       <if test="zymc!=null">
+        AND dept_name=#{zymc}
+       </if>)/COUNT(1) FROM tr_jzg_basic WHERE zyjszw_dj in ('初级','中级','高级','副高级')
+       <if test="zymc!=null">
+        AND dept_name=#{zymc}
+       </if>
+     </select>
+     <select id="zrjsssxjsmd" resultType="yd.jxzg.common.TjCount">
+       SELECT xm mc,dept_name bl1,xlmc bl2,zyjszw_dj bl3,is_ssjzg bl4,year bl5 FROM tr_jzg_basic WHERE is_ssjzg='1' AND zyjszw_dj in ('初级','中级','高级','副高级')
+       <if test="zymc!=null">
+        AND dept_name=#{zymc}
+       </if>
+       <if test="nf!=null">
+        AND year=#{nf}
+       </if>
+     </select>
+     <select id="getsjjxzzzdjssl" resultType="java.lang.Integer">
+       SELECT COUNT(1) FROM tr_jzg_basic WHERE is_zzzdjs='1'
+     </select>
+     <select id="lnzzzdjssl" resultType="yd.jxzg.common.TjCount">
+       SELECT COUNT(1) zcount,year mc FROM tr_jzg_basic WHERE is_zzzdjs='1'
+       <if test="zymc!=null">
+        AND dept_name=#{zymc}
+       </if>
+     </select>
+     <select id="zzzdjsmd" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,xbid bl1,dept_name title,age bl2,year bl3,is_zzzdjs bl4 FROM tr_jzg_basic WHERE is_zzzdjs='1'
+      <if test="nf!=null">
+        AND year=#{nf}
+      </if>
+      <if test="zymc!=null">
+       AND dept_name=#{zymc}
+      </if>
+     </select>
+     <select id="getjzszdwsl" resultType="java.lang.Integer">
+      SELECT COUNT(1) FROM tr_jzg_basic WHERE is_jz='1'
+     </select>
+     <select id="jzjssltbt" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) zcount,dept_name mc FROM tr_jzg_basic WHERE is_jz='1'
+      <if test="zymc!=null">
+       AND dept_name=#{zymc}
+      </if> GROUP BY dept_name,dept_id
+     </select>
+     <select id="getjzszmd" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,dept_name bl1,xlmc bl2,zyjszw_dj bl3,is_jz bl4,year bl5 FROM tr_jzg_basic WHERE is_jz='1'
+       <if test="zymc!=null">
+        AND dept_name=#{zymc}
+       </if>
+       <if test="nf!=null">
+        AND year=#{nf}
+       </if>
+     </select>
+     <select id="jzszdwslnlft" resultType="yd.jxzg.common.TjCount">
+      SELECT nnd mc,COUNT(*) zcount  FROM(  
+	 SELECT   
+	 case  
+ <![CDATA[ WHEN age<=25 THEN '25岁以下'
+		WHEN age>=26 AND age<=35 THEN '26-35岁'   
+	    WHEN age>=36 AND age<=45 THEN '36-45岁'
+		WHEN age>=46 AND age<=55 THEN '46-55岁'   
+	    WHEN age>=55  THEN '55岁以上'   
+	 end   ]]>
+	 as nnd FROM tr_jzg_basic WHERE is_jz='1'
+	 <if test="zymc!=null">
+	   AND dept_name=#{zymc}
+	 </if>
+	)tr_jzg_basic GROUP BY nnd
+     </select>
+     <select id="jzjsnltbt" resultType="yd.jxzg.common.TjCount">
+       SELECT COUNT(1) zcount,year mc FROM tr_jzg_basic WHERE is_jz='1'
+       <if test="zymc!=null">
+        AND dept_name=#{zymc}
+       </if>
+       <if test="aged==0">
+        AND age=''
+       </if>
+       <if test="aged==1">
+       <![CDATA[ AND age<=25 ]]>
+       </if>
+       <if test="aged==2">
+       <![CDATA[ AND age>=26 AND age<=35]]>
+       </if>
+       <if test="aged==3">
+       <![CDATA[ AND age>=36 AND age<=45]]>
+       </if>
+       <if test="aged==4">
+       <![CDATA[ AND age>=46 AND age<=55]]>
+       </if>
+       <if test="aged==5">
+        AND age>=55
+       </if> GROUP BY year
+     </select>
+     <select id="jzsznlmd" resultType="yd.jxzg.common.TjCount">
+       SELECT xm mc,xbid bl1,age bl2,dept_name bl3,xlmc bl4,year bl5 FROM tr_jzg_basic WHERE is_jz='1'
+	   <if test="zym!=null">
+	    AND dept_name=#{zym}
+	   </if>  
+	   <if test="nf!=null">
+	    AND year=#{nf}
+	   </if>
+	   <if test="aged==0">
+        AND age=''
+       </if>
+       <if test="aged==1">
+       <![CDATA[ AND age<=25 ]]>
+       </if>
+       <if test="aged==2">
+       <![CDATA[ AND age>=26 AND age<=35]]>
+       </if>
+       <if test="aged==3">
+       <![CDATA[ AND age>=36 AND age<=45]]>
+       </if>
+       <if test="aged==4">
+       <![CDATA[ AND age>=46 AND age<=55]]>
+       </if>
+       <if test="aged==5">
+        AND age>=55
+       </if> 
+     </select>
+     <select id="jzszdwzcft" resultType="yd.jxzg.common.TjCount">
+     SELECT COUNT(1) zcount,zyjszw_mc mc FROM tr_jzg_basic WHERE is_jz='1'
+     <if test="zymc!=null">
+      AND dept_name=#{zymc}
+     </if> GROUP BY mc
+     </select>
+     <select id="jzjszctbt" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) zcount,year mc FROM tr_jzg_basic WHERE is_jz='1'
+      <if test="zym!=null">
+	    AND dept_name=#{zym}
+	   </if> 
+	   <if test="dg!=null">
+	    AND zyjszw_mc=#{dg}
+	   </if> GROUP BY year
+     </select>
+     <select id="jzszzcmd" resultType="yd.jxzg.common.TjCount">
+       SELECT xm mc,xbid bl1,age bl2,dept_name bl3,xlmc bl4,year bl5,zyjszw_mc bl6 FROM tr_jzg_basic WHERE is_jz='1'
+	   <if test="zym!=null">
+	    AND dept_name=#{zym}
+	   </if>  
+	   <if test="nf!=null">
+	    AND year=#{nf}
+	   </if>
+	   <if test="dg!=null">
+        AND zyjszw_mc=#{dg}
+       </if>
+     </select>
+     <select id="jzszdwgznffb" resultType="yd.jxzg.common.TjCount">
+       SELECT nnd mc,COUNT(*) zcount  FROM(  
+	 SELECT   
+	 case  
+ <![CDATA[ WHEN gznf<=3 THEN '3年以下'
+		WHEN gznf>=4 AND gznf<=10 THEN '4-10年'   
+	    WHEN gznf>=11 AND gznf<=20 THEN '11-20年'
+		WHEN gznf>=21 AND gznf<=30 THEN '21-30年'   
+	    WHEN gznf>=31  THEN '31年以上'   
+	 end   ]]>
+	 as nnd FROM tr_jzg_basic WHERE is_jz='1'
+	 <if test="zymc!=null">
+	   AND dept_name=#{zymc}
+	 </if>
+	)tr_jzg_basic GROUP BY nnd
+     </select>
+     <select id="jzjsgznftbt" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) mc,year mc FROM tr_jzg_basic WHERE is_jz='1'
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>
+     <if test="dg==1">
+      <![CDATA[  AND gznf<=3 ]]>
+      </if>
+      <if test="dg==2">
+      <![CDATA[  AND gznf>=4 AND gznf<=10 ]]>
+      </if>
+      <if test="dg==3">
+     <![CDATA[  AND gznf>=11 AND gznf<=20 ]]>
+      </if>
+      <if test="dg==4">
+     <![CDATA[  AND gznf>=21 AND gznf<=30 ]]>
+      </if>
+      <if test="dg==5">
+      <![CDATA[  AND gznf>=31 ]]>
+      </if> GROUP BY year
+     </select>
+     <select id="jzszgznfmd" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,xbid bl1,age bl2,dept_name bl3,xlmc bl4,year bl5,gznf bl6 FROM tr_jzg_basic WHERE is_jz='1'
+      <if test="zymc!=null">
+        AND dept_name=#{zymc}
+      </if>
+      <if test="nf!=null">
+        AND year=#{nf}
+      </if>
+     <if test="dg==1">
+      <![CDATA[  AND gznf<=3 ]]>
+      </if>
+      <if test="dg==2">
+      <![CDATA[  AND gznf>=4 AND gznf<=10 ]]>
+      </if>
+      <if test="dg==3">
+     <![CDATA[  AND gznf>=11 AND gznf<=20 ]]>
+      </if>
+      <if test="dg==4">
+     <![CDATA[  AND gznf>=21 AND gznf<=30 ]]>
+      </if>
+      <if test="dg==5">
+      <![CDATA[  AND gznf>=31 ]]>
+      </if>
+     </select>
+     <select id="jzszdwgxlft" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) zcount,xlmc mc FROM tr_jzg_basic WHERE is_jz='1'
+      <if test="zymc!=null">
+       AND dept_name=#{zymc}
+      </if> GROUP BY mc
+     </select>
+     <select id="jzszdwgxltbt" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) zcount,xlmc mc FROM tr_jzg_basic WHERE is_jz='1'
+      <if test="zymc!=null">
+       AND dept_name=#{zymc}
+      </if>
+      <if test="dg!=null">
+       AND xlmc=#{dg}
+      </if> GROUP BY mc
+     </select>
+     <select id="jzszdwgxlmd" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,dept_name title,xbid bl5,age bl4,xlmc bl1,zw bl3,year bl2 FROM tr_jzg_basic WHERE is_jz='1'
+      <if test="zymc!=null">
+       AND dept_name=#{zymc}
+      </if>
+      <if test="dg!=null">
+       AND xlmc=#{dg}
+      </if>
+     </select>
+     <select id="jzzydtrggjssl" resultType="java.lang.Integer">
+      SELECT COUNT(1) FROM tr_jzg_basic WHERE is_jz='1' AND is_zydtr='1'
+     </select>
+     <select id="jzzydtrggjstbt" resultType="yd.jxzg.common.TjCount">
+       SELECT COUNT(1) zcount,year mc FROM tr_jzg_basic WHERE is_jz='1' AND is_zydtr='1'
+       <if test="zymc!=null">
+        AND dept_name=#{zymc}
+       </if> GROUP BY year
+     </select>
+     <select id="jzzydtrggjsmd" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,dept_name title,xbid bl1,age bl2,xlmc bl3,zw bl6,is_zydtr bl4,year bl5 FROM tr_jzg_basic WHERE is_jz='1'
+      <if test="zymc!=null">
+       AND dept_name=#{zymc}
+      </if>
+      <if test="nf!=null">
+       AND year=#{nf}
+      </if>
+     </select>
+     <select id="jzjspxsl" resultType="java.lang.Integer">
+      SELECT COUNT(1) FROM tr_jzg_pxjx WHERE xm in (SELECT xm FROM tr_jzg_basic WHERE is_jz='1')
+     </select>
+     <select id="jzjspxsltbt" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) zcount,year mc FROM tr_jzg_pxjx WHERE xm in (SELECT xm FROM tr_jzg_basic WHERE is_jz='1') GROUP BY year 
+     </select>
+     <select id="jzjspxmd" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,pxjx_xmmc bl1,pxjx_sj bl2,pxjx_pcbm bl3,year bl4 FROM tr_jzg_pxjx WHERE 1=1
+      <if test="nf!=null">
+       AND year=#{nf}
+      </if>
+     </select>
+     <select id="jzszdwzypz" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) zcount ,dept_name mc FROM tr_jzg_basic WHERE is_jz='1' GROUP BY dept_name
+     </select>
+     <select id="jzszdwzypzmd" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,dept_name title,xbid bl1,age bl2,xlmc bl3,zw bl6,pxkssl bl4,year bl5 FROM tr_jzg_basic WHERE is_jz='1'
+      <if test="zymc!=null">
+       AND dept_name=#{zymc}
+      </if>
+      <if test="zymc=='其他'">
+       AND dept_name=''
+      </if>
+     </select>
+     <select id="getjzjsxnsjxssl" resultType="java.lang.Integer">
+      SELECT SUM(pxkssl) FROM tr_jzg_basic
+     </select>
+     <select id="jzjsxnsjxsmd" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,dept_name title,xbid bl1,age bl2,xlmc bl3,zw bl6,pxkssl bl4,year bl5 FROM tr_jzg_basic WHERE is_jz='1'
+       <if test="nf!=null">
+       AND year=#{nf}
+      </if>
+     </select>
+     <select id="jzjsxnsjxssltbt" resultType="yd.jxzg.common.TjCount">
+      SELECT SUM(pxkssl) zcount ,year mc FROM tr_jzg_basic WHERE is_jz='1' GROUP BY year
+     </select>
+     <select id="getxxjzmj" resultType="double">
+      SELECT xsmj+jxjfzyf+xzbg+shyf+jgzc+qtyf FROM tr_xx_xxmj
+     </select>
+     <select id="xxgjzmjylb"  resultType="yd.jxzg.entity.XxmjEntity">
+     SELECT xsmj_xxcq xsmjxxcq ,xsmj_fxxcq xsmjfxxcq,
+     jxjfzyf_js jxjfzyfjs,jxjfzyf_tsg jxjfzyftsg,jxjfzyf_sys jxjfzyfsys,jxjfzyf_tyg jxjfzyftyg,jxjfzyf_ht jxjfzyfht,xzbg xzbg,
+     shyf_sxss shyfsxss,xhyf_xxst xhyfxxst,xhyf_jgss xhyfjgss,shyf_jgst shyfjgst,shyf_shfl shyfshfl,jgzc jgzc,qtyf qtyf  FROM tr_xx_xxmj
+     </select>
+     <select id="getxnsjjdsl" resultType="java.lang.Integer">
+      SELECT COUNT(1) FROM tr_xx_xnxjjd
+     </select>
+     <select id="xnsjjdmx" resultType="yd.jxzg.common.TjCount">
+      SELECT sjjdmc mc,mxzy_z bl1,mxzy_zhu bl2,jzmj bl3,sxxm bl4,sxxm_zyx bl5,gws bl6,yqsbz bl7,yqsbs bl8,yclfy bl9,sbwhfy bl10,glry_zz zcount,glry_jz xcount,FROM tr_xx_xnxjjd
+     </select>
+     <select id="getxnsjjdzdmj" resultType="double">
+      SELECT SUM(jzmj) FROM tr_xx_xnxjjd
+     </select>
+     <select id="xnsjjdsjsbz" resultType="double">
+      SELECT (SUM(yqsbz)+SUM(yclfy)+SUM(sbwhfy))/(SELECT COUNT(1) FROM gxxs01_bzks) FROM tr_xx_xnxjjd
+     </select>
+     <select id="xwsjjdsl" resultType="java.lang.Integer">
+      SELECT COUNT(1) FROM gxgz04_xwsxjd
+     </select>
+     <select id="xwsjjdmx" resultType="yd.jxzg.common.TjCount">
+      SELECT xwsxjdmc mc,xwsxjdjlrq bl1,ytdw bl2,syzy bl3,sxxm bl4,mxzy_zs bl5,mxzy_zyzy  bl6,sxsxxmzs bl7,sxxm bl8,jdsysj bl9 FROM gxgz04_xwsxjd
+     </select>
+     <select id="rcjxjftr" resultType="double">
+      SELECT (SELECT SUM(zcje) FROM zz_jfzclb WHERE year='2017' AND zclx in 
+      ('图书购置','教学改革及研究费','学生培训费用'))/SUM(zcje) FROM zz_jfzclb WHERE year='2017'
+     </select>
+     <select id="lnrcjxjftr" resultType="yd.jxzg.common.TjCount">
+      SELECT (SELECT SUM(zcje) FROM zz_jfzclb WHERE year=a.year AND zclx in 
+      ('图书购置','教学改革及研究费','学生培训费用'))/SUM(zcje) zj,year mc FROM zz_jfzclb a GROUP BY year 
+     </select>
+     <select id="jyfsjxjfyszxylb" resultType="yd.jxzg.common.TjCount">
+      SELECT xmmc mc,jfys bl1,lxsj bl2,zxzt bl3 FROM zz_jkyqk
+     </select>
+     <select id="zztszsl" resultType="java.lang.Integer">
+      SELECT ts_hj FROM gxxx_zcqk WHERE zclx='1' AND nf='2017'
+     </select>
+     <select id="dnxzzztssl" resultType="java.lang.Integer">
+      SELECT SUM(sl) FROM zz_xxbkxx WHERE year='2017' AND dl='图书'
+     </select>
+     <select id="lnxzzztssl" resultType="yd.jxzg.common.TjCount">
+      SELECT SUM(sl) zcount,year mc FROM zz_xxbkxx WHERE dl='图书' GROUP BY year
+     </select>
+     <select id="xzzztsmx" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,sl zcount,dl title,year bl1 FROM zz_xxbkxx WHERE dl='图书'
+      <if test="nf!=null">
+       AND year=#{nf}
+      </if>
+     </select>
+     <select id="dndztssl" resultType="java.lang.Integer">
+      SELECT SUM(sl) FROM zz_xxbkxx WHERE dl='图书' AND year='2017'
+     </select>
+     <select id="lndztssl" resultType="yd.jxzg.common.TjCount">
+      SELECT SUM(sl) FROM zz_xxbkxx WHERE dl='图书' GROUP BY year
+     </select>
+     <select id="dztsmx" resultType="yd.jxzg.common.TjCount">
+      SELECT xm mc,sl zcount,dl title,year bl1 FROM zz_xxbkxx WHERE dl='图书'
+      <if test="nf!=null">
+       AND year=#{nf}
+      </if>
+     </select>
+     <select id="dnhzqysl" resultType="java.lang.Integer">
+      SELECT COUNT(1) FROM (SELECT COUNT(1) FROM gxxs_dgsx WHERE year='2017' GROUP BY yjbys_dgsxdwmc) a
+     </select>
+     <select id="lnhzqysl" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) zcount,a.year mc FROM (SELECT year,yjbys_dgsxdwmc FROM gxxs_dgsx WHERE 1=1
+      <if test="zymc">
+       AND zymc=#{zymc}
+      </if> GROUP BY year,yjbys_dgsxdwmc) a GROUP BY a.year
+     </select>
+     <select id="hzqymx" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1) zcount,yjbys_dgsxdwmc mc FROM gxxs_dgsx WHERE 1=1
+      <if test="zymc">
+       AND zymc=#{zymc}
+      </if>
+      <if test="nf!=null">
+       AND year=#{nf}
+      </if> GROUP BY year,yjbys_dgsxdwmc
+     </select>
+     <select id="getdgsxzy" resultType="yd.jxzg.common.TjCount">
+      SELECT zymc FROM gxxs_dgsx GROUP BY zymc
+     </select>
+     <select id="getjsdgsxxsbl" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1)/(SELECT COUNT(1) FROM gxxs_dgsx) zj,yjbys_dgsxdwmc mc FROM gxxs_dgsx GROUP BY yjbys_dgsxdwmc
+     </select>
+     <select id="lndgsxxsbl" resultType="yd.jxzg.common.TjCount">
+      SELECT COUNT(1)/(SELECT COUNT(1) FROM gxxs_dgsx WHERE 1=1
+      <if test="mc!=null">
+       AND yjbys_dgsxdwmc=#{mc}
+      </if>
+      <if test="zymc!=null">
+       AND zymc=#{zymc}
+      </if> AND year=a.year) zj,year mc FROM gxxs_dgsx a 
+       GROUP BY year
+     </select> 
+     <select id="lyyjbysbl" resultType="yd.jxzg.common.TjCount">
+      SELECT (SELECT COUNT(1) FROM gxxs_dgsx WHERE yjbys_qysfly='是' AND yjbys_dgsxdwmc=a.yjbys_dgsxdwmc)/COUNT(1) FROM gxxs_dgsx a GROUP BY yjbys_dgsxdwmc
+     </select>
+     <select id="lnlyyjbysbl" resultType="yd.jxzg.common.TjCount">
+      SELECT (SELECT COUNT(1) FROM gxxs_dgsx WHERE yjbys_qysfly='是' AND year=a.year AND yjbys_dgsxdwmc=a.yjbys_dgsxdwmc AND zymc=a.zymc)/COUNT(1) FROM gxxs_dgsx a WHERE 1=1
+      <if test="mc!=null">
+       AND a.yjbys_dgsxdwmc=#{mc}
+      </if>
+      <if test="zymc!=null">
+       AND a.zymc=#{zymc}
+      </if> GROUP BY yjbys_dgsxdwmc
+     </select>
+     <select id="getlydgsxhymx" resultType="yd.jxzg.entity.DgsxEntity">
+     SELECT yjbys_mc mc,yjbys_xh xh,zydm zydm,zymc zymc,yjbys_dgsxdwmc dgdw,bx_xzmc dgsxbxmc,bx_bxfczf bxxx,yjbys_qysfly sfly,year year FROM gxxs_dgsx WHERE yjbys_qysfly='是'
+   <if test="mc!=null">
+     AND yjbys_dgsxdwmc=#{mc}
+   </if>
+   <if test="nf!=null">
+     AND year=#{nf}
+   </if>
+    <if test="zymc!=null">
+     AND zymc=#{zymc}
+    </if>
+  </select>
+   <select id="dgsxxsmd" resultType="yd.jxzg.entity.DgsxEntity">
+     SELECT yjbys_mc mc,yjbys_xh xh,zydm zydm,zymc zymc,yjbys_dgsxdwmc dgdw,bx_xzmc dgsxbxmc,bx_bxfczf bxxx,yjbys_qysfly sfly,year year FROM gxxs_dgsx WHERE yjbys_qysfly='是'
+    <if test="mc!=null">
+     AND yjbys_dgsxdwmc=#{mc}
+    </if>
+   <if test="nf!=null">
+     AND year=#{nf}
+   </if>
+    <if test="zymc!=null">
+     AND zymc=#{zymc}
+    </if>
+  </select>
+  <select id="qyjzje" resultType="double">
+   SELECT SUM(jzje) FROM zz_qyjz
+  </select>
+  <select id="lnqyjzje" resultType="yd.jxzg.common.TjCount">
+   SELECT SUM(jzje) zj,year mc FROM zz_qyjz GROUP BY year
+  </select>
+  <select id="qyjzjemx" resultType="yd.jxzg.common.TjCount">
+   SELECT mc mc,qymc bl1,jzje bl2 ,year bl3 FROM zz_qyjz WHERE 1=1
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="getqyssjzjssl" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM tr_xx_qyss
+  </select>
+  <select id="lnqyssjzjssl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc FROM tr_xx_qyss GROUP BY year
+  </select>
+  <select id="qyssjzjsmd" resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,zymc title,qymc bl1,ddmc bl2,szbm bl3 FROM tr_xx_qyss WHERE 1=1
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+  </select>
+  <select id="xqhzyfcg" resultType="yd.jxzg.common.TjCount">
+    SELECT mc mc,hdms bl1,hdrq bl2,lx bl3 FROM zz_hdylb WHERE lx='校企合作'
+  </select>
+  <select id="getjbsjcjylb" resultType="yd.jxzg.common.TjCount">
+   SELECT bm mc,zdsl zcount,jhsl xcount FROM zz_jbsj
+  </select>
+  <select id="zyjxzykylb" resultType="yd.jxzg.common.TjCount">
+   SELECT wjm mc,dj bl1,sl zcount FROM zz_zyjxzyk
+  </select>
+  <select id="getzyfgmylb" resultType="yd.jxzg.common.TjCount">
+   SELECT zymc ,(SELECT COUNT(1) FROM zz_zyjdpxmx WHERE zymc=a.zymc) FROM gxjx01_bzks_zy a GROUP BY zymc
+  </select>
+  <select id="getzxsmyddcjg" resultType="yd.jxzg.common.TjCount">
+   SELECT nnd mc,COUNT(*) zcount  FROM(  
+	 SELECT   
+	 case  
+	<![CDATA[    
+		WHEN xsdxxmyd>=86 AND xsdxxmyd<=100 THEN '优'		 
+		WHEN xsdxxmyd>=76 AND xsdxxmyd<=85 THEN '良'
+		WHEN xsdxxmyd>=60 AND xsdxxmyd<=75 THEN '中'
+		WHEN xsdxxmyd<60 THEN '差'    ]]>
+        end  
+       as nnd FROM gxxs01_bzks WHERE xjzt='1'
+    ) gxxs01_bzks  GROUP BY nnd
+  </select>
+  <select id="getbysgzdcjg" resultType="yd.jxzg.common.TjCount">
+ SELECT nnd mc,COUNT(*) zcount  FROM(  
+	 SELECT   
+	 case  
+   <![CDATA[   
+		WHEN xyaqmyd>=86 AND xyaqmyd<=100 THEN '优'		 
+		WHEN xyaqmyd>=76 AND xyaqmyd<=85 THEN '良'
+		WHEN xyaqmyd>=60 AND xyaqmyd<=75 THEN '中'
+		WHEN xyaqmyd<60 THEN '差'   
+        end  
+       as nnd FROM gxxx_bysqk
+    ) gxxx_bysqk  GROUP BY nnd ]]>
+  </select>
+  <select id="getsjbysdkl" resultType="double">
+   SELECT (SELECT COUNT(1) FROM gxxx_bysqk WHERE sfdk='是' AND year='2017')/COUNT(1) FROM gxxx_bysqk WHERE year='2017'
+  </select>
+  <select id="lnbysdkl" resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM gxxx_bysqk WHERE sfdk='是' AND year=a.year)/COUNT(1) FROM gxxx_bysqk a GROUP BY year
+  </select>
+  <select id="getsjbyszgl" resultType="double">
+   SELECT (SELECT COUNT(1) FROM gxxx_bysqk WHERE sfzg='是' AND year='2017')/COUNT(1) FROM gxxx_bysqk WHERE year='2017'
+  </select>
+  <select id="lnsjbyszgl" resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM gxxx_bysqk WHERE sfzg='是' AND year=a.year)/COUNT(1) FROM gxxx_bysqk a GROUP BY year
+  </select>
+  <select id="sjbyssql" resultType="double">
+  SELECT (SELECT COUNT(1) FROM zz_sxxs)/((SELECT COUNT(1) FROM zz_sxxs)+COUNT(1)) FROM gxxx_bysqk
+  </select>
+  <select id="lnsjbyssql" resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM zz_sxxs WHERE year=a.year)/((SELECT COUNT(1) FROM zz_sxxs WHERE year=a.year)+COUNT(1)) FROM gxxx_bysqk a GROUP BY year
+  </select>
+  <select id="getbysbkyy" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,zsqd mc FROM gxxs01_bzks GROUP BY zsqd
+  </select>
+  <select id="getyrdwdbysylb" resultType="yd.jxzg.common.TjCount">
+    SELECT nnd mc,COUNT(*) zcount  FROM(  
+	 SELECT   
+	 case  
+   <![CDATA[   
+		WHEN dwmyd>=86 AND dwmyd<=100 THEN '优'		 
+		WHEN dwmyd>=76 AND dwmyd<=85 THEN '良'
+		WHEN dwmyd>=60 AND dwmyd<=75 THEN '中'
+		WHEN dwmyd<60 THEN '差'   
+        end  
+       as nnd FROM gxxx_bysqk
+    ) gxxx_bysqk  GROUP BY nnd ]]>
+  </select>
+  <select id="dsjxmysylb" resultType="yd.jxzg.common.TjCount">
+   SELECT xmmc mc,xmdj bl1,xmlb bl2,xkml bl3,xmfzr bl4 FROM zz_xmpsjg
+  </select>
+  <select id="zyjnjdjdxsjg" resultType="yd.jxzg.common.TjCount">
+   SELECT zyjnjdzmc mc,jdnr_zsmc bl1,jdnr_dj bl2,jldw_jb bl3,jldw_bm bl4,jdrs_sh bl5,jdrs_bxzxxs bl6 FROM gxxs_zyjnjd
+  </select>
+  <select id="dsjssjshj" resultType="yd.jxzg.common.TjCount">
+   (SELECT hjmc mc,hjlb bl1,hjjbmc bl2,hjrq bl3,xsmd bl4,'学生获奖' bl5,dept_name bl6 FROM gxxs_xshj)
+	 union all 
+	 (SELECT hjmc mc,hjlb bl1,hjjbmc bl2,hjrq bl3,jsmd bl4,jslx bl5,dept_id bl6 FROM tr_jzg_hj)
+  </select>
+  <select id="rmzfbzylb" resultType="yd.jxzg.common.TjCount">
+   SELECT xmmc mc,jb bl1,bzrq bl2 FROM tr_xx_rmbd WHERE jb in ('省级','国家级')
+  </select>
+  <select id="dsjjybmpsjg" resultType="yd.jxzg.common.TjCount">
+   SELECT hjmc mc,hjjb bl1,fjdw bl2,hjrq bl3 FROM tr_xx_hj WHERE hjjb in ('省级','国家级')
+  </select>
+  <select id="jdpxxssl" resultType="yd.jxzg.common.TjCount">
+   SELECT jdmc mc,zymc bl1,pxxssl bl2 FROM zz_zyjdpxmx WHERE 1=1
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if>
+  </select>
+  <select id="jxjxsglry" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM gxxx_gljg WHERE drzw!=''
+  </select>
+  <select id="jxjxsglrybt" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,jgmc mc FROM gxxx_gljg WHERE drzw!='' GROUP BY jgmc
+  </select>
+  <select id="jxjxsglrymd" resultType="yd.jxzg.common.TjCount">
+   SELECT jgcy mc,jgmc bl1,drzw bl2 FROM gxxx_gljg WHERE drzw!=''
+   <if test="zymc!=null">
+    AND jgmc=#{zymc}
+   </if>
+  </select>
+  <select id="getzsrylnzs" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,rxnj mc FROM gxxs01_bzks WHERE 1=1
+   <if test="mc!=null">
+    zsls=#{mc}
+   </if> GROUP BY rxnj ORDER BY rxnj
+  </select>
+  <select id="nfzslszsmd" resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,zymc bl1,xbm bl2,jg bl3,rxnj bl4,zsqd bl5,lyxx bl6,zsls bl7 FROM gxxs01_bzks WHERE 1=1
+   <if test="nf!=null">
+    AND rxnj=#{nf}
+   </if>
+   <if test="mc!=null">
+    AND zsls=#{mc}
+   </if>
+  </select>
+  <select id="getxssltbt" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,rxnj mc FROM gxxs01_bzks GROUP BY rxnj
+  </select>
+  <select id="getxssydfb" resultType="yd.jxzg.common.TjCount">
+   SELECT CONCAT(s.province,s.city) mc,COUNT(1) zcount FROM gxxs01_bzks a LEFT JOIN s_area_code s ON s.areacode=left(a.sfzjh,6) GROUP BY  mc
+  </select>
+  <select id="xzdqxssltbt" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc FROM gxxs01_bzks WHERE 1=1
+   <if test="dqmc!=null">
+    AND CONCAT(s.province,s.city)=#{dqmc}
+   </if> GROUP BY year ORDER BY year
+  </select>
+  <select id="xzdqxsmd" resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,xbm bl1,zymc b2,jg bl3,rxnj bl4,lyxx bl5,zsls bl6,zsqd bl7 FROM gxxs01_bzks WHERE 1=1
+   <if test="nf!=null">
+    AND rxnj=#{nf}
+   </if>
+   <if test="dqmc!=null">
+    AND CONCAT(s.province,s.city)=#{dqmc}
+   </if> GROUP BY year ORDER BY year
+  </select>
+  <select id="getzlbzzdyl" resultType="yd.jxzg.common.TjCount">
+   SELECT zdmc mc,sssj bl1,wjmc bl2 FROM zz_xxzlbzzd
+  </select>
+  <select id="xxgzzdlb" resultType="yd.jxzg.common.TjCount">
+   SELECT zdmc mc,sssj bl1,wjmc bl2 FROM zz_xxgzzd
+  </select>
+  <select id="getlnzygjjssl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc from tr_jzg_basic WHERE zyjszw_dj in ('中级','副高级')
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>
+   GROUP BY YEAR
+  </select>
+  <select id="getdjkstbt" resultType="yd.jxzg.common.TjCount">
+   SELECT SUM(ks)/SUM(rs) zj,year mc FROM zz_djpxhd WHERE lx='1' GROUP BY year
+  </select>
+  <select id="getlnzysl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc FROM gxjx01_bzks_zy GROUP BY year ORDER BY year
+  </select>
+  <select id="getjfkzdjt" resultType="yd.jxzg.common.TjCount">
+   SELECT year mc FROM zz_jfzclb GROUP BY year ORDER BY year
+  </select>
+  <select id="getjfzscd" resultType="yd.jxzg.common.TjCount">
+   SELECT zclx mc,zcje zcount FROM zz_jfzclb WHERE year=#{t}
+  </select>
+  <select id="getlnbxzjf" resultType="yd.jxzg.common.TjCount">
+   SELECT SUM(zcje) zcount,year mc FROM zz_jfzclb GROUP BY year
+  </select>
+  <select id="getjfly" resultType="yd.jxzg.common.TjCount">
+   SELECT lx mc,je zcount FROM zz_bkqk WHERE 1=1
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if> GROUP BY lx
+  </select>
+  <select id="getsjjftbt" resultType="yd.jxzg.common.TjCount">
+   SELECT SUM(je)/(SELECT COUNT(1) FROM gxxs01_bzks WHERE xjzt='1') zcount,year mc FROM zz_bkqk GROUP BY year
+  </select>
+  <select id="getzyjftbt" resultType="yd.jxzg.common.TjCount">
+   SELECT SUM(zcje) zj,year mc FROM zz_jfzclb GROUP BY year ORDER BY year
+  </select>
+  <select id="getbysjsjlsl" resultType="double">
+   SELECT (SELECT COUNT(1) FROM gxxx_bysqk WHERE jsjdgks='是' AND year=a.year)/COUNT(1) FROM gxxx_bysqk a WHERE a.year='2017'
+  </select>
+  <select id="getbysjsjkstgltbt" resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM gxxx_bysqk WHERE jsjdgks='是' AND year=a.year)/COUNT(1)*100 zcount,a.year mc FROM gxxx_bysqk a WHERE 1=1
+   <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if>
+    GROUP BY year ORDER BY year
+  </select> 
+  <select id="getbysjsjksmx" resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,zymc bl1,jydw bl2,jsjdgks bl3 ,year bl4 FROM gxxx_bysqk WHERE jsjdgks='是'
+   <if test="nf!=null">
+    AND year=#{nf}
+   </if>
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if>
+  </select>
+  <select id="getbyszgzshqtbt" resultType="yd.jxzg.common.TjCount">
+    SELECT (SELECT COUNT(1) FROM gxxx_bysqk WHERE sfhqsz='是' AND year=a.year)/COUNT(1)*100 zcount,year mc FROM gxxx_bysqk a WHERE 1=1
+   <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if>
+    GROUP BY year ORDER BY year
+  </select>
+  <select id="getrxqdtbt" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,rxqd mc FROM gxxs01_bzks GROUP BY rxqd 
+  </select>
+  <select id="getgrxqdtbt" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,zymc mc FROM gxxs01_bzks GROUP BY zymc WHERE 1=1
+   <if test="mc!=null">
+    AND rxqd=#{mc}
+   </if>
+  </select>
+  <select id="getzyqdxsmd" resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,xbm bl1,zymc bl2,jg bl3,lyxx bl4,rxqd bl3 FROM gxxs01_bzks WHERE 1=1
+   <if test="mc!=null">
+    AND rxqd=#{mc}
+   </if>
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if>
+  </select>
+  <select id="getrxqdlist" resultType="yd.jxzg.common.TjCount">
+   SELECT rxqd mc FROM gxxs01_bzks GROUP BY rxqd
+  </select>
+  <select id="lnbysdkjybht" resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM gxxx_bysqk WHERE sfdk='是' AND year=a.year
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if>
+   <if test="lb!=null">
+    AND a.pycc=#{lb}
+   </if>)/COUNT(1) zj,a.year mc FROM gxxx_bysqk a WHERE 1=1
+   <if test="zymc!=null">
+    AND a.zymc=#{zymc}
+   </if>
+   <if test="lb!=null">
+    AND a.pycc=#{lb}
+   </if> GROUP BY mc ORDER BY mc
+  </select>
+  <select id="getbtsdkjymd" resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,zymc bl1,jydw bl2,sfdk bl3,xb bl4 FROM gxxx_bysqk WHERE sfdk='是'
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if>
+   <if test="lb!=null">
+    AND pycc=#{lb}
+   </if>
+   <if test="nf!=null">
+    year=#{nf}
+   </if>  
+  </select>
+  <select id="nfzyqdxsmd" resultType="yd.jxzg.common.TjCount">
+   SELECT xm mc,xbm bl1,zymc bl2,jg bl3,rxqd bl4,rxnj bl5 FROM gxxs01_bzks WHERE 1=1
+   <if test="zymc!=null">
+     AND zymc=#{zymc}
+   </if>
+   <if test="nf!=null">
+    AND rxnj=#{nf}
+   </if>
+   <if test="lb!=null">
+    AND pycc=#{lb}
+   </if>
+  </select>
+  <select id="getzyrjssl" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM tr_jzg_basic WHERE is_wp='0'
+    <if test="mc!=null">
+      AND dept_name=#{mc}
+    </if>
+  </select>
+  <select id="getjzjssl2" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM tr_jzg_basic WHERE is_wp='1'
+    <if test="mc!=null">
+      AND dept_name=#{mc}
+    </if>
+  </select>
+  <select id="getzyjssltbt" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc FROM tr_jzg_basic WHERE 1=1
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if> GROUP BY year ORDER BY year
+  </select>
+  <select id="getlnssxjssl" resultType="yd.jxzg.common.TjCount">
+   SELECT COUNT(1) zcount,year mc FROM tr_jzg_basic WHERE is_ssjzg=1
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if> GROUP BY year ORDER BY year
+  </select>
+  <select id="getrjqysjsj"  resultType="yd.jxzg.common.TjCount">
+   SELECT SUM(a.jssj)/(SELECT COUNT(1) FROM tr_jzg_basic WHERE year=a.year) zj,year mc FROM tr_zy_xs a WHERE 1=1
+   <if test="zymc!=null">
+    AND zymc=#{zymc}
+   </if>
+    GROUP BY year ORDER BY year
+  </select>
+  <select id="getlnssxjsbl" resultType="yd.jxzg.common.TjCount">
+   SELECT (SELECT COUNT(1) FROM tr_jzg_basic WHERE is_ssjzg=1 AND year=a.year
+   <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if>)/COUNT(1) zj,a.year mc FROM tr_jzg_basic a WHERE 1=1 <if test="zymc!=null">
+    AND dept_name=#{zymc}
+   </if> GROUP BY mc ORDER BY year
+  </select>
+  <select id="getwckcjsxms" resultType="java.lang.Integer">
+   SELECT COUNT(1) FROM tr_kc_basic WHERE sfwckcjs='是' AND year='2017'
+  </select>
+  <select id="jsjykyylb" resultType="yd.jxzg.common.TjCount">
+   SELECT xmmc mc,jfys bl1,zxzt bl2,lxsj bl3 FROM zz_jkyqk
+  </select>
+  <select id="getgzyxssl2" resultType="yd.jxzg.common.TjCount">
+ SELECT COUNT(1) zcount,gb.zymc mc,gbz.ZYH dm FROM gxxs01_bzks gb LEFT JOIN gxjx01_bzks_zy gbz ON gb.zymc=gbz.ZYMC WHERE gb.zymc !='' GROUP BY gb.zymc
+  </select>
+  
+  
+  
+  
+  <select id="getpjfsList" resultType="yd.jxzg.common.TjCount">
+  
+  SELECT AVG(KCCJ) zj,XN mc FROM gxjx01_bzks_kscj where 1=1
+  <if test=' zymc != null and zymc !="" ' >AND zymc=#{zymc}</if>
+  <if test=' bjmc != null and bjmc !="" '>AND bjmc=#{bjmc}</if>
+  <if test= ' kcmc != null and kcmc !="" '>AND kcmc=#{kcmc}</if>
+   GROUP BY XN
+  </select>
+  <select id="getxsksmx" resultType="yd.jxzg.common.TjCount">
+   SELECT xm dm,zymc mc,bjmc bl1,kcmc bl2,xn bl3,kccj zj FROM gxjx01_bzks_kscj
+   where 1=1 
+   <if test=' zymc != null and zymc !="" ' >AND zymc=#{zymc}</if>
+     <if test=' bjmc != null and bjmc !="" '>AND bjmc=#{bjmc}</if>
+     <if test= ' kcmc != null and kcmc !="" '>AND kcmc=#{kcmc}</if>
+     <if test= ' nf!=null and nf !="" ' > AND xn=#{nf}</if>
+     GROUP BY kcmc
+  </select>
+  <select id="getzymc" resultType="yd.jxzg.common.TjCount">
+  SELECT ZYMC mc FROM gxjx01_bzks_kscj WHERE zymc  IS NOT NULL GROUP BY ZYMC
+  </select>
+  <select id="getkcmc" resultType="yd.jxzg.common.TjCount">
+  SELECT KCMC mc FROM gxjx01_bzks_kscj WHERE
+  KCMC IS NOT NULL
+   <if test=' zymc != null and zymc !="" ' >AND zymc=#{zymc}</if>
+  <if test=' bjmc != null and bjmc !="" '>AND bjmc=#{bjmc}</if>
+   GROUP BY KCMC
+  </select>
+  <select id="getbjmc" resultType="yd.jxzg.common.TjCount">
+  SELECT BJMC mc FROM gxjx01_bzks_kscj WHERE 
+  BJMC IS NOT NULL
+  <if test=' zymc != null and zymc !="" ' >AND zymc=#{zymc}</if>
+   GROUP BY BJMC
+  </select>
+  <select id="getkcfsfb" resultType="yd.jxzg.common.TjCount">
+  SELECT nnd mc,COUNT(1) zcount  FROM(  
+	 SELECT  
+	 CASE 
+	 <![CDATA[  
+	  WHEN KCCJ<60 THEN '0-59'
+		WHEN KCCJ>=60 AND KCCJ<=70 THEN '60-70'   
+	    WHEN KCCJ>70 AND KCCJ<80 THEN '71-79'
+		WHEN KCCJ>=80 THEN '80-100'  
+	 END ]]>
+	 AS nnd FROM gxjx01_bzks_kscj 
+	 where 1=1
+	 <if test=' zymc != null and zymc !="" ' >AND zymc=#{zymc}</if>
+     <if test=' bjmc != null and bjmc !="" '>AND bjmc=#{bjmc}</if>
+     <if test= ' kcmc != null and kcmc !="" '>AND kcmc=#{kcmc}</if>
+     <if test= ' nf!=null and nf !="" ' > AND xn=#{nf}</if>
+     ) gxjx01_bzks_kscj 
+	   GROUP BY nnd
+  </select>
+  <select id="getnf" resultType="yd.jxzg.common.TjCount">
+  SELECT xn mc FROM gxjx01_bzks_kscj GROUP BY xn
+  </select>
+  
+  <select id="getfsfwmx" resultType="yd.jxzg.common.TjCount">
+   SELECT xm dm,zymc mc,bjmc bl1,kcmc bl2,xn bl3,kccj zj FROM gxjx01_bzks_kscj
+   where 1=1 
+   <if test=' zymc != null and zymc !="" ' >AND zymc=#{zymc}</if>
+     <if test=' bjmc != null and bjmc !="" '>AND bjmc=#{bjmc}</if>
+     <if test= ' kcmc != null and kcmc !="" '>AND kcmc=#{kcmc}</if>
+     <if test= ' nf!=null and nf !="" ' > AND xn=#{nf}</if>
+     <if test=' dg!=null and dg !=""'>
+     <if test='dg==1'> AND kccj BETWEEN 0 AND 59 </if>
+     <if test='dg==2'> AND kccj BETWEEN 60 AND 70 </if>
+     <if test='dg==3'> AND kccj BETWEEN 71 AND 79 </if>
+     <if test='dg==4'> AND kccj  >= 80 </if>
+     </if>
+     GROUP BY kcmc
+  </select>
+  <!-- 课程迟到/早退/请假人数堆积图图 -->
+  <select id="getsgkcmc" resultType="yd.jxzg.common.TjCount">
+  SELECT KCM mc FROM gxjx01_bzks_xssgyy WHERE KCM IS NOT NULL GROUP BY KCM
+  </select>
+  
+  <select id="getczqrs" resultType="yd.jxzg.common.TjCount">
+  select(SELECT COUNT(1) FROM gxjx01_bzks_xssgyy where sgyy='迟到' AND xn=a.xn 
+  <if test= ' kcmc != null and kcmc !="" '>AND kcm=#{kcmc}</if>
+  ) bl1,
+  (SELECT COUNT(1) FROM gxjx01_bzks_xssgyy where sgyy='早退' AND xn=a.xn 
+  <if test= ' kcmc != null and kcmc !="" '>AND kcm=#{kcmc}</if>) bl2,
+  (SELECT COUNT(1) FROM gxjx01_bzks_xssgyy where sgyy='请假' AND xn=a.xn 
+  <if test= ' kcmc != null and kcmc !="" '>AND kcm=#{kcmc}</if>) bl3,xn mc FROM gxjx01_bzks_xssgyy a where 1=1 
+  <if test= ' kcmc != null and kcmc !="" '>AND kcm=#{kcmc}</if>
+  GROUP BY xn
+  </select>
+  <!-- 部分迟到/早退/请假人数饼图 -->
+  <select id="getbfczqrs" resultType="yd.jxzg.common.TjCount">
+  SELECT COUNT(1) mc,sgyy dm FROM gxjx01_bzks_xssgyy 
+  where 1=1
+  <if test= ' nf!=null and nf !="" ' > AND xn=#{nf}</if> 
+  <if test= ' kcmc != null and kcmc !="" '>AND kcm=#{kcmc}</if>
+  GROUP BY sgyy
+  </select>
+  <select id="getbfczqrsmx" resultType="yd.jxzg.common.TjCount">
+  SELECT xsm dm,sgyy mc,kcm bl1,xn bl2 FROM gxjx01_bzks_xssgyy WHERE 1=1
+  <if test= ' kcmc != null and kcmc !="" '> AND kcm=#{kcmc}</if>
+  <if test= ' lb != null and lb !="" '> AND sgyy=#{lb}</if> 
+  <if test= ' nf!=null and nf !="" ' > AND xn=#{nf}</if> 
+  </select>
+  
+  <!-- 开设精品课的专业 -->
+  <select id="getjpkczymx" resultType="yd.jxzg.common.TjCount">
+  SELECT zymc mc FROM gxjx01_bzks_kc WHERE is_jpkc='是' GROUP BY zymc
+  </select>
+  <!-- 精品课程增长柱状图 -->
+  <select id="getjpkzz" resultType="yd.jxzg.common.TjCount">
+  SELECT COUNT(1) zcount,njdm mc FROM gxjx01_bzks_kc WHERE is_jpkc='是' 
+  <if test=' zymc != null and zymc !="" ' >AND zymc=#{zymc}</if>
+  GROUP BY njdm
+  </select>
+  <!-- 精品课程明细 -->
+  <select id="getjpkcmx" resultType="yd.jxzg.common.TjCount">
+  SELECT a.kcmc mc,b.xm dm,a.kcch bl1 
+  FROM gxjx01_bzks_kc a LEFT JOIN tr_jzg_basic b 
+  ON a.KCFZRGH= b.ZGH WHERE is_jpkc='是' 
+  <if test=' zymc != null and zymc !="" ' >AND zymc=#{zymc}</if>
+  <if test= ' nf!=null and nf !="" ' > AND njdm=#{nf}</if> 
+  GROUP BY a.kcmc;
+  </select>
+  <!-- 毕业生资格证书获取明细 -->
+  <select id="getbyszgzshqmx" resultType="yd.jxzg.common.TjCount" >
+  SELECT xm mc,zymc bl1,jydw bl2,jsjdgks bl3,YEAR bl4,hqszmc bl5 FROM gxxx_bysqk WHERE hqszmc!='' AND YEAR=#{nf}
+  </select>
+<select id="getlsxsmx" resultType="yd.jxzg.common.TjCount">
+SELECT xh dm,xm mc,jg bl1,lsyy bl2,zymc bl3 FROM gxxs01_bzks WHERE lsyy!='' 
+<if test='nf==2015' >LIMIT 0,88</if>
+<if test='nf==2016' >LIMIT 10,79</if>
+<if test='nf==2017' >LIMIT 20,118</if>
+</select>
+  
+  
+</mapper>
